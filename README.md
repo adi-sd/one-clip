@@ -1,7 +1,5 @@
 # ![One-Clip Logo](public/one-clip-logo.jpg)
 
-# **One-Clip**
-
 ### A simple and fast text-saving app for quick copy-pasting.
 
 ![GitHub Stars](https://img.shields.io/github/stars/adi-sd/one-clip?style=social) ![GitHub License](https://img.shields.io/github/license/adi-sd/one-clip)
