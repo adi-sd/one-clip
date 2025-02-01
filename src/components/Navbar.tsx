@@ -1,0 +1,60 @@
+"use client";
+
+import { useSession, signOut } from "next-auth/react";
+import Logo from "@/components/Logo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { useAuthModal } from "@/providers/AuthModalProvider";
+import { FaGoogle } from "react-icons/fa";
+
+const Navbar = () => {
+    const { data: session } = useSession();
+    const { openAuthModal } = useAuthModal();
+
+    return (
+        <nav className="bg-white shadow-md py-4 px-8 flex items-center justify-between">
+            <Logo />
+
+            <div>
+                {session?.user ? (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full shadow-sm hover:bg-gray-200">
+                                <Avatar>
+                                    <AvatarImage src={session.user.image || "/default-avatar.png"} />
+                                    <AvatarFallback>{session.user.name?.charAt(0) || "U"}</AvatarFallback>
+                                </Avatar>
+                                <span className="font-semibold">{session.user.name}</span>
+                            </button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuLabel>{session.user.email}</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
+                                Log Out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ) : (
+                    <button
+                        onClick={openAuthModal}
+                        className="flex items-center gap-3 bg-green-500 px-4 py-2 rounded-full shadow-sm hover:bg-green-600"
+                    >
+                        <FaGoogle size={20} color="white"></FaGoogle>
+                        <span className="text-lg font-semibold text-white">Sign In</span>
+                    </button>
+                )}
+            </div>
+        </nav>
+    );
+};
+
+export default Navbar;
