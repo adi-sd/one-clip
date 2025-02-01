@@ -1,4 +1,4 @@
-# ![One-Clip Logo](./public/logo.png)
+# ![One-Clip Logo](public/one-clip-logo.jpg)
 
 # **One-Clip**
 
