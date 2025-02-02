@@ -12,11 +12,12 @@ export const getUserNotes = async (userId: string, listType: ListType = "default
 };
 
 // 🔹 Add a new note (default list)
-export const addNote = async (userId: string, content: string) => {
+export const addNote = async (userId: string, name: string, content: string) => {
     const noteRef = doc(collection(db, "users", userId, "notes"));
     const newNote: Note = {
         id: noteRef.id,
         userId,
+        name,
         content,
         listType: "default",
         createdAt: Date.now(),
@@ -39,6 +40,16 @@ export const restoreNote = async (userId: string, noteId: string) => {
     const noteRef = doc(db, "users", userId, "notes", noteId);
     await updateDoc(noteRef, {
         listType: "default",
+        updatedAt: serverTimestamp(),
+    });
+};
+
+// 🔹 Update a note's content and name
+export const updateNote = async (userId: string, noteId: string, name: string, content: string) => {
+    const noteRef = doc(db, "users", userId, "notes", noteId);
+    await updateDoc(noteRef, {
+        name,
+        content,
         updatedAt: serverTimestamp(),
     });
 };
