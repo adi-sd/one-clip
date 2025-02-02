@@ -1,3 +1,9 @@
+import Dashboard from "@/components/Dashboard";
+
 export default function Home() {
-    return <div className="text-xl">Hello</div>;
+    return (
+        <Dashboard>
+            <div>Children Dashboard</div>
+        </Dashboard>
+    );
 }

@@ -26,11 +26,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${interFont.variable} ${interFont.variable} antialiased`}>
+            <body className={`${interFont.variable} ${interFont.variable} antialiased h-screen w-screen`}>
                 <AuthProvider>
                     <AuthModalProvider>
-                        <Navbar />
-                        <main className="container mx-auto p-4">{children}</main>
+                        <div className="h-full w-full overflow-hidden">
+                            <Navbar />
+                            <main className="h-[calc(100%-5rem)] w-full py-4 px-8">{children}</main>
+                        </div>
                     </AuthModalProvider>
                 </AuthProvider>
             </body>

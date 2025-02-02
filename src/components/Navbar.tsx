@@ -19,7 +19,7 @@ const Navbar = () => {
     const { openAuthModal } = useAuthModal();
 
     return (
-        <nav className="bg-white shadow-md py-4 px-8 flex items-center justify-between">
+        <nav className="h-[5rem] w-full bg-white shadow-md py-4 px-8 flex items-center justify-between">
             <Logo />
 
             <div>
@@ -31,7 +31,7 @@ const Navbar = () => {
                                     <AvatarImage src={session.user.image || "/default-avatar.png"} />
                                     <AvatarFallback>{session.user.name?.charAt(0) || "U"}</AvatarFallback>
                                 </Avatar>
-                                <span className="font-semibold">{session.user.name}</span>
+                                <span className="text-lg font-semibold">{session.user.name}</span>
                             </button>
                         </DropdownMenuTrigger>
 
@@ -46,9 +46,13 @@ const Navbar = () => {
                 ) : (
                     <button
                         onClick={openAuthModal}
-                        className="flex items-center gap-3 bg-green-500 px-4 py-2 rounded-full shadow-sm hover:bg-green-600"
+                        className="flex items-center gap-2 bg-green-500 pl-2 pr-4 py-2 rounded-full shadow-sm hover:bg-green-600"
                     >
-                        <FaGoogle size={20} color="white"></FaGoogle>
+                        <Avatar className="bg-white">
+                            <AvatarFallback>
+                                <FaGoogle size={20} className="text-green-500" />
+                            </AvatarFallback>
+                        </Avatar>
                         <span className="text-lg font-semibold text-white">Sign In</span>
                     </button>
                 )}
