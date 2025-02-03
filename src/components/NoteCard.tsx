@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { FaPenClip, FaTrash } from "react-icons/fa6";
 import { Note } from "@/types/note";
 import { toast } from "sonner";
+import { Button } from "./ui/button";
 
 const NoteCard = ({
     note,
@@ -38,28 +39,32 @@ const NoteCard = ({
                 <span className="font-semibold overflow-hidden text-nowrap text-ellipsis mr-2 text-normal md:text-lg">
                     {note.name}
                 </span>
-                <div className="flex gap-x-3">
+                <div className="flex gap-x-1">
                     {/* Show edit button only when DisplayContainer is hidden */}
                     {showEditButton && (
-                        <button
+                        <Button
+                            variant={"ghost"}
+                            size={"icon"}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onEdit(note.id);
                             }}
-                            className="text-gray-500 hover:text-gray-700 h-[20px] w-[20px] flex items-center justify-center"
+                            className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
                         >
-                            <FaPenClip size={16} />
-                        </button>
+                            <FaPenClip />
+                        </Button>
                     )}
-                    <button
+                    <Button
+                        variant={"ghost"}
+                        size={"icon"}
                         onClick={(e) => {
                             e.stopPropagation();
                             onDelete(note.id);
                         }}
-                        className="text-gray-500 hover:text-gray-700 h-[20px] w-[20px] flex items-center justify-center"
+                        className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
                     >
-                        <FaTrash size={16} />
-                    </button>
+                        <FaTrash />
+                    </Button>
                 </div>
             </div>
 

@@ -10,6 +10,7 @@ import { FaTrash } from "react-icons/fa";
 import Toolbar from "./Toolbar";
 import LinkDialog from "./LinkDialog";
 import TitleEditor from "./TitleEditor";
+import { Button } from "./ui/button";
 
 const DisplayContainer = ({
     selectedNote,
@@ -68,16 +69,18 @@ const DisplayContainer = ({
     };
 
     return (
-        <div className="p-6 bg-white shadow-md rounded-lg h-full flex flex-col">
+        <div className="p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2">
             {/* Title & Delete Button */}
             <div className="flex items-start justify-between mb-3">
                 <TitleEditor title={title} setTitle={setTitle} />
-                <button
+                <Button
+                    variant={"ghost"}
+                    size={"icon"}
                     onClick={() => onDelete(selectedNote?.id || "")}
-                    className="text-gray-500 hover:text-gray-700 h-[28px] w-[28px] flex items-center justify-center"
+                    className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
                 >
-                    <FaTrash size={20} />
-                </button>
+                    <FaTrash />
+                </Button>
             </div>
 
             {/* Toolbar for formatting */}
@@ -89,12 +92,13 @@ const DisplayContainer = ({
             </div>
 
             {/* Save Button */}
-            <button
-                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 self-end"
+            <Button
+                variant={"default"}
+                className="w-fit bg-green-500 rounded-full [&_svg]:size-6 py-3 px-4 ml-auto mt-2"
                 onClick={handleSave}
             >
-                Save
-            </button>
+                <span className="text-lg font-semibold">Save</span>
+            </Button>
 
             {/* Link Dialog */}
             <LinkDialog isOpen={isLinkDialogOpen} setIsOpen={setIsLinkDialogOpen} editor={editor} />
