@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { FaPenClip, FaTrash } from "react-icons/fa6";
 import { Note } from "@/types/note";
+import { toast } from "sonner";
 
 const NoteCard = ({
     note,
@@ -16,6 +17,7 @@ const NoteCard = ({
     const handleCopyToClipboard = () => {
         navigator.clipboard.writeText(note.content).then(() => {
             console.log("Copied to clipboard: ", note.content);
+            toast.success("Copied to clipboard!");
         });
 
         // Only open editor in large screens

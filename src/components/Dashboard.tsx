@@ -9,6 +9,7 @@ import DisplayContainer from "@/components/DisplayContainer";
 import { Note } from "@/types/note";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
+
 const Dashboard = () => {
     const { status } = useSession();
     const router = useRouter();
