@@ -15,10 +15,12 @@ const DisplayContainer = ({
     selectedNote,
     onEdit,
     onDelete,
+    setIsDialogOpen,
 }: {
     selectedNote: Note | null;
     onEdit: (updatedNote: Note) => void;
     onDelete: (id: string) => void;
+    setIsDialogOpen?: (val: boolean) => void;
 }) => {
     const [content, setContent] = useState("");
     const [title, setTitle] = useState(selectedNote?.name || "");
@@ -45,6 +47,7 @@ const DisplayContainer = ({
         onUpdate: ({ editor }) => {
             setContent(editor.getHTML());
         },
+        immediatelyRender: false,
     });
 
     useEffect(() => {
@@ -58,6 +61,9 @@ const DisplayContainer = ({
     const handleSave = () => {
         if (selectedNote) {
             onEdit({ ...selectedNote, content, name: title });
+        }
+        if (setIsDialogOpen) {
+            setIsDialogOpen(false);
         }
     };
 

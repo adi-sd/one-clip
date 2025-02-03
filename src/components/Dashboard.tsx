@@ -7,6 +7,7 @@ import sampleNotes from "@/data/sampleNotes";
 import NotesContainer from "@/components/NotesContainer";
 import DisplayContainer from "@/components/DisplayContainer";
 import { Note } from "@/types/note";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const Dashboard = () => {
     const { status } = useSession();
@@ -14,6 +15,7 @@ const Dashboard = () => {
     const [notes, setNotes] = useState<Note[]>([]);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -23,10 +25,13 @@ const Dashboard = () => {
             setSelectedNote(sampleNotes.length > 0 ? sampleNotes[0] : null);
         }
 
-        // Check screen size on mount and on resize
+        // Check screen size and update state
         const handleResize = () => {
-            setIsLargeScreen(window.innerWidth >= 1024);
+            const isLarge = window.innerWidth >= 1024; // lg breakpoint
+            setIsLargeScreen(isLarge);
+            if (isLarge) setIsDialogOpen(false); // Close dialog if switching to large screen
         };
+
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
@@ -34,6 +39,9 @@ const Dashboard = () => {
 
     const handleSelectNote = (id: string) => {
         setSelectedNote(notes.find((note) => note.id === id) || null);
+        if (!isLargeScreen) {
+            setIsDialogOpen(true); // Open dialog on mobile
+        }
     };
 
     const handleDeleteNote = (id: string) => {
@@ -60,7 +68,7 @@ const Dashboard = () => {
                     notes={notes}
                     onEdit={handleSelectNote}
                     onDelete={handleDeleteNote}
-                    showEditButton={!isLargeScreen} // Show edit button only when DisplayContainer is hidden
+                    showEditButton={!isLargeScreen} // ✅ Show edit button only when DisplayContainer is hidden
                 />
             </div>
 
@@ -69,6 +77,21 @@ const Dashboard = () => {
                 <div className="w-2/6 h-full">
                     <DisplayContainer selectedNote={selectedNote} onEdit={handleSaveNote} onDelete={handleDeleteNote} />
                 </div>
+            )}
+
+            {/* Mobile Edit Dialog */}
+            {!isLargeScreen && (
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogContent className="h-[75vh] w-[80vw] p-0 [&>button]:hidden" aria-describedby={undefined}>
+                        <DialogTitle className="hidden">{selectedNote?.name}</DialogTitle>
+                        <DisplayContainer
+                            selectedNote={selectedNote}
+                            onEdit={handleSaveNote}
+                            onDelete={handleDeleteNote}
+                            setIsDialogOpen={setIsDialogOpen}
+                        />
+                    </DialogContent>
+                </Dialog>
             )}
         </div>
     );

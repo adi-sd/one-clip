@@ -31,7 +31,10 @@ const Toolbar = ({ editor, openLinkDialog }: { editor: Editor | null; openLinkDi
             >
                 <FaUnderline />
             </button>
-            <button onClick={openLinkDialog} className="p-2 border border-gray-500 rounded">
+            <button
+                onClick={openLinkDialog}
+                className={`p-2 border border-gray-500 rounded ${editor.isActive("link") ? "bg-gray-300" : ""}`}
+            >
                 <FaLink />
             </button>
             <button

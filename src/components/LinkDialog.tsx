@@ -27,7 +27,7 @@ const LinkDialog = ({
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="w-full max-w-sm">
+            <DialogContent className="w-full max-w-sm" aria-describedby={undefined}>
                 <DialogHeader>
                     <DialogTitle>Add or Edit Link</DialogTitle>
                 </DialogHeader>
