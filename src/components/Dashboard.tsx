@@ -8,7 +8,7 @@ import NotesContainer from "@/components/NotesContainer";
 import DisplayContainer from "@/components/DisplayContainer";
 import { Note } from "@/types/note";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-
+import ActionContainer from "./ActionContainer";
 
 const Dashboard = () => {
     const { status } = useSession();
@@ -64,7 +64,8 @@ const Dashboard = () => {
     return (
         <div className="w-full h-full flex flex-col lg:flex-row gap-6">
             {/* Notes List - Always visible */}
-            <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full`}>
+            <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
+                <ActionContainer />
                 <NotesContainer
                     notes={notes}
                     onEdit={handleSelectNote}
