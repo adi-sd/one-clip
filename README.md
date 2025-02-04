@@ -18,6 +18,8 @@ One-Clip is a **modern, lightweight web application** that helps you save and qu
 -   ✅ **Search Bar**: Quickly find saved snippets.
 -   ✅ **Recycle Bin**: Restore or permanently delete text entries.
 -   ✅ **Export/Import**: Backup or transfer your saved snippets as a JSON file.
+-   ✅ **MongoDB Atlas**: Secure, scalable NoSQL database.
+-   ✅ **Prisma ORM**: Efficient, type-safe data management.
 -   ✅ **Mobile Responsive**: Works smoothly on desktops, tablets, and mobile devices.
 
 ---
@@ -26,7 +28,7 @@ One-Clip is a **modern, lightweight web application** that helps you save and qu
 
 -   **Frontend**: Next.js (App Router), React.js, TypeScript, Tailwind CSS
 -   **Authentication**: NextAuth.js (Google Sign-In)
--   **Database**: Firebase Firestore
+-   **Database**: MongoDB Atlas with Prisma ORM
 -   **UI Components**: ShadCN-UI
 -   **Deployment**: Free hosting service
 
@@ -56,9 +58,28 @@ GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 NEXTAUTH_SECRET=your-random-secret-key
 NEXTAUTH_URL=http://localhost:3000
+
+DATABASE_URL="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/one-clip?retryWrites=true&w=majority"
 ```
 
-### 4️⃣ **Run the Development Server**
+> 🔹 Replace `<username>`, `<password>`, and `<cluster>` with your actual **MongoDB Atlas credentials**.
+
+---
+
+### 4️⃣ **Set Up Prisma & Migrate Database**
+
+Run the following commands to set up Prisma ORM and apply migrations:
+
+```sh
+  npx prisma generate
+  npx prisma migrate dev --name init
+```
+
+This initializes Prisma and creates the necessary tables in **MongoDB Atlas**.
+
+---
+
+### 5️⃣ **Run the Development Server**
 
 ```sh
   npm run dev
@@ -83,6 +104,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 🛠 **Deployment**
 
 To deploy, configure environment variables for your hosting provider and push the project.
+
+If using **Vercel**, set environment variables in **Vercel Dashboard** and deploy:
+
+```sh
+  vercel deploy
+```
 
 ---
 
@@ -109,3 +136,12 @@ For any issues or feature requests, feel free to [open an issue](https://github.
 ---
 
 ⭐ **If you like this project, don’t forget to star the repository!** ⭐
+
+---
+
+### ✅ **Changes Made**
+
+-   **Replaced Firebase Firestore** with **MongoDB Atlas & Prisma ORM**.
+-   **Updated environment variables** to reflect MongoDB connection.
+-   **Added Prisma migration commands** to initialize the database.
+-   **Updated the deployment section** for MongoDB compatibility.

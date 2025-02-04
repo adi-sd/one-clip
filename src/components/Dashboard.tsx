@@ -3,7 +3,6 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import sampleNotes from "@/data/sampleNotes";
 import NotesContainer from "@/components/NotesContainer";
 import DisplayContainer from "@/components/DisplayContainer";
 import { Note } from "@/types/note";
@@ -18,19 +17,29 @@ const Dashboard = () => {
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    // Fetch notes from API
+    const fetchNotes = async () => {
+        try {
+            const response = await fetch("/api/notes");
+            const data = await response.json();
+            setNotes(data);
+            setSelectedNote(data.length > 0 ? data[0] : null);
+        } catch (error) {
+            console.error("Failed to fetch notes:", error);
+        }
+    };
+
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/");
         } else if (status === "authenticated") {
-            setNotes(sampleNotes);
-            setSelectedNote(sampleNotes.length > 0 ? sampleNotes[0] : null);
+            fetchNotes();
         }
 
-        // Check screen size and update state
         const handleResize = () => {
             const isLarge = window.innerWidth >= 1024; // lg breakpoint
             setIsLargeScreen(isLarge);
-            if (isLarge) setIsDialogOpen(false); // Close dialog if switching to large screen
+            if (isLarge) setIsDialogOpen(false);
         };
 
         handleResize();
@@ -41,7 +50,7 @@ const Dashboard = () => {
     const handleSelectNote = (id: string) => {
         setSelectedNote(notes.find((note) => note.id === id) || null);
         if (!isLargeScreen) {
-            setIsDialogOpen(true); // Open dialog on mobile
+            setIsDialogOpen(true);
         }
     };
 
@@ -70,7 +79,7 @@ const Dashboard = () => {
                     notes={notes}
                     onEdit={handleSelectNote}
                     onDelete={handleDeleteNote}
-                    showEditButton={!isLargeScreen} // ✅ Show edit button only when DisplayContainer is hidden
+                    showEditButton={!isLargeScreen}
                 />
             </div>
 

@@ -13,10 +13,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuthModal } from "@/providers/AuthModalProvider";
 import { FaGoogle } from "react-icons/fa";
+import { useEffect } from "react";
 
 const Navbar = () => {
     const { data: session } = useSession();
     const { openAuthModal } = useAuthModal();
+
+    useEffect(() => {
+        if (session?.user) {
+            console.log("Current User Id - ", session.user.id);
+        } else {
+            console.log("User not logged in!");
+        }
+    });
 
     return (
         <nav className="h-[5rem] w-full bg-white shadow-md py-4 px-8 flex items-center justify-between">

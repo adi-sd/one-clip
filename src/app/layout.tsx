@@ -10,6 +10,7 @@ import { ToasterProvider } from "@/providers/ToasterProvider";
 const interFont = Inter({
     variable: "--font-geist-sans",
     subsets: ["latin"],
+    preload: true,
 });
 
 export const metadata: Metadata = {
