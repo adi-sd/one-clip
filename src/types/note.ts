@@ -6,6 +6,6 @@ export interface Note {
     name: string;
     content: string;
     listType: ListType;
-    createdAt: number;
-    updatedAt: number;
+    createdAt: string;
+    updatedAt: string;
 }

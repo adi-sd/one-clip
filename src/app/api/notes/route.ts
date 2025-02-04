@@ -39,15 +39,11 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { name, content, listType = "default" } = body;
 
-        if (!name?.trim() || !content?.trim()) {
-            return NextResponse.json({ error: "Name and content are required" }, { status: 400 });
-        }
-
         const note = await prisma.note.create({
             data: {
                 userId: session.user.id,
-                name,
-                content,
+                name: name ?? "New Note",
+                content: content ?? "",
                 listType,
             },
         });
@@ -55,6 +51,50 @@ export async function POST(req: Request) {
         return NextResponse.json(note, { status: 201 });
     } catch (error) {
         return handleError(error, "create note");
+    }
+}
+
+// ✅ Update a Note (PUT)
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const id = params.id; // ✅ Extract ID from the URL
+        console.log(id);
+        const body = await req.json();
+        const { name, content, listType } = body;
+
+        if (!id || !name?.trim()) {
+            // ✅ Allow empty content
+            return NextResponse.json({ error: "ID and name are required" }, { status: 400 });
+        }
+
+        const existingNote = await prisma.note.findUnique({ where: { id } });
+
+        if (!existingNote) {
+            return NextResponse.json({ error: "Note not found" }, { status: 404 });
+        }
+
+        if (existingNote.userId !== session.user.id) {
+            return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+        }
+
+        const updatedNote = await prisma.note.update({
+            where: { id },
+            data: {
+                name,
+                content: content ?? existingNote.content, // ✅ Keep existing content if not provided
+                listType: listType ?? existingNote.listType,
+                updatedAt: new Date().toISOString(),
+            },
+        });
+
+        return NextResponse.json(updatedNote, { status: 200 });
+    } catch (error) {
+        return handleError(error, "update note");
     }
 }
 

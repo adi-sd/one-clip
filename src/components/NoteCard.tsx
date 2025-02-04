@@ -3,6 +3,7 @@ import { FaPenClip, FaTrash } from "react-icons/fa6";
 import { Note } from "@/types/note";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import sanitizeHtml from "sanitize-html";
 
 const NoteCard = ({
     note,
@@ -26,6 +27,17 @@ const NoteCard = ({
             onEdit(note.id);
         }
     };
+
+    // ✅ Sanitize the content to prevent XSS
+    const safeContent = sanitizeHtml(note.content, {
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "span"]),
+        allowedAttributes: {
+            a: ["href", "name", "target", "rel"],
+            img: ["src", "alt", "title", "width", "height"],
+            span: ["style"],
+        },
+        allowedSchemes: ["http", "https"],
+    });
 
     return (
         <Card
@@ -68,10 +80,11 @@ const NoteCard = ({
                 </div>
             </div>
 
-            {/* Note Content */}
-            <p className="flex-1 text-normal md:text-lg font-medium mt-4 overflow-hidden text-ellipsis break-words line-clamp-3">
-                {note.content}
-            </p>
+            {/* ✅ Render sanitized content safely */}
+            <div
+                className="flex-1 text-normal md:text-lg font-medium mt-4 overflow-hidden text-ellipsis break-words line-clamp-3"
+                dangerouslySetInnerHTML={{ __html: safeContent }}
+            />
         </Card>
     );
 };

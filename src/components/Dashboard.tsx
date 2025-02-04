@@ -16,6 +16,7 @@ const Dashboard = () => {
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [unsavedNote, setUnsavedNote] = useState<Note | null>(null);
 
     // Fetch notes from API
     const fetchNotes = async () => {
@@ -54,16 +55,84 @@ const Dashboard = () => {
         }
     };
 
-    const handleDeleteNote = (id: string) => {
-        const updatedNotes = notes.filter((note) => note.id !== id);
-        setNotes(updatedNotes);
-        setSelectedNote(updatedNotes.length > 0 ? updatedNotes[0] : null);
+    // ✅ Create new note but don't add it to the list until saved
+    const handleCreateNote = async () => {
+        const newNote = {
+            id: crypto.randomUUID(), // Temporary ID
+            name: "Untitled Note",
+            content: "",
+            listType: "default",
+        };
+
+        setUnsavedNote(newNote as Note);
+        setSelectedNote(newNote as Note);
+
+        if (!isLargeScreen) {
+            setIsDialogOpen(true);
+        }
     };
 
-    const handleSaveNote = (updatedNote: Note) => {
-        const updatedNotes = notes.map((note) => (note.id === updatedNote.id ? updatedNote : note));
-        setNotes(updatedNotes);
-        setSelectedNote(updatedNote);
+    // ✅ Save a new or existing note to the DB
+    const handleSaveNote = async (updatedNote: Note) => {
+        try {
+            const isNewNote = unsavedNote?.id === updatedNote.id;
+
+            const response = await fetch(isNewNote ? "/api/notes" : `/api/notes/${updatedNote.id}`, {
+                // ✅ Now calls `/api/notes/:id`
+                method: isNewNote ? "POST" : "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: updatedNote.name.trim(),
+                    content: updatedNote.content ?? "",
+                    listType: updatedNote.listType ?? "default",
+                }),
+            });
+
+            if (!response.ok) throw new Error("Failed to save note");
+
+            const savedNote = await response.json();
+
+            setNotes((prevNotes) =>
+                isNewNote
+                    ? [savedNote, ...prevNotes]
+                    : prevNotes.map((note) => (note.id === savedNote.id ? savedNote : note))
+            );
+
+            setSelectedNote(savedNote);
+            setUnsavedNote(null); // ✅ Clear unsaved state after saving
+        } catch (error) {
+            console.error("Error saving note:", error);
+        }
+    };
+
+    // ✅ Delete note and update display
+    const handleDeleteNote = async (id: string) => {
+        try {
+            const isUnsaved = unsavedNote?.id === id;
+
+            if (isUnsaved) {
+                setUnsavedNote(null);
+                setSelectedNote(notes.length > 0 ? notes[0] : null);
+                return;
+            }
+
+            const response = await fetch("/api/notes", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id }),
+            });
+
+            if (!response.ok) throw new Error("Failed to delete note");
+
+            setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+
+            // ✅ If the deleted note was selected, switch to the first note
+            setSelectedNote((prevSelected) =>
+                prevSelected?.id === id ? (notes.length > 1 ? notes[1] : null) : prevSelected
+            );
+        } catch (error) {
+            console.error("Error deleting note:", error);
+        }
     };
 
     if (status === "loading") {
@@ -74,7 +143,7 @@ const Dashboard = () => {
         <div className="w-full h-full flex flex-col lg:flex-row gap-6">
             {/* Notes List - Always visible */}
             <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
-                <ActionContainer />
+                <ActionContainer onCreateNote={handleCreateNote} />
                 <NotesContainer
                     notes={notes}
                     onEdit={handleSelectNote}
@@ -84,7 +153,7 @@ const Dashboard = () => {
             </div>
 
             {/* Display Container - Only visible on lg/xl */}
-            {isLargeScreen && (
+            {isLargeScreen && selectedNote && (
                 <div className="w-2/6 h-full">
                     <DisplayContainer selectedNote={selectedNote} onEdit={handleSaveNote} onDelete={handleDeleteNote} />
                 </div>

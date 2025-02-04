@@ -31,6 +31,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
     "react-spinners": "^0.15.0",
+    "sanitize-html": "^2.14.0",
     "sonner": "^1.7.4",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"
@@ -40,6 +41,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/sanitize-html": "^2.13.0",
     "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
