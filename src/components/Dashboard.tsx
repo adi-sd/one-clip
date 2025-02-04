@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import NotesContainer from "@/components/NotesContainer";
 import DisplayContainer from "@/components/DisplayContainer";
 import { Note } from "@/types/note";
@@ -100,6 +101,12 @@ const Dashboard = () => {
 
             setSelectedNote(savedNote);
             setUnsavedNote(null); // ✅ Clear unsaved state after saving
+
+            if (isNewNote) {
+                toast.success("New Note Created!");
+            } else {
+                toast.success("Note Updated!");
+            }
         } catch (error) {
             console.error("Error saving note:", error);
         }
@@ -130,6 +137,8 @@ const Dashboard = () => {
             setSelectedNote((prevSelected) =>
                 prevSelected?.id === id ? (notes.length > 1 ? notes[1] : null) : prevSelected
             );
+
+            toast.error("Note deleted!");
         } catch (error) {
             console.error("Error deleting note:", error);
         }
