@@ -34,6 +34,7 @@ const NoteCard = ({
             await navigator.clipboard.writeText(text);
             console.log("Copied to clipboard!");
             onEdit(note.id);
+            toast.success("Copied to Clipboard!");
         } catch (error) {
             console.error("Copy failed:", error);
         }
