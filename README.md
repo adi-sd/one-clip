@@ -136,12 +136,3 @@ For any issues or feature requests, feel free to [open an issue](https://github.
 ---
 
 ⭐ **If you like this project, don’t forget to star the repository!** ⭐
-
----
-
-### ✅ **Changes Made**
-
--   **Replaced Firebase Firestore** with **MongoDB Atlas & Prisma ORM**.
--   **Updated environment variables** to reflect MongoDB connection.
--   **Added Prisma migration commands** to initialize the database.
--   **Updated the deployment section** for MongoDB compatibility.
