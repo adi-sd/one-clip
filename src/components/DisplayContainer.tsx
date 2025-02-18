@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Note } from "@/types/note";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -26,6 +26,7 @@ const DisplayContainer = ({
     const [content, setContent] = useState("");
     const [title, setTitle] = useState(selectedNote?.name || "");
     const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+    const [isEditorFocused, setIsEditorFocused] = useState(false); // ✅ Track editor focus
 
     // ✅ Initialize TipTap editor
     const editor = useEditor({
@@ -48,6 +49,8 @@ const DisplayContainer = ({
         onUpdate: ({ editor }) => {
             setContent(editor.getHTML());
         },
+        onFocus: () => setIsEditorFocused(true), // ✅ Track when editor is focused
+        onBlur: () => setIsEditorFocused(false), // ✅ Track when editor is blurred
         immediatelyRender: false,
     });
 
@@ -59,14 +62,31 @@ const DisplayContainer = ({
         }
     }, [editor, selectedNote]);
 
-    const handleSave = () => {
+    // ✅ Save note function
+    const handleSave = useCallback(() => {
         if (selectedNote) {
             onEdit({ ...selectedNote, content, name: title });
         }
         if (setIsDialogOpen) {
             setIsDialogOpen(false);
         }
-    };
+        console.log("Note saved!");
+    }, [selectedNote, content, title, onEdit, setIsDialogOpen]);
+
+    // ✅ Handle Cmd + S / Ctrl + S only when editor is focused
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (isEditorFocused && (event.metaKey || event.ctrlKey) && event.key === "s") {
+                event.preventDefault(); // Prevent browser save action
+                handleSave();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [handleSave, isEditorFocused]);
 
     return (
         <div className="p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2">

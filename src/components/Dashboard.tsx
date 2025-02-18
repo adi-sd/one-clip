@@ -24,7 +24,7 @@ const Dashboard = () => {
         setIsDialogOpen,
         handleSelectNote,
         handleCreateNote,
-        handleSaveNote,
+        handleUpdateNote,
         handleDeleteNote,
     } = useDashboard();
 
@@ -71,7 +71,7 @@ const Dashboard = () => {
                         <div className="w-2/6 h-full">
                             <DisplayContainer
                                 selectedNote={selectedNote}
-                                onEdit={handleSaveNote}
+                                onEdit={handleUpdateNote}
                                 onDelete={handleDeleteNote}
                             />
                         </div>
@@ -87,7 +87,7 @@ const Dashboard = () => {
                                 <DialogTitle className="hidden">{selectedNote?.name}</DialogTitle>
                                 <DisplayContainer
                                     selectedNote={selectedNote}
-                                    onEdit={handleSaveNote}
+                                    onEdit={handleUpdateNote}
                                     onDelete={handleDeleteNote}
                                     setIsDialogOpen={setIsDialogOpen}
                                 />

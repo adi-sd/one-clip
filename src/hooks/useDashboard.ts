@@ -79,7 +79,7 @@ export const useDashboard = () => {
         }
     };
 
-    const handleSaveNote = async (updatedNote: Note) => {
+    const handleUpdateNote = async (updatedNote: Note) => {
         try {
             const isNewNote = unsavedNote?.id === updatedNote.id;
 
@@ -165,7 +165,7 @@ export const useDashboard = () => {
         setIsDialogOpen,
         handleSelectNote,
         handleCreateNote,
-        handleSaveNote,
+        handleUpdateNote,
         handleDeleteNote,
     };
 };
