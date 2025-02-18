@@ -50,7 +50,10 @@ const DisplayContainer = ({
             setContent(editor.getHTML());
         },
         onFocus: () => setIsEditorFocused(true), // ✅ Track when editor is focused
-        onBlur: () => setIsEditorFocused(false), // ✅ Track when editor is blurred
+        onBlur: () => {
+            setIsEditorFocused(false);
+            handleSave(); // ✅ Auto-save when editor loses focus
+        },
         immediatelyRender: false,
     });
 
@@ -70,7 +73,7 @@ const DisplayContainer = ({
         if (setIsDialogOpen) {
             setIsDialogOpen(false);
         }
-        console.log("Note saved!");
+        console.log("Note auto-saved!");
     }, [selectedNote, content, title, onEdit, setIsDialogOpen]);
 
     // ✅ Handle Cmd + S / Ctrl + S only when editor is focused
@@ -87,6 +90,18 @@ const DisplayContainer = ({
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [handleSave, isEditorFocused]);
+
+    // ✅ Auto-save when switching tabs or window loses focus
+    useEffect(() => {
+        const handleWindowBlur = () => {
+            handleSave();
+        };
+
+        window.addEventListener("blur", handleWindowBlur);
+        return () => {
+            window.removeEventListener("blur", handleWindowBlur);
+        };
+    }, [handleSave]);
 
     return (
         <div className="p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2">
