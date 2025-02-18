@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "One-Clip",
     description: "Quickly copy and manage your text snippets",
     icons: {
-        icon: "/favicon.ico",
+        icon: "/favicon.jpg",
     },
 };
 
