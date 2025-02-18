@@ -10,6 +10,7 @@ export const useDashboard = () => {
     const router = useRouter();
     const { openAuthModal } = useAuthModal(); // ✅ Controls auth modal
     const [notes, setNotes] = useState<Note[]>([]);
+    const [filteredNotes, setFilteredNotes] = useState<Note[]>([]); // ✅ Filtered notes state
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -28,6 +29,7 @@ export const useDashboard = () => {
             const response = await fetch("/api/notes");
             const data = await response.json();
             setNotes(data);
+            setFilteredNotes(data); // ✅ Initialize filtered notes
             setSelectedNote(data.length > 0 ? data[0] : null);
         } catch (error) {
             console.error("Failed to fetch notes:", error);
@@ -55,6 +57,23 @@ export const useDashboard = () => {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, [status, session, router]);
+
+    useEffect(() => {
+        setFilteredNotes(notes); // ✅ Keep filteredNotes in sync when notes change
+    }, [notes]);
+
+    // ✅ Handle search filtering
+    const handleSearch = (query: string) => {
+        if (!query.trim()) {
+            setFilteredNotes(notes); // ✅ If query is empty, show all notes
+            return;
+        }
+        const lowerQuery = query.toLowerCase();
+        const filtered = notes.filter(
+            (note) => note.name.toLowerCase().includes(lowerQuery) || note.content.toLowerCase().includes(lowerQuery)
+        );
+        setFilteredNotes(filtered);
+    };
 
     const handleSelectNote = (id: string) => {
         setSelectedNote(notes.find((note) => note.id === id) || null);
@@ -156,6 +175,7 @@ export const useDashboard = () => {
 
     return {
         notes,
+        filteredNotes,
         selectedNote,
         isLargeScreen,
         isDialogOpen,
@@ -167,5 +187,6 @@ export const useDashboard = () => {
         handleCreateNote,
         handleUpdateNote,
         handleDeleteNote,
+        handleSearch, // ✅ Expose handleSearch
     };
 };

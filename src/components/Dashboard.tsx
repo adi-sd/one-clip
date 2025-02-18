@@ -1,21 +1,16 @@
 "use client";
 
-// import { useSession } from "next-auth/react";
-// import { useCallback, useEffect, useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { toast } from "sonner";
-import { ClipLoader } from "react-spinners"; // ✅ React Spinner
+import { ClipLoader } from "react-spinners";
 import NotesContainer from "@/components/NotesContainer";
 import DisplayContainer from "@/components/DisplayContainer";
-// import { Note } from "@/types/note";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ActionContainer from "./ActionContainer";
-// import { useAuthModal } from "@/providers/AuthModalProvider"; // ✅ Auth modal provider
 import { useDashboard } from "@/hooks/useDashboard";
 
 const Dashboard = () => {
     const {
         notes,
+        filteredNotes,
         selectedNote,
         isLargeScreen,
         isDialogOpen,
@@ -26,9 +21,10 @@ const Dashboard = () => {
         handleCreateNote,
         handleUpdateNote,
         handleDeleteNote,
+        handleSearch,
     } = useDashboard();
 
-    if (status === "loading") {
+    if (isLoading) {
         return (
             <div className="w-full h-full flex items-center justify-center">
                 <ClipLoader size={50} color="#22c55e" />
@@ -49,16 +45,18 @@ const Dashboard = () => {
                 <>
                     {/* Notes List - Always visible */}
                     <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
-                        <ActionContainer onCreateNote={handleCreateNote} />
+                        <ActionContainer onCreateNote={handleCreateNote} onSearch={handleSearch} />
                         {isLoading ? (
                             <div className="w-full h-full flex items-center justify-center">
                                 <ClipLoader size={40} color="#22c55e" />
                             </div>
                         ) : notes.length === 0 ? (
-                            <p className="text-center text-gray-500">No notes available. Create a new one!</p>
+                            <p className="text-center text-gray-500">No notes available for the account!</p>
+                        ) : filteredNotes.length === 0 ? (
+                            <p className="text-center text-gray-500">No notes available for the search!</p>
                         ) : (
                             <NotesContainer
-                                notes={notes}
+                                notes={filteredNotes}
                                 onEdit={handleSelectNote}
                                 onDelete={handleDeleteNote}
                                 showEditButton={!isLargeScreen}
