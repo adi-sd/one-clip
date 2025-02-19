@@ -90,7 +90,7 @@ export const useDashboard = () => {
     const handleCreateNote = async () => {
         const newNote = {
             id: crypto.randomUUID(),
-            name: "Untitled Note",
+            name: "New Note",
             content: "",
             listType: "default",
         };
@@ -103,12 +103,17 @@ export const useDashboard = () => {
         }
     };
 
-    const handleUpdateNote = async (updatedNote: Note) => {
+    const handleCreateOrUpdateNote = async (updatedNote: Note) => {
         try {
             const isNewNote = unsavedNote?.id === updatedNote.id;
 
             // ✅ Find the existing note (if any)
             const existingNote = notes.find((note) => note.id === updatedNote.id);
+
+            // Prevent New None Creation without any Content
+            if (isNewNote && unsavedNote.name === "New Note" && unsavedNote.content === "") {
+                return;
+            }
 
             // ✅ Prevent update if content & title haven't changed
             if (
@@ -195,7 +200,7 @@ export const useDashboard = () => {
         setIsDialogOpen,
         handleSelectNote,
         handleCreateNote,
-        handleUpdateNote,
+        handleCreateOrUpdateNote,
         handleDeleteNote,
         handleSearch,
     };
