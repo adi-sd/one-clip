@@ -87,7 +87,7 @@ export const useDashboard = () => {
         }
     };
 
-    const handleCreateNote = async () => {
+    const handleCreateNewEmptyNote = async () => {
         const newNote = {
             id: crypto.randomUUID(),
             name: "New Note",
@@ -107,13 +107,14 @@ export const useDashboard = () => {
         try {
             const isNewNote = unsavedNote?.id === updatedNote.id;
 
-            // ✅ Find the existing note (if any)
-            const existingNote = notes.find((note) => note.id === updatedNote.id);
-
-            // Prevent New None Creation without any Content
-            if (isNewNote && unsavedNote.name === "New Note" && unsavedNote.content === "") {
+            // ✅ Prevent creating a new note if it's empty
+            if (isNewNote && (!updatedNote.name.trim() || !updatedNote.content.trim())) {
+                toast.info("Cannot create an empty note.");
                 return;
             }
+
+            // ✅ Find the existing note (if any)
+            const existingNote = notes.find((note) => note.id === updatedNote.id);
 
             // ✅ Prevent update if content & title haven't changed
             if (
@@ -140,10 +141,11 @@ export const useDashboard = () => {
 
             const savedNote = await response.json();
 
-            setNotes((prevNotes) =>
-                isNewNote
-                    ? [savedNote, ...prevNotes]
-                    : prevNotes.map((note) => (note.id === savedNote.id ? savedNote : note))
+            setNotes(
+                (prevNotes) =>
+                    isNewNote
+                        ? [savedNote, ...prevNotes] // ✅ Add new note at the start
+                        : prevNotes.map((note) => (note.id === savedNote.id ? savedNote : note)) // ✅ Replace existing note
             );
 
             setSelectedNote(savedNote);
@@ -199,7 +201,7 @@ export const useDashboard = () => {
         setSelectedNote,
         setIsDialogOpen,
         handleSelectNote,
-        handleCreateNote,
+        handleCreateNewEmptyNote,
         handleCreateOrUpdateNote,
         handleDeleteNote,
         handleSearch,

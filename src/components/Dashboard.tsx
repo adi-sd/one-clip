@@ -18,7 +18,7 @@ const Dashboard = () => {
         showSignInMessage,
         setIsDialogOpen,
         handleSelectNote,
-        handleCreateNote,
+        handleCreateNewEmptyNote,
         handleCreateOrUpdateNote,
         handleDeleteNote,
         handleSearch,
@@ -47,7 +47,7 @@ const Dashboard = () => {
                     <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
                         <ActionContainer
                             isLargeScreen={isLargeScreen}
-                            onCreateNote={handleCreateNote}
+                            onCreateNote={handleCreateNewEmptyNote}
                             onSearch={handleSearch}
                         />
                         {isLoading ? (

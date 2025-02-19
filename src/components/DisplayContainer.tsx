@@ -78,19 +78,19 @@ const DisplayContainer = ({
         if (!container) return;
 
         const handleFocusIn = () => setIsEditorFocused(true);
-        const handleFocusOut = (event: FocusEvent) => {
-            if (displayContainerRef.current && !displayContainerRef.current.contains(event.relatedTarget as Node)) {
-                setIsEditorFocused(false);
-                handleSave(); // ✅ Auto-save when losing focus
-            }
-        };
+        // const handleFocusOut = (event: FocusEvent) => {
+        //     if (displayContainerRef.current && !displayContainerRef.current.contains(event.relatedTarget as Node)) {
+        //         setIsEditorFocused(false);
+        //         handleSave(); // ✅ Auto-save when losing focus
+        //     }
+        // };
 
         container.addEventListener("focusin", handleFocusIn);
-        container.addEventListener("focusout", handleFocusOut);
+        // container.addEventListener("focusout", handleFocusOut);
 
         return () => {
             container.removeEventListener("focusin", handleFocusIn);
-            container.removeEventListener("focusout", handleFocusOut);
+            // container.removeEventListener("focusout", handleFocusOut);
         };
     }, [handleSave]);
 
