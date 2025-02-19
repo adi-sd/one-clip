@@ -11,7 +11,7 @@ const SignInButton = ({ size }: { size: number }) => {
         >
             <Avatar className="bg-white">
                 <AvatarFallback>
-                    <FaGoogle size={size} className="text-green-500" />
+                    <FaGoogle size={size * 0.8} className="text-green-500" />
                 </AvatarFallback>
             </Avatar>
             <span className="text-lg font-semibold text-white">Sign In</span>

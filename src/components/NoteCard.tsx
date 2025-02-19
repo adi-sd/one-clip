@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { FaPenClip, FaTrash } from "react-icons/fa6";
+import { TiThMenu } from "react-icons/ti";
 import { Note } from "@/types/note";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
@@ -9,14 +10,16 @@ import { useState, useRef, useEffect } from "react";
 
 const NoteCard = ({
     note: initialNote, // ✅ Renaming to prevent conflicts with state
-    onEdit,
+    selectNote,
     onDelete,
     showEditButton,
+    showOptionButton,
 }: {
     note: Note;
-    onEdit: (id: string) => void;
+    selectNote: (id: string) => void;
     onDelete: (id: string) => void;
     showEditButton: boolean;
+    showOptionButton: boolean;
 }) => {
     const [note, setNote] = useState<Note>(initialNote); // ✅ Store note in state
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -27,13 +30,22 @@ const NoteCard = ({
         setNote(initialNote); // ✅ Sync state if the parent updates the note
     }, [initialNote]);
 
+    // ✅ Sanitize HTML for Safe Rendering
+    const sanitizedContent = sanitizeHtml(note.content, {
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "span"]),
+        allowedAttributes: {
+            a: ["href", "name", "target", "rel"],
+            img: ["src", "alt", "title", "width", "height"],
+            span: ["style"],
+        },
+        allowedSchemes: ["http", "https"],
+    });
+
     // ✅ Copy Plain Text (Strips HTML)
-    const handleCopyPlainText = async (text: string) => {
+    const copyPlainText = async (text: string) => {
         try {
             window.focus(); // Attempt to bring the window into focus
             await navigator.clipboard.writeText(text);
-            console.log("Copied to clipboard!");
-            onEdit(note.id);
             toast.success("Copied to Clipboard!");
         } catch (error) {
             console.error("Copy failed:", error);
@@ -41,16 +53,28 @@ const NoteCard = ({
     };
 
     // ✅ Copy Rich Text (Preserves HTML formatting)
-    const handleCopyRichText = () => {
+    const copyRichText = () => {
         navigator.clipboard.writeText(note.content).then(() => {
             toast.success("Copied Formatted Text!");
         });
     };
 
+    // Card Click Handler
+    const handleCardClick = (event: React.MouseEvent) => {
+        event.stopPropagation(); // ✅ Prevent triggering context menu
+        if (showEditButton) {
+            selectNote(note.id);
+        }
+        copyPlainText(new DOMParser().parseFromString(note.content, "text/html").body.textContent || "");
+        console.log("Copied to clipboard!");
+    };
+
     // ✅ Open Context Menu (Fix for incorrect positioning)
     const handleContextMenu = (event: React.MouseEvent) => {
         event.preventDefault();
-        onEdit(note.id);
+        if (showEditButton) {
+            selectNote(note.id);
+        }
 
         if (!cardRef.current) return;
 
@@ -78,27 +102,29 @@ const NoteCard = ({
         window.focus();
     };
 
-    // ✅ Sanitize HTML for Safe Rendering
-    const sanitizedContent = sanitizeHtml(note.content, {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "span"]),
-        allowedAttributes: {
-            a: ["href", "name", "target", "rel"],
-            img: ["src", "alt", "title", "width", "height"],
-            span: ["style"],
-        },
-        allowedSchemes: ["http", "https"],
-    });
+    // ✅ Handle button click (Does NOT trigger card click)
+    const handleButtonClick = (event: React.MouseEvent, action: "edit" | "delete" | "options") => {
+        event.stopPropagation();
+        console.log(`${action} button clicked`);
+        switch (action) {
+            case "edit":
+                selectNote(note.id);
+                break;
+            case "delete":
+                onDelete(note.id);
+                break;
+            case "options":
+                handleContextMenu(event);
+                break;
+        }
+    };
 
     return (
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white shadow-sm md:shadow-md hover:shadow-xl rounded-lg p-4 relative overflow-hidden cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-105 h-[120px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col border-gray-300"
-                    onClick={() =>
-                        handleCopyPlainText(
-                            new DOMParser().parseFromString(note.content, "text/html").body.textContent || ""
-                        )
-                    } // ✅ Left Click → Copy Plain Text
+                    className="bg-white md:hover:scale-105 shadow-sm md:shadow-md rounded-lg p-4 relative overflow-hidden cursor-pointer transform transition-transform duration-200 ease-in-out h-[120px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col border-gray-300"
+                    onClick={handleCardClick} // ✅ Left Click → Copy Plain Text
                     onContextMenu={handleContextMenu} // ✅ Right Click → Open Menu
                 >
                     {/* Header */}
@@ -108,25 +134,35 @@ const NoteCard = ({
                         </span>
                         <div className="flex gap-x-1">
                             {/* Show edit button only when DisplayContainer is hidden */}
-                            {showEditButton && (
+                            {showEditButton ? null : (
                                 <Button
                                     variant={"ghost"}
                                     size={"icon"}
                                     onClick={(e) => {
-                                        e.stopPropagation();
-                                        onEdit(note.id);
+                                        handleButtonClick(e, "edit");
                                     }}
                                     className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
                                 >
                                     <FaPenClip />
                                 </Button>
                             )}
+                            {showOptionButton ? null : (
+                                <Button
+                                    variant={"ghost"}
+                                    size={"icon"}
+                                    onClick={(e) => {
+                                        handleButtonClick(e, "options");
+                                    }}
+                                    className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
+                                >
+                                    <TiThMenu />
+                                </Button>
+                            )}
                             <Button
                                 variant={"ghost"}
                                 size={"icon"}
                                 onClick={(e) => {
-                                    e.stopPropagation();
-                                    onDelete(note.id);
+                                    handleButtonClick(e, "delete");
                                 }}
                                 className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
                             >
@@ -154,17 +190,21 @@ const NoteCard = ({
                 }}
                 ref={contextMenuRef}
             >
+                <DropdownMenuItem onClick={handleCardClick}>Copy</DropdownMenuItem>
+                <DropdownMenuItem onClick={copyRichText}>Copy Formatted</DropdownMenuItem>
                 <DropdownMenuItem
-                    onClick={() =>
-                        handleCopyPlainText(
-                            new DOMParser().parseFromString(note.content, "text/html").body.textContent || ""
-                        )
-                    }
+                    onClick={(e) => {
+                        handleButtonClick(e, "edit");
+                    }}
                 >
-                    Copy
+                    Edit Note
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleCopyRichText}>Copy Formatted</DropdownMenuItem>
-                <DropdownMenuItem className="text-red-500" onClick={() => onDelete(note.id)}>
+                <DropdownMenuItem
+                    className="text-red-500"
+                    onClick={(e) => {
+                        handleButtonClick(e, "delete");
+                    }}
+                >
                     Delete Note
                 </DropdownMenuItem>
             </DropdownMenuContent>

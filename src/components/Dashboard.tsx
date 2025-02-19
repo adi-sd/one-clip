@@ -65,9 +65,10 @@ const Dashboard = () => {
                         ) : (
                             <NotesContainer
                                 notes={filteredNotes}
-                                onEdit={handleSelectNote}
+                                selectNote={handleSelectNote}
                                 onDelete={handleDeleteNote}
                                 showEditButton={isLargeScreen}
+                                showOptionButton={isLargeScreen}
                             />
                         )}
                     </div>
@@ -87,7 +88,7 @@ const Dashboard = () => {
                     {!isLargeScreen && selectedNote && (
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogContent
-                                className="h-[75vh] w-[80vw] p-0 [&>button]:hidden"
+                                className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md"
                                 aria-describedby={undefined}
                             >
                                 <DialogTitle className="hidden">{selectedNote?.name}</DialogTitle>
