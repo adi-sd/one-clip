@@ -34,7 +34,7 @@ const NoteCard = ({
     const sanitizedContent = sanitizeHtml(note.content, {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "span"]),
         allowedAttributes: {
-            a: ["href", "name", "target", "rel"],
+            // a: ["href", "name", "target", "rel"],
             img: ["src", "alt", "title", "width", "height"],
             span: ["style"],
         },
