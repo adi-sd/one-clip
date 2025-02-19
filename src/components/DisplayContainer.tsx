@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Note } from "@/types/note";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -23,10 +23,11 @@ const DisplayContainer = ({
     onDelete: (id: string) => void;
     setIsDialogOpen?: (val: boolean) => void;
 }) => {
+    const displayContainerRef = useRef<HTMLDivElement | null>(null);
     const [content, setContent] = useState("");
     const [title, setTitle] = useState(selectedNote?.name || "");
     const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
-    const [isEditorFocused, setIsEditorFocused] = useState(false); // ✅ Track editor focus
+    const [isEditorFocused, setIsEditorFocused] = useState(false);
 
     // ✅ Initialize TipTap editor
     const editor = useEditor({
@@ -48,11 +49,6 @@ const DisplayContainer = ({
         content: content,
         onUpdate: ({ editor }) => {
             setContent(editor.getHTML());
-        },
-        onFocus: () => setIsEditorFocused(true), // ✅ Track when editor is focused
-        onBlur: () => {
-            setIsEditorFocused(false);
-            handleSave(); // ✅ Auto-save when editor loses focus
         },
         immediatelyRender: false,
     });
@@ -76,7 +72,29 @@ const DisplayContainer = ({
         console.log("Note auto-saved!");
     }, [selectedNote, content, title, onEdit, setIsDialogOpen]);
 
-    // ✅ Handle Cmd + S / Ctrl + S only when editor is focused
+    // ✅ Detect when the display container **loses focus**
+    useEffect(() => {
+        const container = displayContainerRef.current;
+        if (!container) return;
+
+        const handleFocusIn = () => setIsEditorFocused(true);
+        const handleFocusOut = (event: FocusEvent) => {
+            if (displayContainerRef.current && !displayContainerRef.current.contains(event.relatedTarget as Node)) {
+                setIsEditorFocused(false);
+                handleSave(); // ✅ Auto-save when losing focus
+            }
+        };
+
+        container.addEventListener("focusin", handleFocusIn);
+        container.addEventListener("focusout", handleFocusOut);
+
+        return () => {
+            container.removeEventListener("focusin", handleFocusIn);
+            container.removeEventListener("focusout", handleFocusOut);
+        };
+    }, [handleSave]);
+
+    // ✅ Handle Cmd + S / Ctrl + S only when display container is focused
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (isEditorFocused && (event.metaKey || event.ctrlKey) && event.key === "s") {
@@ -91,20 +109,12 @@ const DisplayContainer = ({
         };
     }, [handleSave, isEditorFocused]);
 
-    // ✅ Auto-save when switching tabs or window loses focus
-    useEffect(() => {
-        const handleWindowBlur = () => {
-            handleSave();
-        };
-
-        window.addEventListener("blur", handleWindowBlur);
-        return () => {
-            window.removeEventListener("blur", handleWindowBlur);
-        };
-    }, [handleSave]);
-
     return (
-        <div className="p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2">
+        <div
+            className="p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2"
+            ref={displayContainerRef}
+            tabIndex={0}
+        >
             {/* Title & Delete Button */}
             <div className="flex items-start justify-between mb-3">
                 <TitleEditor title={title} setTitle={setTitle} />

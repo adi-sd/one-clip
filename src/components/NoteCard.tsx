@@ -136,7 +136,6 @@ const NoteCard = ({
                             </Button>
                         </div>
                     </div>
-
                     {/* ✅ Render Sanitized HTML Content (Preserves Formatting) */}
                     <div
                         ref={cardRef}

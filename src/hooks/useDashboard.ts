@@ -56,6 +56,7 @@ export const useDashboard = () => {
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, session, router]);
 
     useEffect(() => {
@@ -156,20 +157,25 @@ export const useDashboard = () => {
                 return;
             }
 
-            const response = await fetch("/api/notes", {
+            const response = await fetch(`/api/notes/${id}`, {
+                // ✅ Correct API endpoint
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id }),
             });
 
             if (!response.ok) throw new Error("Failed to delete note");
 
             setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
-            setSelectedNote(notes.length > 1 ? notes[1] : null);
+
+            // ✅ Ensure selected note updates correctly after deletion
+            setSelectedNote((prevSelected) =>
+                prevSelected?.id === id ? (notes.length > 1 ? notes[1] : null) : prevSelected
+            );
 
             toast.error("Note deleted!");
         } catch (error) {
             console.error("Error deleting note:", error);
+            toast.error("Failed to delete note.");
         }
     };
 
@@ -187,6 +193,6 @@ export const useDashboard = () => {
         handleCreateNote,
         handleUpdateNote,
         handleDeleteNote,
-        handleSearch, // ✅ Expose handleSearch
+        handleSearch,
     };
 };

@@ -26,9 +26,9 @@ export default function ActionContainer({
     };
 
     return (
-        <div className="w-full h-[80px] rounded-lg shadow-md bg-white px-4 py-3 flex gap-x-4">
+        <div className="w-full h-[80px] rounded-lg shadow-md bg-white px-4 py-4 flex gap-x-4 text-lg">
             {/* Search Bar */}
-            <div className="h-full w-fit flex rounded-lg focus:ring-2 focus-visible:ring-2 focus-within:ring-2 ring-gray-400">
+            <div className="h-full w-fit flex rounded-full focus:ring-2 focus-visible:ring-2 focus-within:ring-2 ring-gray-400">
                 <Input
                     type="text"
                     name="search"
@@ -36,12 +36,12 @@ export default function ActionContainer({
                     value={searchQuery}
                     onChange={handleSearchChange}
                     placeholder="Search notes..."
-                    className="h-full w-[20rem] rounded-r-none focus:ring-0 focus-visible:ring-0 focus-within:ring-0"
+                    className="h-full w-[25rem] rounded-full rounded-r-none focus:ring-0 focus-visible:ring-0 focus-within:ring-0 text-lg font-semibold placeholder:text-lg flex justify-center items-center pl-6"
+                    style={{ fontSize: "1.125rem" }}
                 />
-
                 <Button
                     variant={"outline"}
-                    className="h-full border-l-0 rounded-l-none flex items-center justify-center"
+                    className="h-full border-l-0 rounded-full rounded-l-none flex items-center justify-center"
                     onClick={searchQuery ? handleClearSearch : undefined} // ✅ Clears search when cross is clicked
                 >
                     {searchQuery ? (
