@@ -34,7 +34,7 @@ export default function RootLayout({
                         <ToasterProvider />
                         <div className="h-full w-full overflow-hidden">
                             <Navbar />
-                            <main className="h-[calc(100%-5rem)] w-full p-8 bg-gray-50">{children}</main>
+                            <main className="h-[calc(100%-5rem)] w-full p-3 md:p-8 bg-gray-50">{children}</main>
                         </div>
                     </AuthModalProvider>
                 </AuthProvider>

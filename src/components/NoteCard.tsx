@@ -93,9 +93,7 @@ const NoteCard = ({
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white shadow-md hover:shadow-xl rounded-lg p-4 relative overflow-hidden cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-105 
-                    h-[120px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full 
-                    flex flex-col"
+                    className="bg-white shadow-sm md:shadow-md hover:shadow-xl rounded-lg p-4 relative overflow-hidden cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-105 h-[120px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col border-gray-300"
                     onClick={() =>
                         handleCopyPlainText(
                             new DOMParser().parseFromString(note.content, "text/html").body.textContent || ""
@@ -105,7 +103,7 @@ const NoteCard = ({
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between">
-                        <span className="font-semibold overflow-hidden text-nowrap text-ellipsis mr-2 text-normal md:text-lg">
+                        <span className="font-semibold overflow-hidden text-nowrap text-ellipsis mr-2 text-small md:text-lg">
                             {note.name}
                         </span>
                         <div className="flex gap-x-1">
@@ -139,7 +137,7 @@ const NoteCard = ({
                     {/* ✅ Render Sanitized HTML Content (Preserves Formatting) */}
                     <div
                         ref={cardRef}
-                        className="flex-1 text-normal md:text-lg font-medium mt-4 overflow-hidden text-ellipsis break-words line-clamp-3"
+                        className="flex-1 text-small md:text-lg font-medium mt-1 md:mt-4 overflow-hidden text-ellipsis break-words line-clamp-2 md:line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                     />
                 </Card>

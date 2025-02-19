@@ -12,8 +12,8 @@ export const useDashboard = () => {
     const [notes, setNotes] = useState<Note[]>([]);
     const [filteredNotes, setFilteredNotes] = useState<Note[]>([]); // ✅ Filtered notes state
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-    const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [unsavedNote, setUnsavedNote] = useState<Note | null>(null);
     const [isLoading, setIsLoading] = useState(true); // ✅ Loading state
     const [showSignInMessage, setShowSignInMessage] = useState(false); // ✅ Controls sign-in prompt
@@ -39,23 +39,27 @@ export const useDashboard = () => {
     };
 
     useEffect(() => {
+        const handleResize = () => {
+            const isLarge = window.innerWidth >= 1024; // lg breakpoint
+            setIsLargeScreen(isLarge);
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
         if (status === "unauthenticated") {
             handleOpenAuthModal(); // ✅ Open Auth Modal when not signed in
+            setIsLoading(false);
             setShowSignInMessage(true); // ✅ Show sign-in message
         } else if (status === "authenticated" && session) {
             setShowSignInMessage(false); // ✅ Hide sign-in message
             fetchNotes();
         }
-
-        const handleResize = () => {
-            const isLarge = window.innerWidth >= 1024; // lg breakpoint
-            setIsLargeScreen(isLarge);
-            if (isLarge) setIsDialogOpen(false);
-        };
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        if (isLargeScreen) {
+            setIsDialogOpen(false);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, session, router]);
 

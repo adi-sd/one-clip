@@ -13,7 +13,7 @@ const NotesContainer = ({
     showEditButton: boolean;
 }) => {
     return (
-        <div className="w-full pb-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-y-scroll scrollbar-hide">
+        <div className="w-full pb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 overflow-y-scroll scrollbar-hide">
             {notes.length === 0 ? (
                 <p>No notes available. Start by adding a new note!</p>
             ) : (

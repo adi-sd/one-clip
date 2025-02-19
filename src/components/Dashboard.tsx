@@ -33,7 +33,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="w-full h-full flex flex-col lg:flex-row gap-6">
+        <div className="w-full h-full flex flex-col lg:flex-row gap-2 md:gap-6">
             {/* Show sign-in message if user closes auth modal */}
             {showSignInMessage && (
                 <div className="w-full h-full flex items-center justify-center text-gray-500">
@@ -45,21 +45,29 @@ const Dashboard = () => {
                 <>
                     {/* Notes List - Always visible */}
                     <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
-                        <ActionContainer onCreateNote={handleCreateNote} onSearch={handleSearch} />
+                        <ActionContainer
+                            isLargeScreen={isLargeScreen}
+                            onCreateNote={handleCreateNote}
+                            onSearch={handleSearch}
+                        />
                         {isLoading ? (
-                            <div className="w-full h-full flex items-center justify-center">
+                            <div className="w-full h-full flex items-center justify-center text-gray-500">
                                 <ClipLoader size={40} color="#22c55e" />
                             </div>
                         ) : notes.length === 0 ? (
-                            <p className="text-center text-gray-500">No notes available for the account!</p>
+                            <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                No notes available for the account!
+                            </div>
                         ) : filteredNotes.length === 0 ? (
-                            <p className="text-center text-gray-500">No notes available for the search!</p>
+                            <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                No matches for the search!
+                            </div>
                         ) : (
                             <NotesContainer
                                 notes={filteredNotes}
                                 onEdit={handleSelectNote}
                                 onDelete={handleDeleteNote}
-                                showEditButton={!isLargeScreen}
+                                showEditButton={isLargeScreen}
                             />
                         )}
                     </div>
