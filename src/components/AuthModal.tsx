@@ -10,7 +10,7 @@ const AuthModal = ({ onClose }: { onClose?: () => void }) => {
 
     return (
         <Dialog open={!session} onOpenChange={(isOpen) => !isOpen && onClose?.()}>
-            <DialogContent className="w-full flex flex-col items-center justify-center max-w-sm text-center p-6 space-y-4">
+            <DialogContent className="w-full flex flex-col items-center justify-center max-w-sm text-center p-6 space-y-4 rounded-md">
                 <DialogHeader className="w-full space-y-3 flex items-center justify-center">
                     <Logo size={50} className="mb-4" />
                     <div className="w-full h-[3px] rounded-lg bg-gray-200 mb-6"></div>
