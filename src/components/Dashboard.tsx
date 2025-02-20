@@ -26,7 +26,7 @@ const Dashboard = () => {
 
     if (isLoading) {
         return (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center overflow-hidden">
                 <ClipLoader size={50} color="#22c55e" />
             </div>
         );
@@ -36,13 +36,13 @@ const Dashboard = () => {
         <div className="w-full h-full flex flex-col lg:flex-row gap-2 md:gap-6 overflow-hidden">
             {/* Show sign-in message if user closes auth modal */}
             {showSignInMessage && (
-                <div className="w-full h-full flex items-center justify-center text-gray-500">
+                <div className="w-full h-full flex items-center justify-center text-gray-500 overflow-hidden">
                     Please sign in to view your notes.
                 </div>
             )}
 
             {!showSignInMessage && (
-                <>
+                <div className="w-full h-full flex items-center justify-center overflow-hidden">
                     {/* Notes List - Always visible */}
                     <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
                         <ActionContainer
@@ -92,16 +92,18 @@ const Dashboard = () => {
                                 aria-describedby={undefined}
                             >
                                 <DialogTitle className="hidden">{selectedNote?.name}</DialogTitle>
-                                <DisplayContainer
-                                    selectedNote={selectedNote}
-                                    onEdit={handleUpdateNote}
-                                    onDelete={handleDeleteNote}
-                                    setIsDialogOpen={setIsDialogOpen}
-                                />
+                                <div className="w-full h-full overflow-hidden">
+                                    <DisplayContainer
+                                        selectedNote={selectedNote}
+                                        onEdit={handleUpdateNote}
+                                        onDelete={handleDeleteNote}
+                                        setIsDialogOpen={setIsDialogOpen}
+                                    />
+                                </div>
                             </DialogContent>
                         </Dialog>
                     )}
-                </>
+                </div>
             )}
         </div>
     );

@@ -134,7 +134,7 @@ const DisplayContainer = ({
 
             {/* Rich Text Editor */}
             <div className="w-full h-full border border-gray-300 rounded-lg p-2 shadow-inner focus:ring-2 focus:ring-green-500 flex flex-col overflow-hidden">
-                <EditorContent editor={editor} className="flex-1 overflow-auto" />
+                <EditorContent editor={editor} className="flex-1 overflow-y-auto" />
             </div>
 
             {/* Save Button */}
