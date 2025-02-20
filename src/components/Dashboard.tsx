@@ -33,7 +33,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="w-full h-full flex flex-col lg:flex-row gap-2 md:gap-6">
+        <div className="w-full h-full flex flex-col lg:flex-row gap-2 md:gap-6 overflow-hidden">
             {/* Show sign-in message if user closes auth modal */}
             {showSignInMessage && (
                 <div className="w-full h-full flex items-center justify-center text-gray-500">
