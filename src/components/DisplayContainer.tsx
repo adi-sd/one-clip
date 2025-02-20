@@ -112,7 +112,7 @@ const DisplayContainer = ({
 
     return (
         <div
-            className="p-4 md:p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2 h-max-[90%]"
+            className="p-4 md:p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2 overflow-hidden"
             ref={displayContainerRef}
             tabIndex={0}
         >

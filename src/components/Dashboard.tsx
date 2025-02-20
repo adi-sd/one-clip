@@ -88,7 +88,7 @@ const Dashboard = () => {
                     {!isLargeScreen && selectedNote && (
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogContent
-                                className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md"
+                                className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md overflow-hidden"
                                 aria-describedby={undefined}
                             >
                                 <DialogTitle className="hidden">{selectedNote?.name}</DialogTitle>
