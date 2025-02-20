@@ -28,6 +28,7 @@ const DisplayContainer = ({
     const [title, setTitle] = useState(selectedNote?.name || "");
     const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
     const [isEditorFocused, setIsEditorFocused] = useState(false);
+    // const isNewNode = selectedNote?.name === "New Note";
 
     // ✅ Initialize TipTap editor
     const editor = useEditor({
@@ -78,19 +79,19 @@ const DisplayContainer = ({
         if (!container) return;
 
         const handleFocusIn = () => setIsEditorFocused(true);
-        // const handleFocusOut = (event: FocusEvent) => {
-        //     if (displayContainerRef.current && !displayContainerRef.current.contains(event.relatedTarget as Node)) {
-        //         setIsEditorFocused(false);
-        //         handleSave(); // ✅ Auto-save when losing focus
-        //     }
-        // };
+        const handleFocusOut = (event: FocusEvent) => {
+            if (displayContainerRef.current && !displayContainerRef.current.contains(event.relatedTarget as Node)) {
+                setIsEditorFocused(false);
+                handleSave(); // ✅ Auto-save when losing focus
+            }
+        };
 
         container.addEventListener("focusin", handleFocusIn);
-        // container.addEventListener("focusout", handleFocusOut);
+        container.addEventListener("focusout", handleFocusOut);
 
         return () => {
             container.removeEventListener("focusin", handleFocusIn);
-            // container.removeEventListener("focusout", handleFocusOut);
+            container.removeEventListener("focusout", handleFocusOut);
         };
     }, [handleSave]);
 
@@ -111,7 +112,7 @@ const DisplayContainer = ({
 
     return (
         <div
-            className="p-4 md:p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2"
+            className="p-4 md:p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2 h-max-[90%]"
             ref={displayContainerRef}
             tabIndex={0}
         >
@@ -132,7 +133,7 @@ const DisplayContainer = ({
             <Toolbar editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
 
             {/* Rich Text Editor */}
-            <div className="w-full h-full border border-gray-300 rounded-lg p-2 shadow-inner focus:ring-2 focus:ring-green-500 flex flex-col">
+            <div className="w-full h-full border border-gray-300 rounded-lg p-2 shadow-inner focus:ring-2 focus:ring-green-500 flex flex-col overflow-hidden">
                 <EditorContent editor={editor} className="flex-1 overflow-auto" />
             </div>
 

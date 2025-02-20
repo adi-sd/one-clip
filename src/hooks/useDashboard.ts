@@ -103,13 +103,13 @@ export const useDashboard = () => {
         }
     };
 
-    const handleCreateOrUpdateNote = async (updatedNote: Note) => {
+    const handleUpdateNote = async (updatedNote: Note) => {
         try {
             const isNewNote = unsavedNote?.id === updatedNote.id;
 
             // ✅ Prevent creating a new note if it's empty
-            if (isNewNote && (!updatedNote.name.trim() || !updatedNote.content.trim())) {
-                toast.info("Cannot create an empty note.");
+            if (isNewNote && !updatedNote.name.trim()) {
+                toast.info("Cannot create a note with empty name!");
                 return;
             }
 
@@ -202,7 +202,7 @@ export const useDashboard = () => {
         setIsDialogOpen,
         handleSelectNote,
         handleCreateNewEmptyNote,
-        handleCreateOrUpdateNote,
+        handleUpdateNote,
         handleDeleteNote,
         handleSearch,
     };
