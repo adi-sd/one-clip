@@ -42,7 +42,7 @@ const Dashboard = () => {
             )}
 
             {!showSignInMessage && (
-                <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                <div className="w-full h-full gap-x-4 flex items-center justify-center overflow-hidden">
                     {/* Notes List - Always visible */}
                     <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
                         <ActionContainer
@@ -75,7 +75,7 @@ const Dashboard = () => {
 
                     {/* Display Container - Only visible on lg/xl */}
                     {isLargeScreen && selectedNote && (
-                        <div className="w-2/6 h-full">
+                        <div className="w-2/6 h-full pb-1">
                             <DisplayContainer
                                 selectedNote={selectedNote}
                                 onEdit={handleUpdateNote}

@@ -20,7 +20,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className="h-[5rem] w-full bg-white shadow-sm md:shadow-md py-4 px-8 flex items-center justify-between">
+        <nav className="h-[5rem] w-full bg-white shadow-sm md:shadow-md py-4 px-4 md:px-8 flex items-center justify-between">
             <Logo size={logoSize} />
             {session?.user ? <UserButton user={session.user} size={logoSize} /> : <SignInButton size={logoSize} />}
         </nav>

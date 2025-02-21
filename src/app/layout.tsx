@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import AuthProvider from "@/providers/AuthProvider";
 import { AuthModalProvider } from "@/providers/AuthModalProvider";
 import { ToasterProvider } from "@/providers/ToasterProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const interFont = Inter({
     variable: "--font-geist-sans",
@@ -32,12 +33,12 @@ export default function RootLayout({
                 <AuthProvider>
                     <AuthModalProvider>
                         <ToasterProvider />
-                        <div className="h-full w-full overflow-hidden">
-                            <Navbar />
-                            <main className="h-[calc(100%-5rem)] w-full p-3 md:p-8 bg-gray-50">
-                                {children}
-                            </main>
-                        </div>
+                        <TooltipProvider>
+                            <div className="h-full w-full overflow-hidden">
+                                <Navbar />
+                                <main className="h-[calc(100%-5rem)] w-full p-3 md:p-8 bg-gray-50">{children}</main>
+                            </div>
+                        </TooltipProvider>
                     </AuthModalProvider>
                 </AuthProvider>
             </body>

@@ -4,7 +4,7 @@ const TitleEditor = ({ title, setTitle }: { title: string; setTitle: (title: str
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-xl font-semibold bg-transparent border-none focus:ring-0 focus:outline-none focus:bg-transparent"
+            className="h-full w-full text-xl font-semibold bg-transparent border-none focus:ring-0 focus:outline-none focus:bg-transparent"
         />
     );
 };

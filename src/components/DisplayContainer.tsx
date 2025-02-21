@@ -11,6 +11,7 @@ import Toolbar from "./Toolbar";
 import LinkDialog from "./LinkDialog";
 import TitleEditor from "./TitleEditor";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const DisplayContainer = ({
     selectedNote,
@@ -18,7 +19,7 @@ const DisplayContainer = ({
     onDelete,
     setIsDialogOpen,
 }: {
-    selectedNote: Note | null;
+    selectedNote: Note;
     onEdit: (updatedNote: Note) => void;
     onDelete: (id: string) => void;
     setIsDialogOpen?: (val: boolean) => void;
@@ -81,8 +82,8 @@ const DisplayContainer = ({
         const handleFocusIn = () => setIsEditorFocused(true);
         const handleFocusOut = (event: FocusEvent) => {
             if (displayContainerRef.current && !displayContainerRef.current.contains(event.relatedTarget as Node)) {
-                setIsEditorFocused(false);
                 handleSave(); // ✅ Auto-save when losing focus
+                setIsEditorFocused(false);
             }
         };
 
@@ -130,7 +131,7 @@ const DisplayContainer = ({
             </div>
 
             {/* Toolbar for formatting */}
-            <Toolbar editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
+            <Toolbar note={selectedNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
 
             {/* Rich Text Editor */}
             <div className="w-full h-full border border-gray-300 rounded-lg p-2 shadow-inner focus:ring-2 focus:ring-green-500 flex flex-col overflow-hidden">
@@ -138,13 +139,20 @@ const DisplayContainer = ({
             </div>
 
             {/* Save Button */}
-            <Button
-                variant={"default"}
-                className="w-fit bg-green-500 rounded-full [&_svg]:size-6 py-3 px-4 ml-auto mt-2"
-                onClick={handleSave}
-            >
-                <span className="text-lg font-semibold">Save</span>
-            </Button>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant={"default"}
+                        className="w-fit bg-green-500 rounded-full [&_svg]:size-6 py-3 px-4 ml-auto mt-2"
+                        onClick={handleSave}
+                    >
+                        <span className="text-lg font-semibold">Save</span>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent align="center">
+                    <p>Ctrl + S or Cmd + S</p>
+                </TooltipContent>
+            </Tooltip>
 
             {/* Link Dialog */}
             <LinkDialog isOpen={isLinkDialogOpen} setIsOpen={setIsLinkDialogOpen} editor={editor} />

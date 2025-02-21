@@ -17,7 +17,7 @@ const UserButton = ({ user, size = 32 }: { user: DefaultUser; size: number }) =>
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 bg-gray-100 px-2 py-2 rounded-full shadow-sm hover:bg-gray-200">
+                <button className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full shadow-sm hover:bg-gray-200">
                     <Avatar>
                         <AvatarImage src={user.image || "/default-avatar.png"} height={avatarSize} width={avatarSize} />
                         <AvatarFallback style={{ fontSize: `${textSize}px` }}>
