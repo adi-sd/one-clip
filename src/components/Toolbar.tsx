@@ -7,11 +7,11 @@ import { copyPlainText, copyRichText } from "@/lib/editorUtils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Toolbar = ({
-    note,
+    currentNote,
     editor,
     openLinkDialog,
 }: {
-    note: Note;
+    currentNote: Note;
     editor: Editor | null;
     openLinkDialog: () => void;
 }) => {
@@ -107,7 +107,7 @@ const Toolbar = ({
             <Tooltip>
                 <TooltipTrigger asChild>
                     <button
-                        onClick={() => copyPlainText(note.content)}
+                        onClick={() => copyPlainText(currentNote.content)}
                         className="p-2 border border-gray-400 rounded"
                     >
                         <MdOutlineContentCopy />
@@ -121,7 +121,10 @@ const Toolbar = ({
             {/* Copy Unformatted Text */}
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <button onClick={() => copyRichText(note.content)} className="p-2 border border-gray-400 rounded">
+                    <button
+                        onClick={() => copyRichText(currentNote.content)}
+                        className="p-2 border border-gray-400 rounded"
+                    >
                         <MdOutlineFileCopy />
                     </button>
                 </TooltipTrigger>

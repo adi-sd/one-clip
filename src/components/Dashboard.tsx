@@ -11,7 +11,7 @@ const Dashboard = () => {
     const {
         notes,
         filteredNotes,
-        selectedNote,
+        currentNote,
         isLargeScreen,
         isDialogOpen,
         isLoading,
@@ -74,10 +74,10 @@ const Dashboard = () => {
                     </div>
 
                     {/* Display Container - Only visible on lg/xl */}
-                    {isLargeScreen && selectedNote && (
+                    {isLargeScreen && currentNote && (
                         <div className="w-2/6 h-full pb-1">
                             <DisplayContainer
-                                selectedNote={selectedNote}
+                                currentNote={currentNote}
                                 onEdit={handleUpdateNote}
                                 onDelete={handleDeleteNote}
                             />
@@ -85,16 +85,16 @@ const Dashboard = () => {
                     )}
 
                     {/* Mobile Edit Dialog */}
-                    {!isLargeScreen && selectedNote && (
+                    {!isLargeScreen && currentNote && (
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogContent
                                 className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md overflow-hidden"
                                 aria-describedby={undefined}
                             >
-                                <DialogTitle className="hidden">{selectedNote?.name}</DialogTitle>
+                                <DialogTitle className="hidden">{currentNote?.name}</DialogTitle>
                                 <div className="w-full h-full overflow-hidden">
                                     <DisplayContainer
-                                        selectedNote={selectedNote}
+                                        currentNote={currentNote}
                                         onEdit={handleUpdateNote}
                                         onDelete={handleDeleteNote}
                                         setIsDialogOpen={setIsDialogOpen}

@@ -14,22 +14,21 @@ import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const DisplayContainer = ({
-    selectedNote,
+    currentNote,
     onEdit,
     onDelete,
     setIsDialogOpen,
 }: {
-    selectedNote: Note;
+    currentNote: Note;
     onEdit: (updatedNote: Note) => void;
     onDelete: (id: string) => void;
     setIsDialogOpen?: (val: boolean) => void;
 }) => {
     const displayContainerRef = useRef<HTMLDivElement | null>(null);
     const [content, setContent] = useState("");
-    const [title, setTitle] = useState(selectedNote?.name || "");
+    const [title, setTitle] = useState(currentNote?.name || "");
     const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
     const [isEditorFocused, setIsEditorFocused] = useState(false);
-    // const isNewNode = selectedNote?.name === "New Note";
 
     // ✅ Initialize TipTap editor
     const editor = useEditor({
@@ -56,23 +55,23 @@ const DisplayContainer = ({
     });
 
     useEffect(() => {
-        setContent(selectedNote?.content || "");
-        setTitle(selectedNote?.name || "");
-        if (editor && selectedNote) {
-            editor.commands.setContent(selectedNote.content);
+        setContent(currentNote?.content || "");
+        setTitle(currentNote?.name || "");
+        if (editor && currentNote) {
+            editor.commands.setContent(currentNote.content);
         }
-    }, [editor, selectedNote]);
+    }, [editor, currentNote]);
 
     // ✅ Save note function
     const handleSave = useCallback(() => {
-        if (selectedNote) {
-            onEdit({ ...selectedNote, content, name: title });
+        if (currentNote) {
+            onEdit({ ...currentNote, content, name: title });
         }
         if (setIsDialogOpen) {
             setIsDialogOpen(false);
         }
         console.log("Note auto-saved!");
-    }, [selectedNote, content, title, onEdit, setIsDialogOpen]);
+    }, [currentNote, content, title, onEdit, setIsDialogOpen]);
 
     // ✅ Detect when the display container **loses focus**
     useEffect(() => {
@@ -123,7 +122,7 @@ const DisplayContainer = ({
                 <Button
                     variant={"ghost"}
                     size={"icon"}
-                    onClick={() => onDelete(selectedNote?.id || "")}
+                    onClick={() => onDelete(currentNote?.id || "")}
                     className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
                 >
                     <FaTrash />
@@ -131,14 +130,11 @@ const DisplayContainer = ({
             </div>
 
             {/* Toolbar for formatting */}
-            <Toolbar note={selectedNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
+            <Toolbar currentNote={currentNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
 
             {/* Rich Text Editor */}
             <div className="w-full h-full border border-gray-300 rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden">
-                <EditorContent
-                    editor={editor}
-                    className="flex-1 overflow-y-auto scrollbar-minimal"
-                />
+                <EditorContent editor={editor} className="flex-1 overflow-y-auto scrollbar-minimal" />
             </div>
 
             {/* Save Button */}

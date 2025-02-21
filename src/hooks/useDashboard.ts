@@ -11,7 +11,7 @@ export const useDashboard = () => {
     const { openAuthModal } = useAuthModal(); // ✅ Controls auth modal
     const [notes, setNotes] = useState<Note[]>([]);
     const [filteredNotes, setFilteredNotes] = useState<Note[]>([]); // ✅ Filtered notes state
-    const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+    const [currentNote, setCurrentNote] = useState<Note | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [unsavedNote, setUnsavedNote] = useState<Note | null>(null);
@@ -30,7 +30,7 @@ export const useDashboard = () => {
             const data = await response.json();
             setNotes(data);
             setFilteredNotes(data); // ✅ Initialize filtered notes
-            setSelectedNote(data.length > 0 ? data[0] : null);
+            setCurrentNote(data.length > 0 ? data[0] : null);
         } catch (error) {
             console.error("Failed to fetch notes:", error);
         } finally {
@@ -81,7 +81,7 @@ export const useDashboard = () => {
     };
 
     const handleSelectNote = (id: string) => {
-        setSelectedNote(notes.find((note) => note.id === id) || null);
+        setCurrentNote(notes.find((note) => note.id === id) || null);
         if (!isLargeScreen) {
             setIsDialogOpen(true);
         }
@@ -96,7 +96,7 @@ export const useDashboard = () => {
         };
 
         setUnsavedNote(newNote as Note);
-        setSelectedNote(newNote as Note);
+        setCurrentNote(newNote as Note);
 
         if (!isLargeScreen) {
             setIsDialogOpen(true);
@@ -148,7 +148,7 @@ export const useDashboard = () => {
                         : prevNotes.map((note) => (note.id === savedNote.id ? savedNote : note)) // ✅ Replace existing note
             );
 
-            setSelectedNote(savedNote);
+            setCurrentNote(savedNote);
             setUnsavedNote(null);
 
             toast.success(isNewNote ? "New Note Created!" : "Note Updated!");
@@ -164,7 +164,7 @@ export const useDashboard = () => {
 
             if (isUnsaved) {
                 setUnsavedNote(null);
-                setSelectedNote(notes.length > 0 ? notes[0] : null);
+                setCurrentNote(notes.length > 0 ? notes[0] : null);
                 return;
             }
 
@@ -179,7 +179,7 @@ export const useDashboard = () => {
             setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
 
             // ✅ Ensure selected note updates correctly after deletion
-            setSelectedNote((prevSelected) =>
+            setCurrentNote((prevSelected) =>
                 prevSelected?.id === id ? (notes.length > 1 ? notes[1] : null) : prevSelected
             );
 
@@ -193,12 +193,12 @@ export const useDashboard = () => {
     return {
         notes,
         filteredNotes,
-        selectedNote,
+        currentNote,
         isLargeScreen,
         isDialogOpen,
         isLoading,
         showSignInMessage,
-        setSelectedNote,
+        setCurrentNote,
         setIsDialogOpen,
         handleSelectNote,
         handleCreateNewEmptyNote,
