@@ -84,13 +84,35 @@ body {
     scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 
+.scrollbar-minimal {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: lightgray transparent; /* Firefox */
+}
 
+/* Webkit-based browsers (Chrome, Safari) */
+.scrollbar-minimal::-webkit-scrollbar {
+    width: 2px;
+}
+
+.scrollbar-minimal::-webkit-scrollbar-track {
+    background: transparent; /* Optional: Keeps the track invisible */
+}
+
+.scrollbar-minimal::-webkit-scrollbar-thumb {
+    background: lightgray;
+    border-radius: 2px;
+}
+
+.ProseMirror:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+    body {
+        @apply bg-background text-foreground;
     }
 }

@@ -134,8 +134,11 @@ const DisplayContainer = ({
             <Toolbar note={selectedNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
 
             {/* Rich Text Editor */}
-            <div className="w-full h-full border border-gray-300 rounded-lg p-2 shadow-inner focus:ring-2 focus:ring-green-500 flex flex-col overflow-hidden">
-                <EditorContent editor={editor} className="flex-1 overflow-y-auto" />
+            <div className="w-full h-full border border-gray-300 rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden">
+                <EditorContent
+                    editor={editor}
+                    className="flex-1 overflow-y-auto scrollbar-minimal"
+                />
             </div>
 
             {/* Save Button */}
