@@ -1,9 +1,34 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { FaSearch, FaTimes } from "react-icons/fa";
-import { IoMdAddCircle } from "react-icons/io";
+import { FaSearch, FaTimes, FaFilter } from "react-icons/fa";
+import { IoMdAddCircle, IoMdDoneAll } from "react-icons/io";
+import { IoTrashBinOutline } from "react-icons/io5";
 import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Divide } from "lucide-react";
+
+const NoteTypes: {
+    name: string;
+    value: string;
+    icon: ReactNode;
+}[] = [
+    {
+        name: "Note Types",
+        value: "placeholder",
+        icon: <FaFilter className="text-gray-500"></FaFilter>,
+    },
+    {
+        name: "All Notes",
+        value: "all",
+        icon: <IoMdDoneAll className="text-gray-500"></IoMdDoneAll>,
+    },
+    {
+        name: "Deleted",
+        value: "deleted",
+        icon: <IoTrashBinOutline className="text-gray-500"></IoTrashBinOutline>,
+    },
+];
 
 export default function ActionContainer({
     isLargeScreen,
@@ -52,11 +77,37 @@ export default function ActionContainer({
                 </Button>
             </div>
 
+            {/* Filter By Note Type - Desktop*/}
+            <Select>
+                <SelectTrigger className="h-full w-[150px] flex rounded-full focus:ring-2 focus-visible:ring-2 focus-within:ring-2 focus:ring-gray-400 focus-visible:ring-gray-400  focus-within:ring-gray-400 border-l-0">
+                    <SelectValue
+                        placeholder={
+                            <div className="p-2 flex items-center gap-x-3">
+                                <FaFilter className="text-gray-500" />
+                                <span>Note Type</span>
+                            </div>
+                        }
+                    />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        {NoteTypes.filter((noteType) => noteType.value !== "placeholder").map((noteType) => (
+                            <SelectItem key={noteType.value} value={noteType.value}>
+                                <div className="p-2 flex items-center gap-x-3">
+                                    {noteType.icon}
+                                    <span>{noteType.name}</span>
+                                </div>
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+
             {/* Create Note Button */}
             <Button
                 onClick={onCreateNote}
                 variant={"default"}
-                className="h-full w-fit bg-green-500 rounded-full [&_svg]:size-6 px-2 md:py-2 md:px-3 ml-auto"
+                className="h-full w-fit bg-green-500 rounded-full [&_svg]:size-6 px-3 md:py-2 md:px-3 ml-auto"
             >
                 <div className="flex items-center gap-x-2">
                     <IoMdAddCircle />
