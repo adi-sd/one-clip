@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DefaultUser } from "next-auth";
 
-const UserButton = ({ user, size = 32 }: { user: DefaultUser; size: number }) => {
+const UserProfileButton = ({ user, size = 32 }: { user: DefaultUser; size: number }) => {
     const textSize = Math.round(size * 0.6); // Adjust text size relative to size
     const avatarSize = size; // Avatar size matches passed size
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full shadow-sm hover:bg-gray-200">
+                <button className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full shadow-sm hover:bg-gray-200 border border-gray-300">
                     <Avatar>
                         <AvatarImage src={user.image || "/default-avatar.png"} height={avatarSize} width={avatarSize} />
                         <AvatarFallback style={{ fontSize: `${textSize}px` }}>
@@ -41,4 +41,4 @@ const UserButton = ({ user, size = 32 }: { user: DefaultUser; size: number }) =>
     );
 };
 
-export default UserButton;
+export default UserProfileButton;

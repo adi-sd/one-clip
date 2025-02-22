@@ -114,7 +114,7 @@ const NoteCard = ({
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col gap-y-2 border-gray-300"
+                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col gap-y-3 border-gray-300"
                     ref={cardRef}
                     onClick={handleCardClick} // ✅ Left Click → Copy Plain Text
                     onContextMenu={handleContextMenu} // ✅ Right Click → Open Menu
@@ -123,14 +123,14 @@ const NoteCard = ({
                     <div className="flex flex-row items-center justify-between w-full h-fit">
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <div className="flex items-center gap-x-1 text-[12px] text-gray-300 font-bold font-mono mr-2 text-nowrap overflow-hidden min-w-0">
+                                <div className="flex items-center gap-x-1 text-[12px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
                                     <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
                                         {note.name} • {formatDate(note.createdAt)}
                                     </p>
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent align="center">
-                                <p className="whitespace-nowrap font-mono">
+                                <p className="whitespace-nowrap">
                                     {note.name} • {formatDate(note.createdAt)}
                                 </p>
                             </TooltipContent>
@@ -143,7 +143,7 @@ const NoteCard = ({
                                     onClick={(e) => {
                                         handleButtonClick(e, "edit");
                                     }}
-                                    className=" text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-300 rounded-sm"
+                                    className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
                                 >
                                     <FaPenClip size={12} />
                                 </button>
@@ -153,7 +153,7 @@ const NoteCard = ({
                                     onClick={(e) => {
                                         handleButtonClick(e, "options");
                                     }}
-                                    className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-300 rounded-sm"
+                                    className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
                                 >
                                     <TiThMenu size={12} />
                                 </button>
@@ -162,7 +162,7 @@ const NoteCard = ({
                                 onClick={(e) => {
                                     handleButtonClick(e, "delete");
                                 }}
-                                className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-300 rounded-sm"
+                                className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
                             >
                                 <FaTrash size={12} />
                             </button>
@@ -181,11 +181,7 @@ const NoteCard = ({
             </DropdownMenuTrigger>
 
             {/* ✅ Right-Click Context Menu (Now Positions Correctly) */}
-            <DropdownMenuContent
-                align="end"
-                sideOffset={5}
-                ref={contextMenuRef}
-            >
+            <DropdownMenuContent align="end" sideOffset={5} ref={contextMenuRef}>
                 <DropdownMenuItem
                     onClick={(e) => {
                         handleButtonClick(e, "copy-normal");

@@ -12,6 +12,7 @@ import LinkDialog from "./LinkDialog";
 import TitleEditor from "./TitleEditor";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatDate } from "@/lib/utils";
 
 const DisplayContainer = ({
     currentNote,
@@ -112,29 +113,37 @@ const DisplayContainer = ({
 
     return (
         <div
-            className="p-4 md:p-6 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-2 overflow-hidden"
+            className="p-4 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-4 overflow-hidden border-0 md:border md:border-gray-300"
             ref={displayContainerRef}
             tabIndex={0}
         >
             {/* Title & Delete Button */}
-            <div className="flex items-start justify-between mb-3">
+            <div className="flex items-start justify-between">
                 <TitleEditor title={title} setTitle={setTitle} />
-                <Button
-                    variant={"ghost"}
-                    size={"icon"}
+                <button
                     onClick={() => onDelete(currentNote?.id || "")}
-                    className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
+                    className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm [&_svg]:size-4"
                 >
-                    <FaTrash />
-                </Button>
+                    <FaTrash size={15} />
+                </button>
             </div>
 
-            {/* Toolbar for formatting */}
-            <Toolbar currentNote={currentNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
+            <div className="flex-shrink-0 flex flex-col gap-y-2 text-[12px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
+                <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                    • Created At: {formatDate(currentNote.createdAt)}
+                </p>
+                <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                    • Last Updated At: {formatDate(currentNote.updatedAt)}
+                </p>
+            </div>
 
-            {/* Rich Text Editor */}
-            <div className="w-full h-full border border-gray-300 rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden">
-                <EditorContent editor={editor} className="flex-1 overflow-y-auto scrollbar-minimal" />
+            <div className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden">
+                {/* Toolbar for formatting */}
+                <Toolbar currentNote={currentNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
+                {/* Rich Text Editor */}
+                <div className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden bg-white">
+                    <EditorContent editor={editor} className="flex-1 overflow-y-auto scrollbar-minimal" />
+                </div>
             </div>
 
             {/* Save Button */}
@@ -142,10 +151,10 @@ const DisplayContainer = ({
                 <TooltipTrigger asChild>
                     <Button
                         variant={"default"}
-                        className="w-fit bg-green-500 rounded-full [&_svg]:size-6 py-3 px-4 ml-auto mt-2"
+                        className="w-fit bg-green-500 rounded-full [&_svg]:size-6 py-3 px-4 ml-auto"
                         onClick={handleSave}
                     >
-                        <span className="text-lg font-semibold">Save</span>
+                        <span className="font-bold">Save</span>
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent align="center">

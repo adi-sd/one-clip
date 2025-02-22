@@ -29,14 +29,14 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${interFont.variable} ${interFont.variable} antialiased h-screen w-screen`}>
+            <body className={`${interFont.variable} ${interFont.variable} antialiased h-screen w-screen font-mono`}>
                 <AuthProvider>
                     <AuthModalProvider>
                         <ToasterProvider />
                         <TooltipProvider>
                             <div className="h-full w-full overflow-hidden">
                                 <Navbar />
-                                <main className="h-[calc(100%-5rem)] w-full p-3 md:p-8 bg-gray-50">{children}</main>
+                                <main className="h-[calc(100%-5rem)] w-full p-3 md:p-4 bg-gray-50">{children}</main>
                             </div>
                         </TooltipProvider>
                     </AuthModalProvider>

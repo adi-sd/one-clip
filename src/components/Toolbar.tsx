@@ -1,10 +1,9 @@
 import { Note } from "@/types/note";
 import { Editor } from "@tiptap/react";
-import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaLink } from "react-icons/fa6";
-import { FaLinkSlash } from "react-icons/fa6";
+import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaLink, FaLinkSlash } from "react-icons/fa6";
 import { MdOutlineContentCopy, MdOutlineFileCopy } from "react-icons/md";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import ToolbarButton from "@/components/ToolbarButton";
 
 const Toolbar = ({
     currentNote,
@@ -18,120 +17,62 @@ const Toolbar = ({
     if (!editor) return null;
 
     return (
-        <div className="flex items-center justify-between mb-2">
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={() => editor.chain().focus().toggleBold().run()}
-                        className={`p-2 border border-gray-400 rounded ${editor.isActive("bold") ? "bg-gray-300" : ""}`}
-                    >
-                        <FaBold />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Bold</p>
-                </TooltipContent>
-            </Tooltip>
+        <div className="w-fit flex items-center justify-center gap-x-2 shadow-inner rounded-full p-1 bg-white">
+            <ToolbarButton
+                icon={<FaBold size={12} />}
+                tooltip="Bold"
+                isActive={editor.isActive("bold")}
+                onClick={() => editor.chain().focus().toggleBold().run()}
+            />
 
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={() => editor.chain().focus().toggleItalic().run()}
-                        className={`p-2 border border-gray-400 rounded ${editor.isActive("italic") ? "bg-gray-300" : ""}`}
-                    >
-                        <FaItalic />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Italic</p>
-                </TooltipContent>
-            </Tooltip>
+            <ToolbarButton
+                icon={<FaItalic size={12} />}
+                tooltip="Italic"
+                isActive={editor.isActive("italic")}
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+            />
 
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={() => editor.chain().focus().toggleStrike().run()}
-                        className={`p-2 border border-gray-400 rounded ${editor.isActive("strike") ? "bg-gray-300" : ""}`}
-                    >
-                        <FaStrikethrough />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Strike Through</p>
-                </TooltipContent>
-            </Tooltip>
+            <ToolbarButton
+                icon={<FaStrikethrough size={12} />}
+                tooltip="Strike Through"
+                isActive={editor.isActive("strike")}
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+            />
 
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={() => editor.chain().focus().toggleUnderline().run()}
-                        className={`p-2 border border-gray-400 rounded ${editor.isActive("underline") ? "bg-gray-300" : ""}`}
-                    >
-                        <FaUnderline />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Underline</p>
-                </TooltipContent>
-            </Tooltip>
+            <ToolbarButton
+                icon={<FaUnderline size={12} />}
+                tooltip="Underline"
+                isActive={editor.isActive("underline")}
+                onClick={() => editor.chain().focus().toggleUnderline().run()}
+            />
 
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={openLinkDialog}
-                        className={`p-2 border border-gray-400 rounded ${editor.isActive("link") ? "bg-gray-300" : ""}`}
-                    >
-                        <FaLink />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Hyperlink</p>
-                </TooltipContent>
-            </Tooltip>
+            <ToolbarButton
+                icon={<FaLink size={12} />}
+                tooltip="Hyperlink"
+                isActive={editor.isActive("link")}
+                onClick={openLinkDialog}
+            />
 
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={() => editor.chain().focus().unsetLink().run()}
-                        className="p-2 border border-gray-400 rounded"
-                    >
-                        <FaLinkSlash />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Remove Hyperlink</p>
-                </TooltipContent>
-            </Tooltip>
+            <ToolbarButton
+                icon={<FaLinkSlash size={12} />}
+                tooltip="Remove Hyperlink"
+                isActive={false} // This action is always available
+                onClick={() => editor.chain().focus().unsetLink().run()}
+            />
 
-            {/* Copy Text */}
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={() => copyPlainText(currentNote.content)}
-                        className="p-2 border border-gray-400 rounded"
-                    >
-                        <MdOutlineContentCopy />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Copy Content</p>
-                </TooltipContent>
-            </Tooltip>
+            <ToolbarButton
+                icon={<MdOutlineContentCopy size={12} />}
+                tooltip="Copy Content"
+                isActive={false} // This action is always available
+                onClick={() => copyPlainText(currentNote.content)}
+            />
 
-            {/* Copy Unformatted Text */}
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <button
-                        onClick={() => copyRichText(currentNote.content)}
-                        className="p-2 border border-gray-400 rounded"
-                    >
-                        <MdOutlineFileCopy />
-                    </button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Copy Formatted</p>
-                </TooltipContent>
-            </Tooltip>
+            <ToolbarButton
+                icon={<MdOutlineFileCopy size={12} />}
+                tooltip="Copy Formatted"
+                isActive={false} // This action is always available
+                onClick={() => copyRichText(currentNote.content)}
+            />
         </div>
     );
 };

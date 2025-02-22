@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Logo from "@/components/Logo";
-import UserButton from "@/components/UserButton";
+import UserProfileButton from "@/components/UserProfileButton";
 import SignInButton from "@/components/SignInButton";
 import { useEffect, useState } from "react";
 
@@ -20,9 +20,13 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className="h-[5rem] w-full bg-white shadow-sm md:shadow-md py-4 px-4 md:px-8 flex items-center justify-between">
+        <nav className="h-[5rem] w-full bg-white shadow-sm md:shadow-md py-4 px-4 flex items-center justify-between border-0 border-b-[1px] border-gray-300">
             <Logo size={logoSize} />
-            {session?.user ? <UserButton user={session.user} size={logoSize} /> : <SignInButton size={logoSize} />}
+            {session?.user ? (
+                <UserProfileButton user={session.user} size={logoSize} />
+            ) : (
+                <SignInButton size={logoSize} />
+            )}
         </nav>
     );
 };
