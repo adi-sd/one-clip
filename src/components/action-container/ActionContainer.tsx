@@ -2,7 +2,7 @@ import React from "react";
 // import {IoMdDoneAll } from "react-icons/io";
 // import { IoTrashBinOutline } from "react-icons/io5";
 import { Card } from "@/components/ui/card";
-import SearchBar from "./SearchBar";
+import SearchBar from "@/components/action-container/SearchBar";
 import { FaPlus } from "react-icons/fa";
 // import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 

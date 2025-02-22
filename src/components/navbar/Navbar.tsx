@@ -1,9 +1,9 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import Logo from "@/components/Logo";
-import UserProfileButton from "@/components/UserProfileButton";
-import SignInButton from "@/components/SignInButton";
+import Logo from "@/components/navbar/Logo";
+import UserProfileButton from "@/components/navbar/UserProfileButton";
+import SignInButton from "@/components/navbar/SignInButton";
 import { useEffect, useState } from "react";
 
 const Navbar = () => {

@@ -2,7 +2,7 @@
 
 import { useSession, signIn } from "next-auth/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import Logo from "@/components/Logo";
+import Logo from "@/components/navbar/Logo";
 import { FaGoogle } from "react-icons/fa";
 
 const AuthModal = ({ onClose }: { onClose?: () => void }) => {

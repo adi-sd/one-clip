@@ -1,5 +1,5 @@
 import { Note } from "@/types/note";
-import NoteCard from "@/components/NoteCard";
+import NoteCard from "@/components/notes-container/NoteCard";
 
 const NotesContainer = ({
     notes,

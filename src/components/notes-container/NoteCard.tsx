@@ -3,7 +3,12 @@ import { FaPenClip, FaTrash } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 import { Note } from "@/types/note";
 import sanitizeHtml from "sanitize-html";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
 import { formatDate } from "@/lib/utils";

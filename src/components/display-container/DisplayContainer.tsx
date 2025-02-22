@@ -7,10 +7,10 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import { FaTrash } from "react-icons/fa";
-import Toolbar from "./Toolbar";
-import LinkDialog from "./LinkDialog";
-import NoteTitleEditor from "./NoteTitleEditor";
-import { Button } from "./ui/button";
+import Toolbar from "@/components/note-editor/Toolbar";
+import LinkDialog from "@/components/display-container/LinkDialog";
+import NoteNameEditor from "@/components/note-editor/NoteNameEditor";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/utils";
 
@@ -26,8 +26,8 @@ const DisplayContainer = ({
     setIsDialogOpen?: (val: boolean) => void;
 }) => {
     const displayContainerRef = useRef<HTMLDivElement | null>(null);
-    const [content, setContent] = useState("");
-    const [title, setTitle] = useState(currentNote?.name || "");
+    const [content, setContent] = useState(currentNote.content);
+    const [name, setName] = useState(currentNote.name);
     const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
     const [isEditorFocused, setIsEditorFocused] = useState(false);
 
@@ -57,7 +57,7 @@ const DisplayContainer = ({
 
     useEffect(() => {
         setContent(currentNote?.content || "");
-        setTitle(currentNote?.name || "");
+        setName(currentNote?.name || "");
         if (editor && currentNote) {
             editor.commands.setContent(currentNote.content);
         }
@@ -66,13 +66,13 @@ const DisplayContainer = ({
     // ✅ Save note function
     const handleSave = useCallback(() => {
         if (currentNote) {
-            onEdit({ ...currentNote, content, name: title });
+            onEdit({ ...currentNote, content, name });
         }
         if (setIsDialogOpen) {
             setIsDialogOpen(false);
         }
         console.log("Note auto-saved!");
-    }, [currentNote, content, title, onEdit, setIsDialogOpen]);
+    }, [currentNote, content, name, onEdit, setIsDialogOpen]);
 
     // ✅ Detect when the display container **loses focus**
     useEffect(() => {
@@ -119,7 +119,7 @@ const DisplayContainer = ({
         >
             {/* Title & Delete Button */}
             <div className="flex items-start justify-between">
-                <NoteTitleEditor title={title} setTitle={setTitle} />
+                <NoteNameEditor name={name} setName={setName} />
                 <button
                     onClick={() => onDelete(currentNote?.id || "")}
                     className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm [&_svg]:size-4"

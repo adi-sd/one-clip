@@ -1,12 +1,12 @@
 "use client";
 
 import { ClipLoader } from "react-spinners";
-import NotesContainer from "@/components/NotesContainer";
-import DisplayContainer from "@/components/DisplayContainer";
+import NotesContainer from "@/components/notes-container/NotesContainer";
+import DisplayContainer from "@/components/display-container/DisplayContainer";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import ActionContainer from "./ActionContainer";
+import ActionContainer from "@/components/action-container/ActionContainer";
 import { useDashboard } from "@/hooks/useDashboard";
-import DashboardMessage from "./DashboardMessage";
+import DashboardMessage from "@/components/dashboard/DashboardMessage";
 
 const Dashboard = () => {
     const {

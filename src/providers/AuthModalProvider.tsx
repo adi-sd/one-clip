@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import AuthModal from "@/components/AuthModal";
+import AuthModal from "@/components/modals/AuthModal";
 
 interface AuthModalContextType {
     openAuthModal: () => void;

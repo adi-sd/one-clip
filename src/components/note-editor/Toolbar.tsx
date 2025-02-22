@@ -3,7 +3,7 @@ import { Editor } from "@tiptap/react";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaLink, FaLinkSlash } from "react-icons/fa6";
 import { MdOutlineContentCopy, MdOutlineFileCopy } from "react-icons/md";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
-import ToolbarButton from "@/components/ToolbarButton";
+import ToolbarButton from "@/components/note-editor/ToolbarButton";
 
 const Toolbar = ({
     currentNote,
