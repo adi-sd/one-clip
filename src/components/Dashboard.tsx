@@ -44,7 +44,9 @@ const Dashboard = () => {
             {!showSignInMessage && (
                 <div className="w-full h-full gap-x-4 flex items-center justify-center overflow-hidden">
                     {/* Notes List - Always visible */}
-                    <div className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-4`}>
+                    <div
+                        className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-2 md:gap-y-4`}
+                    >
                         <ActionContainer
                             isLargeScreen={isLargeScreen}
                             onCreateNote={handleCreateNewEmptyNote}
