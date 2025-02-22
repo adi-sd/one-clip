@@ -6,6 +6,7 @@ import DisplayContainer from "@/components/DisplayContainer";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ActionContainer from "./ActionContainer";
 import { useDashboard } from "@/hooks/useDashboard";
+import DashboardMessage from "./DashboardMessage";
 
 const Dashboard = () => {
     const {
@@ -36,9 +37,9 @@ const Dashboard = () => {
         <div className="w-full h-full flex flex-col lg:flex-row gap-2 md:gap-6 overflow-hidden">
             {/* Show sign-in message if user closes auth modal */}
             {showSignInMessage && (
-                <div className="w-full h-full flex items-center justify-center text-gray-500 overflow-hidden">
-                    Please sign in to view your notes.
-                </div>
+                <DashboardMessage>
+                    <span> Please sign in to view your notes!</span>
+                </DashboardMessage>
             )}
 
             {!showSignInMessage && (
@@ -53,17 +54,17 @@ const Dashboard = () => {
                             onSearch={handleSearch}
                         />
                         {isLoading ? (
-                            <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                <ClipLoader size={40} color="#22c55e" />
-                            </div>
+                            <DashboardMessage>
+                                <ClipLoader size={40} className="text-green-500 font-bold" />
+                            </DashboardMessage>
                         ) : notes.length === 0 ? (
-                            <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                No notes available for the account!
-                            </div>
+                            <DashboardMessage>
+                                <span>No notes available for the account!</span>
+                            </DashboardMessage>
                         ) : filteredNotes.length === 0 ? (
-                            <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                No matches for the search!
-                            </div>
+                            <DashboardMessage>
+                                <span>No matches for the search!</span>
+                            </DashboardMessage>
                         ) : (
                             <NotesContainer
                                 notes={filteredNotes}

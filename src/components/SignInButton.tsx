@@ -10,8 +10,8 @@ const SignInButton = ({ size = 32 }: { size: number }) => {
             className="flex items-center gap-2 bg-green-500 pl-3 pr-4 py-3 shadow-sm rounded-full hover:bg-green-600
             "
         >
-            <FaGoogle size={size} className="text-white" />
-            <span className="font-bold text-white" style={{ fontSize: `${logoTextSize}` }}>
+            <FaGoogle size={size * 0.8} className="text-white" />
+            <span className="font-bold text-white text-nowrap" style={{ fontSize: `${logoTextSize}` }}>
                 Sign In
             </span>
         </button>

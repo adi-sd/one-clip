@@ -36,7 +36,9 @@ export default function RootLayout({
                         <TooltipProvider>
                             <div className="h-full w-full overflow-hidden">
                                 <Navbar />
-                                <main className="h-[calc(100%-5rem)] w-full p-3 md:p-4 bg-gray-50">{children}</main>
+                                <main className="h-[calc(100%-4rem)] md:h-[calc(100%-5rem)] w-full p-3 md:p-4 bg-gray-50">
+                                    {children}
+                                </main>
                             </div>
                         </TooltipProvider>
                     </AuthModalProvider>

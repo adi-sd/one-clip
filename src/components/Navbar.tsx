@@ -8,11 +8,11 @@ import { useEffect, useState } from "react";
 
 const Navbar = () => {
     const { data: session } = useSession();
-    const [logoSize, setLogoSize] = useState(32);
+    const [logoSize, setLogoSize] = useState<number>(32);
 
     useEffect(() => {
         const handleResize = () => {
-            setLogoSize(window.innerWidth >= 1024 ? 32 : 25);
+            setLogoSize(window.innerWidth >= 1024 ? 32 : 24);
         };
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -20,7 +20,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className="h-[5rem] w-full bg-white shadow-sm md:shadow-md py-4 px-4 flex items-center justify-between border-0 border-b-[1px] border-gray-300">
+        <nav className="h-[4rem] md:h-[5rem] w-full bg-white shadow-sm md:shadow-md py-4 px-4 flex items-center justify-between border-0 border-b-[1px] border-gray-300 sticky">
             <Logo size={logoSize} />
             {session?.user ? (
                 <UserProfileButton user={session.user} size={logoSize} />
