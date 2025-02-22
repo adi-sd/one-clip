@@ -93,7 +93,8 @@ export const useDashboard = () => {
             name: "New Note",
             content: "",
             listType: "default",
-        };
+            createdAt: new Date().toISOString(),
+        } as Note;
 
         setUnsavedNote(newNote as Note);
         setCurrentNote(newNote as Note);

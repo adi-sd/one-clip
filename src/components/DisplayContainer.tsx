@@ -129,12 +129,16 @@ const DisplayContainer = ({
             </div>
 
             <div className="flex-shrink-0 flex flex-col gap-y-2 text-[12px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
-                <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
-                    • Created At: {formatDate(currentNote.createdAt)}
-                </p>
-                <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
-                    • Last Updated At: {formatDate(currentNote.updatedAt)}
-                </p>
+                {currentNote.createdAt && (
+                    <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                        • Created At: {formatDate(currentNote.createdAt)}
+                    </p>
+                )}
+                {currentNote.updatedAt && (
+                    <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                        • Last Updated At: {formatDate(currentNote.updatedAt)}
+                    </p>
+                )}
             </div>
 
             <div className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden">
@@ -142,7 +146,7 @@ const DisplayContainer = ({
                 <Toolbar currentNote={currentNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
                 {/* Rich Text Editor */}
                 <div className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden bg-white">
-                    <EditorContent editor={editor} className="flex-1 overflow-y-auto scrollbar-minimal" />
+                    <EditorContent editor={editor} className="flex-1 overflow-y-auto scrollbar-minimal text-sm" />
                 </div>
             </div>
 

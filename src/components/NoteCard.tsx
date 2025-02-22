@@ -114,7 +114,7 @@ const NoteCard = ({
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col gap-y-3 border-gray-300"
+                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-100 ease-in-out h-[80px] w-full sm:h-[120px] sm:w-full md:h-[140px] md:w-full lg:h-[160px] lg:w-full xl:h-[180px] xl:w-full flex flex-col gap-y-3 border-gray-300"
                     ref={cardRef}
                     onClick={handleCardClick} // ✅ Left Click → Copy Plain Text
                     onContextMenu={handleContextMenu} // ✅ Right Click → Open Menu
@@ -173,7 +173,7 @@ const NoteCard = ({
                         {/* ✅ Render Sanitized HTML Content (Preserves Formatting) */}
                         <div
                             ref={cardRef}
-                            className="overflow-hidden text-ellipsis break-words line-clamp-2 sm:line-clamp-3 md:line-clamp-4 lg:line-clamp-5 xl:line-clamp-6"
+                            className="overflow-hidden text-ellipsis break-words line-clamp-1 sm:line-clamp-2 md:line-clamp-3 lg:line-clamp-4 xl:line-clamp-5"
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>

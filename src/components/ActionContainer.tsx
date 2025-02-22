@@ -69,10 +69,13 @@ export default function ActionContainer({
             </Select> */}
 
             {/* Create Note Button */}
-            <button onClick={onCreateNote} className="h-full w-fit bg-green-500 p-3 md:px-3 md:py-0 rounded-full ml-auto">
+            <button
+                onClick={onCreateNote}
+                className="h-full w-fit bg-green-500 p-3 md:px-3 md:py-0 rounded-full ml-auto"
+            >
                 <div className="flex items-center justify-center gap-x-2 text-white">
-                    <FaPlus size={20} />
-                    {isLargeScreen ? <span className="font-semibold text-nowrap">New Note</span> : null}
+                    {isLargeScreen ? <FaPlus size={18} /> : <FaPlus size={20} />}
+                    {isLargeScreen ? <span className="h-full text-sm font-semibold text-nowrap">New Note</span> : null}
                 </div>
             </button>
         </Card>
