@@ -1,34 +1,34 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { FaSearch, FaTimes, FaFilter } from "react-icons/fa";
-import { IoMdAddCircle, IoMdDoneAll } from "react-icons/io";
-import { IoTrashBinOutline } from "react-icons/io5";
+import { FaSearch, FaTimes } from "react-icons/fa";
+import { IoMdAddCircle } from "react-icons/io";
+// import {IoMdDoneAll } from "react-icons/io";
+// import { IoTrashBinOutline } from "react-icons/io5";
 import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Divide } from "lucide-react";
+// import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const NoteTypes: {
-    name: string;
-    value: string;
-    icon: ReactNode;
-}[] = [
-    {
-        name: "Note Types",
-        value: "placeholder",
-        icon: <FaFilter className="text-gray-500"></FaFilter>,
-    },
-    {
-        name: "All Notes",
-        value: "all",
-        icon: <IoMdDoneAll className="text-gray-500"></IoMdDoneAll>,
-    },
-    {
-        name: "Deleted",
-        value: "deleted",
-        icon: <IoTrashBinOutline className="text-gray-500"></IoTrashBinOutline>,
-    },
-];
+// const NoteTypes: {
+//     name: string;
+//     value: string;
+//     icon: ReactNode;
+// }[] = [
+//     {
+//         name: "Note Types",
+//         value: "placeholder",
+//         icon: <FaFilter className="text-gray-500"></FaFilter>,
+//     },
+//     {
+//         name: "All Notes",
+//         value: "all",
+//         icon: <IoMdDoneAll className="text-gray-500"></IoMdDoneAll>,
+//     },
+//     {
+//         name: "Deleted",
+//         value: "deleted",
+//         icon: <IoTrashBinOutline className="text-gray-500"></IoTrashBinOutline>,
+//     },
+// ];
 
 export default function ActionContainer({
     isLargeScreen,
@@ -64,7 +64,7 @@ export default function ActionContainer({
                     value={searchQuery}
                     onChange={handleSearchChange}
                     placeholder="Search notes..."
-                    className="h-full w-full rounded-full rounded-r-none focus:ring-0 focus-visible:ring-0 focus-within:ring-0 font-semibold text-small placeholder:text-small md:placeholder:text-lg flex justify-center items-center md:pl-6"
+                    className="h-full w-full rounded-full rounded-r-none focus:ring-0 focus-visible:ring-0 focus-within:ring-0 font-semibold text-small placeholder:text-small md:placeholder:text-normal flex justify-center items-center md:pl-6 placeholder:font-mono"
                     style={isLargeScreen ? { fontSize: "1.125rem" } : { fontSize: "" }}
                     autoComplete="off"
                 />
@@ -78,7 +78,7 @@ export default function ActionContainer({
             </div>
 
             {/* Filter By Note Type - Desktop*/}
-            <Select>
+            {/* <Select>
                 <SelectTrigger className="h-full w-[150px] flex rounded-full focus:ring-2 focus-visible:ring-2 focus-within:ring-2 focus:ring-gray-400 focus-visible:ring-gray-400  focus-within:ring-gray-400 border-l-0">
                     <SelectValue
                         placeholder={
@@ -101,7 +101,7 @@ export default function ActionContainer({
                         ))}
                     </SelectGroup>
                 </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* Create Note Button */}
             <Button

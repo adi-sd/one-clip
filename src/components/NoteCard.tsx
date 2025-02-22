@@ -2,11 +2,12 @@ import { Card } from "@/components/ui/card";
 import { FaPenClip, FaTrash } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 import { Note } from "@/types/note";
-import { Button } from "./ui/button";
 import sanitizeHtml from "sanitize-html";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
+import { FaCircle } from "react-icons/fa";
+import { formatDate } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const NoteCard = ({
@@ -76,7 +77,7 @@ const NoteCard = ({
 
         setContextMenu({ x, y });
         contextMenuRef.current?.focus();
-        setTimeout(closeContextMenu, 2500);
+        setTimeout(closeContextMenu, 2000);
     };
 
     // ✅ Close Context Menu
@@ -115,69 +116,68 @@ const NoteCard = ({
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white md:hover:scale-105 shadow-sm md:shadow-md rounded-lg p-4 relative overflow-hidden cursor-pointer transform transition-transform duration-200 ease-in-out h-[100px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col border-gray-300"
+                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[140px] sm:w-full md:h-[160px] md:w-full lg:h-[180px] lg:w-full xl:h-[200px] xl:w-full flex flex-col gap-y-2 border-gray-300"
                     onClick={handleCardClick} // ✅ Left Click → Copy Plain Text
                     onContextMenu={handleContextMenu} // ✅ Right Click → Open Menu
                 >
                     {/* Header */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-row items-center justify-between w-full h-fit">
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <div className="w-full h-full flex items-center overflow-hidden">
-                                    <span className="font-semibold overflow-hidden text-nowrap text-ellipsis mr-2 md:text-lg">
-                                        {note.name}
-                                    </span>
+                                <div className="flex items-center gap-x-1 text-[12px] text-gray-300 font-bold font-mono mr-2 text-nowrap overflow-hidden min-w-0">
+                                    <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                                        {note.name} • {formatDate(note.createdAt)}
+                                    </p>
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent align="center">
-                                <p>{note.name}</p>
+                                <p className="whitespace-nowrap font-mono">
+                                    {note.name} • {formatDate(note.createdAt)}
+                                </p>
                             </TooltipContent>
                         </Tooltip>
 
-                        <div className="flex gap-x-1">
+                        <div className="h-full flex items-center justify-center gap-x-2 m-0">
                             {/* Show edit button only when DisplayContainer is hidden */}
                             {showEditButton ? null : (
-                                <Button
-                                    variant={"ghost"}
-                                    size={"icon"}
+                                <button
                                     onClick={(e) => {
                                         handleButtonClick(e, "edit");
                                     }}
-                                    className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
+                                    className=" text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-300 rounded-sm"
                                 >
-                                    <FaPenClip />
-                                </Button>
+                                    <FaPenClip size={12} />
+                                </button>
                             )}
                             {showOptionButton ? null : (
-                                <Button
-                                    variant={"ghost"}
-                                    size={"icon"}
+                                <button
                                     onClick={(e) => {
                                         handleButtonClick(e, "options");
                                     }}
-                                    className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
+                                    className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-300 rounded-sm"
                                 >
-                                    <TiThMenu />
-                                </Button>
+                                    <TiThMenu size={12} />
+                                </button>
                             )}
-                            <Button
-                                variant={"ghost"}
-                                size={"icon"}
+                            <button
                                 onClick={(e) => {
                                     handleButtonClick(e, "delete");
                                 }}
-                                className="text-gray-500 hover:text-gray-700 [&_svg]:size-4"
+                                className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-300 rounded-sm"
                             >
-                                <FaTrash />
-                            </Button>
+                                <FaTrash size={12} />
+                            </button>
                         </div>
                     </div>
-                    {/* ✅ Render Sanitized HTML Content (Preserves Formatting) */}
-                    <div
-                        ref={cardRef}
-                        className="flex-1 text-small md:text-lg font-medium mt-1 md:mt-4 overflow-hidden text-ellipsis break-words line-clamp-2 md:line-clamp-3"
-                        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                    />
+
+                    <div className="w-full flex-1 text-[14px]">
+                        {/* ✅ Render Sanitized HTML Content (Preserves Formatting) */}
+                        <div
+                            ref={cardRef}
+                            className="overflow-hidden text-ellipsis break-words line-clamp-2 sm:line-clamp-3 md:line-clamp-4 lg:line-clamp-5 xl:line-clamp-6"
+                            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                        />
+                    </div>
                 </Card>
             </DropdownMenuTrigger>
 
