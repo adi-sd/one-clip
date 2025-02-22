@@ -9,7 +9,7 @@ import Link from "@tiptap/extension-link";
 import { FaTrash } from "react-icons/fa";
 import Toolbar from "./Toolbar";
 import LinkDialog from "./LinkDialog";
-import TitleEditor from "./TitleEditor";
+import NoteTitleEditor from "./NoteTitleEditor";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/utils";
@@ -119,7 +119,7 @@ const DisplayContainer = ({
         >
             {/* Title & Delete Button */}
             <div className="flex items-start justify-between">
-                <TitleEditor title={title} setTitle={setTitle} />
+                <NoteTitleEditor title={title} setTitle={setTitle} />
                 <button
                     onClick={() => onDelete(currentNote?.id || "")}
                     className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm [&_svg]:size-4"

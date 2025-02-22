@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-const TitleEditor = ({ title, setTitle }: { title: string; setTitle: (title: string) => void }) => {
+const NoteTitleEditor = ({ title, setTitle }: { title: string; setTitle: (title: string) => void }) => {
     const [tempTitle, setTempTitle] = useState(title);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -31,4 +31,4 @@ const TitleEditor = ({ title, setTitle }: { title: string; setTitle: (title: str
     );
 };
 
-export default TitleEditor;
+export default NoteTitleEditor;
