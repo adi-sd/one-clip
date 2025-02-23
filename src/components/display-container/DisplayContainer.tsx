@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/utils";
 import NoteContentEditor from "../note-editor/NoteContentEditor";
+import { toast } from "sonner";
 
 const DisplayContainer = ({
     currentNote,
@@ -32,14 +33,35 @@ const DisplayContainer = ({
 
     // ✅ Save note function
     const handleSave = useCallback(() => {
-        if (currentNote) {
-            onEdit({ ...currentNote, content, title });
+        // ✅ Function to remove invisible HTML while keeping rich text content
+        const stripHtmlForComparison = (html: string) => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            return doc.body.textContent?.replace(/\u00A0/g, "").trim() || ""; // ✅ Removes non-visible spaces
+        };
+
+        const strippedTitle = title.trim(); // ✅ Title is plain text, so normal trim
+        const strippedContentForComparison = stripHtmlForComparison(content); // ✅ Compare clean content
+
+        // ✅ Check if content has actually changed
+        if (
+            currentNote.title.trim() === strippedTitle &&
+            stripHtmlForComparison(currentNote.content) === strippedContentForComparison
+        ) {
+            toast.info("No actual changes detected. Skipping update.");
+            return; // ✅ Prevent unnecessary API calls
         }
+
+        onEdit({
+            ...currentNote,
+            title: strippedTitle, // ✅ Save clean title
+            content, // ✅ Save full rich text content
+        });
+
         if (setIsDialogOpen) {
             setIsDialogOpen(false);
         }
         console.log("Note auto-saved!");
-    }, [currentNote, content, title, onEdit, setIsDialogOpen]);
+    }, [currentNote, title, content, onEdit, setIsDialogOpen]);
 
     // ✅ Detect when the display container **loses focus**
     useEffect(() => {

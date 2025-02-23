@@ -108,33 +108,32 @@ export const useDashboard = () => {
     const handleUpdateNote = async (updatedNote: Note) => {
         try {
             const isNewNote = unsavedNote?.id === updatedNote.id;
+            const trimmedTitle = updatedNote.title.trim(); // ✅ Trim title to avoid unnecessary updates
+            const trimmedContent = updatedNote.content.trim(); // ✅ Trim content
 
-            // ✅ Prevent creating a new note if it's empty
-            if (isNewNote && !updatedNote.title.trim()) {
-                toast.info("Cannot create a note with empty name!");
+            if (isNewNote && trimmedTitle === "") {
+                toast.info("Cannot create a note with an empty name!");
                 return;
             }
 
-            // ✅ Find the existing note (if any)
             const existingNote = notes.find((note) => note.id === updatedNote.id);
 
-            // ✅ Prevent update if content & title haven't changed
+            // ✅ Fix: Compare trimmed values instead of raw values
             if (
-                !isNewNote &&
                 existingNote &&
-                existingNote.title.trim() === updatedNote.title.trim() &&
-                existingNote.content === updatedNote.content
+                trimmedTitle === existingNote.title.trim() &&
+                trimmedContent === existingNote.content.trim()
             ) {
-                toast.info("No changes detected.");
-                return;
+                console.log("No changes detected");
+                return; // ✅ Prevent redundant updates
             }
 
             const response = await fetch(isNewNote ? "/api/notes" : `/api/notes/${updatedNote.id}`, {
                 method: isNewNote ? "POST" : "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    title: updatedNote.title.trim(),
-                    content: updatedNote.content ?? "",
+                    title: trimmedTitle,
+                    content: trimmedContent,
                     listType: updatedNote.listType ?? "default",
                     createdAt: updatedNote.createdAt,
                 }),
@@ -144,11 +143,10 @@ export const useDashboard = () => {
 
             const savedNote = await response.json();
 
-            setNotes(
-                (prevNotes) =>
-                    isNewNote
-                        ? [savedNote, ...prevNotes] // ✅ Add new note at the start
-                        : prevNotes.map((note) => (note.id === savedNote.id ? savedNote : note)) // ✅ Replace existing note
+            setNotes((prevNotes) =>
+                isNewNote
+                    ? [savedNote, ...prevNotes]
+                    : prevNotes.map((note) => (note.id === savedNote.id ? savedNote : note))
             );
 
             setCurrentNote(savedNote);

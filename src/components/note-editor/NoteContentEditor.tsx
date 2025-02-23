@@ -2,6 +2,9 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
+import ListItem from "@tiptap/extension-list-item";
+import OrderedList from "@tiptap/extension-ordered-list";
+import BulletList from "@tiptap/extension-bullet-list";
 import Toolbar from "@/components/note-editor/Toolbar";
 import { useEffect, useState } from "react";
 import LinkDialog from "@/components/display-container/LinkDialog";
@@ -31,6 +34,9 @@ export default function NoteContentEditor({
                     target: "_blank",
                 },
             }),
+            ListItem,
+            OrderedList,
+            BulletList,
         ],
         content: content,
         onUpdate: ({ editor }) => {
@@ -38,6 +44,17 @@ export default function NoteContentEditor({
         },
         immediatelyRender: false,
     });
+
+    // ✅ Improved focus handling
+    const handleFocusEditor = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (editor) {
+            const clickTarget = event.target as HTMLElement;
+            // Prevent focusing if clicking inside the editor content
+            if (!clickTarget.closest(".tiptap-editor")) {
+                editor.commands.focus("end"); // Focus only when clicking outside
+            }
+        }
+    };
 
     // ✅ Update editor content when `content` prop changes (fixes the issue)
     useEffect(() => {
@@ -49,7 +66,10 @@ export default function NoteContentEditor({
     return (
         <>
             {/* Note Content Editor */}
-            <div className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden">
+            <div
+                className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden"
+                onClick={handleFocusEditor}
+            >
                 {/* Toolbar for formatting */}
                 <Toolbar
                     currentNoteContent={content}
@@ -58,7 +78,10 @@ export default function NoteContentEditor({
                 />
                 {/* Rich Text Editor */}
                 <div className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden bg-white">
-                    <EditorContent editor={editor} className="flex-1 overflow-y-auto scrollbar-minimal text-sm" />
+                    <EditorContent
+                        editor={editor}
+                        className="h-fit flex-1 overflow-y-auto scrollbar-minimal text-sm tiptap-editor"
+                    />
                 </div>
             </div>
             {/* Link Dialog */}

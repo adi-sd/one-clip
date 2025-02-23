@@ -20,3 +20,19 @@ export const formatDate = (dateString: string): string => {
 
     return new Intl.DateTimeFormat("en-GB", options).format(date);
 };
+
+export const formatDateShort = (dateString: string): string => {
+    const date = new Date(dateString);
+
+    // Format options for "MM/DD/YY, hh:mm AM/PM"
+    const options: Intl.DateTimeFormatOptions = {
+        year: "2-digit",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true, // Ensures 12-hour format with AM/PM
+    };
+
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+};

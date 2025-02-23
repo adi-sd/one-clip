@@ -1,5 +1,14 @@
 import { Editor } from "@tiptap/react";
-import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaLink, FaLinkSlash } from "react-icons/fa6";
+import {
+    FaBold,
+    FaItalic,
+    FaStrikethrough,
+    FaUnderline,
+    FaLink,
+    FaLinkSlash,
+    FaListUl,
+    FaListOl,
+} from "react-icons/fa6";
 import { MdOutlineContentCopy, MdOutlineFileCopy } from "react-icons/md";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
 import ToolbarButton from "@/components/note-editor/ToolbarButton";
@@ -57,6 +66,20 @@ const Toolbar = ({
                 tooltip="Remove Hyperlink"
                 isActive={false} // This action is always available
                 onClick={() => editor.chain().focus().unsetLink().run()}
+            />
+
+            <ToolbarButton
+                icon={<FaListUl size={14} />}
+                tooltip="Bulleted List"
+                isActive={editor.isActive("bulletList")}
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+            />
+
+            <ToolbarButton
+                icon={<FaListOl size={14} />}
+                tooltip="Numbered List"
+                isActive={editor.isActive("orderedList")}
+                onClick={() => editor.chain().focus().toggleOrderedList().run()}
             />
 
             <ToolbarButton

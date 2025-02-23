@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatDateShort } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const NoteCard = ({
@@ -119,28 +119,18 @@ const NoteCard = ({
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg overflow-hidden cursor-pointer transform transition-transform duration-100 ease-in-out h-[80px] w-full sm:h-[120px] sm:w-full md:h-[140px] md:w-full lg:h-[160px] lg:w-full xl:h-[180px] xl:w-full flex flex-col gap-y-3 border-gray-300"
+                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] sm:w-full md:h-[140px] md:w-full lg:h-[160px] lg:w-full xl:h-[180px] xl:w-full flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300"
                     ref={cardRef}
                     onClick={handleCardClick} // ✅ Left Click → Copy Plain Text
                     onContextMenu={handleContextMenu} // ✅ Right Click → Open Menu
                 >
-                    {/* Header */}
-                    <div className="flex flex-row items-center justify-between w-full h-fit">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div className="flex items-center gap-x-1 text-[12px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
-                                    <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
-                                        {note.title} • {formatDate(note.createdAt)}
-                                    </p>
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent align="center">
-                                <p className="whitespace-nowrap">
-                                    {note.title} • {formatDate(note.createdAt)}
-                                </p>
-                            </TooltipContent>
-                        </Tooltip>
-
+                    {/* Header and Buttons */}
+                    <div className="w-full h-fit flex flex-row items-center justify-between">
+                        <div className="flex items-center gap-x-1 text-[10px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
+                            <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                                {note.title}
+                            </p>
+                        </div>
                         <div className="h-full flex items-center justify-center gap-x-2 m-0">
                             {/* Show edit button only when DisplayContainer is hidden */}
                             {showEditButton ? null : (
@@ -173,14 +163,29 @@ const NoteCard = ({
                             </button>
                         </div>
                     </div>
-
-                    <div className="w-full flex-1 text-[14px]">
-                        {/* ✅ Render Sanitized HTML Content (Preserves Formatting) */}
+                    {/* Note Content */}
+                    <div className="w-full h-[50%] flex-shrink-0">
                         <div
                             ref={cardRef}
-                            className="overflow-hidden text-ellipsis break-words line-clamp-1 sm:line-clamp-2 md:line-clamp-3 lg:line-clamp-4 xl:line-clamp-5"
+                            className=" text-[14px] text-ellipsis break-words line-clamp-1 sm:line-clamp-2 md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4 ProseMirror"
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
+                    </div>
+                    {/* Note Footer */}
+                    <div className="w-full h-fit flex-shrink-0">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex items-center justify-end gap-x-1 text-[10px] text-gray-400 font-bold text-nowrap overflow-hidden min-w-0">
+                                    <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                                        {formatDateShort(note.updatedAt)}
+                                    </p>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" align="start">
+                                <p className="whitespace-nowrap">• Created At: {formatDate(note.createdAt)}</p>
+                                <p className="whitespace-nowrap">• Last Updated At: {formatDate(note.updatedAt)}</p>
+                            </TooltipContent>
+                        </Tooltip>
                     </div>
                 </Card>
             </DropdownMenuTrigger>
