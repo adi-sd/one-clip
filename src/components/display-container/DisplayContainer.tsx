@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { formatDate } from "@/lib/utils";
 import NoteContentEditor from "../note-editor/NoteContentEditor";
 import { toast } from "sonner";
+import { FaX } from "react-icons/fa6";
 
 const DisplayContainer = ({
     currentNote,
@@ -33,28 +34,18 @@ const DisplayContainer = ({
 
     // ✅ Save note function
     const handleSave = useCallback(() => {
-        // ✅ Function to remove invisible HTML while keeping rich text content
-        const stripHtmlForComparison = (html: string) => {
-            const doc = new DOMParser().parseFromString(html, "text/html");
-            return doc.body.textContent?.replace(/\u00A0/g, "").trim() || ""; // ✅ Removes non-visible spaces
-        };
+        const strippedTitle = title.trim(); // ✅ Title remains plain text, so normal trim
 
-        const strippedTitle = title.trim(); // ✅ Title is plain text, so normal trim
-        const strippedContentForComparison = stripHtmlForComparison(content); // ✅ Compare clean content
-
-        // ✅ Check if content has actually changed
-        if (
-            currentNote.title.trim() === strippedTitle &&
-            stripHtmlForComparison(currentNote.content) === strippedContentForComparison
-        ) {
+        // ✅ Check if only the title remains unchanged
+        if (currentNote.title.trim() === strippedTitle && currentNote.content === content) {
             toast.info("No actual changes detected. Skipping update.");
-            return; // ✅ Prevent unnecessary API calls
+            return; // ✅ Prevent unnecessary API calls when there's no difference
         }
 
         onEdit({
             ...currentNote,
             title: strippedTitle, // ✅ Save clean title
-            content, // ✅ Save full rich text content
+            content, // ✅ Always save full rich text content, even if minor changes
         });
 
         if (setIsDialogOpen) {
@@ -109,12 +100,22 @@ const DisplayContainer = ({
             {/* Title & Delete Button */}
             <div className="flex items-start justify-between">
                 <NoteTitleEditor title={title} setTitle={setTitle} />
-                <button
-                    onClick={() => onDelete(currentNote?.id || "")}
-                    className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm [&_svg]:size-4"
-                >
-                    <FaTrash size={15} />
-                </button>
+                <div className="flex gap-x-2">
+                    <button
+                        onClick={() => onDelete(currentNote?.id || "")}
+                        className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm [&_svg]:size-4"
+                    >
+                        <FaTrash size={15} />
+                    </button>
+                    {setIsDialogOpen && (
+                        <button
+                            onClick={() => setIsDialogOpen(false)}
+                            className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm [&_svg]:size-4"
+                        >
+                            <FaX size={13} />
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div className="flex-shrink-0 flex flex-col gap-y-2 text-[12px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">

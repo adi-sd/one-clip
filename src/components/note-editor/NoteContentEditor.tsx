@@ -66,10 +66,7 @@ export default function NoteContentEditor({
     return (
         <>
             {/* Note Content Editor */}
-            <div
-                className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden"
-                onClick={handleFocusEditor}
-            >
+            <div className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden">
                 {/* Toolbar for formatting */}
                 <Toolbar
                     currentNoteContent={content}
@@ -77,11 +74,11 @@ export default function NoteContentEditor({
                     openLinkDialog={() => setIsLinkDialogOpen(true)}
                 />
                 {/* Rich Text Editor */}
-                <div className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden bg-white">
-                    <EditorContent
-                        editor={editor}
-                        className="h-fit flex-1 overflow-y-auto scrollbar-minimal text-sm tiptap-editor"
-                    />
+                <div
+                    className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex bg-white overflow-y-auto scrollbar-minimal"
+                    onClick={handleFocusEditor}
+                >
+                    <EditorContent editor={editor} className="h-fit flex-1 text-sm tiptap-editor" />
                 </div>
             </div>
             {/* Link Dialog */}
