@@ -2,9 +2,8 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
-import ListItem from "@tiptap/extension-list-item";
-import OrderedList from "@tiptap/extension-ordered-list";
-import BulletList from "@tiptap/extension-bullet-list";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
 import Toolbar from "@/components/note-editor/Toolbar";
 import { useEffect, useState } from "react";
 import LinkDialog from "@/components/display-container/LinkDialog";
@@ -34,9 +33,8 @@ export default function NoteContentEditor({
                     target: "_blank",
                 },
             }),
-            ListItem,
-            OrderedList,
-            BulletList,
+            TaskList,
+            TaskItem,
         ],
         content: content,
         onUpdate: ({ editor }) => {

@@ -38,11 +38,25 @@ const NoteCard = ({
 
     // ✅ Sanitize HTML for Safe Rendering
     const sanitizedContent = sanitizeHtml(note.content, {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "span"]),
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+            "img",
+            "span",
+            "ul",
+            "li",
+            "label",
+            "input",
+            "div",
+            "p",
+        ]),
         allowedAttributes: {
-            // a: ["href", "name", "target", "rel"],
             img: ["src", "alt", "title", "width", "height"],
             span: ["style"],
+            input: ["type", "checked"], // ✅ Allows checkboxes
+            li: ["data-type", "data-checked"], // ✅ Allows task items
+            ul: ["data-type"], // ✅ Allows task list
+            label: [], // ✅ Allows labels for checkboxes
+            div: [],
+            p: [],
         },
         allowedSchemes: ["http", "https"],
     });

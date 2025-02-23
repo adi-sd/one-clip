@@ -2,6 +2,7 @@ import { Editor } from "@tiptap/react";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaLink, FaLinkSlash } from "react-icons/fa6";
 import { MdOutlineContentCopy, MdOutlineFileCopy } from "react-icons/md";
 import { PiListBold, PiListBulletsBold, PiListNumbersBold, PiGlobeBold } from "react-icons/pi";
+import { LuListTodo } from "react-icons/lu";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
 import ToolbarButton from "@/components/note-editor/ToolbarButton";
 import ToolbarButtonCombo from "./ToolbarButtonCombo";
@@ -78,6 +79,13 @@ const Toolbar = ({
                         onClick: () => editor.chain().focus().toggleOrderedList().run(),
                     },
                 ]}
+            />
+
+            <ToolbarButton
+                icon={<LuListTodo size={14} />}
+                tooltip="To-Do List"
+                isActive={editor.isActive("taskList")}
+                onClick={() => editor.chain().focus().toggleTaskList().run()}
             />
 
             <ToolbarButton
