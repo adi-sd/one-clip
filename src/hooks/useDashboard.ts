@@ -75,7 +75,7 @@ export const useDashboard = () => {
         }
         const lowerQuery = query.toLowerCase();
         const filtered = notes.filter(
-            (note) => note.name.toLowerCase().includes(lowerQuery) || note.content.toLowerCase().includes(lowerQuery)
+            (note) => note.title.toLowerCase().includes(lowerQuery) || note.content.toLowerCase().includes(lowerQuery)
         );
         setFilteredNotes(filtered);
     };
@@ -90,7 +90,7 @@ export const useDashboard = () => {
     const handleCreateNewEmptyNote = async () => {
         const newNote = {
             id: crypto.randomUUID(),
-            name: "New Note",
+            title: "New Note",
             content: "",
             listType: "default",
             createdAt: new Date().toISOString(),
@@ -110,7 +110,7 @@ export const useDashboard = () => {
             const isNewNote = unsavedNote?.id === updatedNote.id;
 
             // ✅ Prevent creating a new note if it's empty
-            if (isNewNote && !updatedNote.name.trim()) {
+            if (isNewNote && !updatedNote.title.trim()) {
                 toast.info("Cannot create a note with empty name!");
                 return;
             }
@@ -122,7 +122,7 @@ export const useDashboard = () => {
             if (
                 !isNewNote &&
                 existingNote &&
-                existingNote.name.trim() === updatedNote.name.trim() &&
+                existingNote.title.trim() === updatedNote.title.trim() &&
                 existingNote.content === updatedNote.content
             ) {
                 toast.info("No changes detected.");
@@ -133,9 +133,10 @@ export const useDashboard = () => {
                 method: isNewNote ? "POST" : "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    name: updatedNote.name.trim(),
+                    title: updatedNote.title.trim(),
                     content: updatedNote.content ?? "",
                     listType: updatedNote.listType ?? "default",
+                    createdAt: updatedNote.createdAt,
                 }),
             });
 

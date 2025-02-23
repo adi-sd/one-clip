@@ -1,4 +1,3 @@
-import { Note } from "@/types/note";
 import { Editor } from "@tiptap/react";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaLink, FaLinkSlash } from "react-icons/fa6";
 import { MdOutlineContentCopy, MdOutlineFileCopy } from "react-icons/md";
@@ -6,11 +5,11 @@ import { copyPlainText, copyRichText } from "@/lib/editorUtils";
 import ToolbarButton from "@/components/note-editor/ToolbarButton";
 
 const Toolbar = ({
-    currentNote,
+    currentNoteContent,
     editor,
     openLinkDialog,
 }: {
-    currentNote: Note;
+    currentNoteContent: string;
     editor: Editor | null;
     openLinkDialog: () => void;
 }) => {
@@ -64,14 +63,14 @@ const Toolbar = ({
                 icon={<MdOutlineContentCopy size={12} />}
                 tooltip="Copy Content"
                 isActive={false} // This action is always available
-                onClick={() => copyPlainText(currentNote.content)}
+                onClick={() => copyPlainText(currentNoteContent)}
             />
 
             <ToolbarButton
                 icon={<MdOutlineFileCopy size={12} />}
                 tooltip="Copy Formatted"
                 isActive={false} // This action is always available
-                onClick={() => copyRichText(currentNote.content)}
+                onClick={() => copyRichText(currentNoteContent)}
             />
         </div>
     );

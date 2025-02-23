@@ -2,17 +2,12 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Note } from "@/types/note";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import Link from "@tiptap/extension-link";
 import { FaTrash } from "react-icons/fa";
-import Toolbar from "@/components/note-editor/Toolbar";
-import LinkDialog from "@/components/display-container/LinkDialog";
-import NoteNameEditor from "@/components/note-editor/NoteNameEditor";
+import NoteTitleEditor from "@/components/note-editor/NoteTitleEditor";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/utils";
+import NoteContentEditor from "../note-editor/NoteContentEditor";
 
 const DisplayContainer = ({
     currentNote,
@@ -27,52 +22,24 @@ const DisplayContainer = ({
 }) => {
     const displayContainerRef = useRef<HTMLDivElement | null>(null);
     const [content, setContent] = useState(currentNote.content);
-    const [name, setName] = useState(currentNote.name);
-    const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+    const [title, setTitle] = useState(currentNote.title);
     const [isEditorFocused, setIsEditorFocused] = useState(false);
 
-    // ✅ Initialize TipTap editor
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            Link.configure({
-                openOnClick: false,
-                autolink: true,
-                defaultProtocol: "https",
-                protocols: ["http", "https"],
-                HTMLAttributes: {
-                    class: "custom-link",
-                    rel: "noopener noreferrer",
-                    target: "_blank",
-                },
-            }),
-        ],
-        content: content,
-        onUpdate: ({ editor }) => {
-            setContent(editor.getHTML());
-        },
-        immediatelyRender: false,
-    });
-
     useEffect(() => {
-        setContent(currentNote?.content || "");
-        setName(currentNote?.name || "");
-        if (editor && currentNote) {
-            editor.commands.setContent(currentNote.content);
-        }
-    }, [editor, currentNote]);
+        setContent(currentNote.content);
+        setTitle(currentNote.title);
+    }, [currentNote]);
 
     // ✅ Save note function
     const handleSave = useCallback(() => {
         if (currentNote) {
-            onEdit({ ...currentNote, content, name });
+            onEdit({ ...currentNote, content, title });
         }
         if (setIsDialogOpen) {
             setIsDialogOpen(false);
         }
         console.log("Note auto-saved!");
-    }, [currentNote, content, name, onEdit, setIsDialogOpen]);
+    }, [currentNote, content, title, onEdit, setIsDialogOpen]);
 
     // ✅ Detect when the display container **loses focus**
     useEffect(() => {
@@ -119,7 +86,7 @@ const DisplayContainer = ({
         >
             {/* Title & Delete Button */}
             <div className="flex items-start justify-between">
-                <NoteNameEditor name={name} setName={setName} />
+                <NoteTitleEditor title={title} setTitle={setTitle} />
                 <button
                     onClick={() => onDelete(currentNote?.id || "")}
                     className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm [&_svg]:size-4"
@@ -141,14 +108,7 @@ const DisplayContainer = ({
                 )}
             </div>
 
-            <div className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden">
-                {/* Toolbar for formatting */}
-                <Toolbar currentNote={currentNote} editor={editor} openLinkDialog={() => setIsLinkDialogOpen(true)} />
-                {/* Rich Text Editor */}
-                <div className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex overflow-hidden bg-white">
-                    <EditorContent editor={editor} className="flex-1 overflow-y-auto scrollbar-minimal text-sm" />
-                </div>
-            </div>
+            <NoteContentEditor content={content} setContent={setContent}></NoteContentEditor>
 
             {/* Save Button */}
             <Tooltip>
@@ -162,12 +122,9 @@ const DisplayContainer = ({
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent align="center">
-                    <p>Ctrl + S or Cmd + S</p>
+                    <p>Ctrl+S or Cmd+S</p>
                 </TooltipContent>
             </Tooltip>
-
-            {/* Link Dialog */}
-            <LinkDialog isOpen={isLinkDialogOpen} setIsOpen={setIsLinkDialogOpen} editor={editor} />
         </div>
     );
 };

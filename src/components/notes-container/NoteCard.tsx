@@ -130,13 +130,13 @@ const NoteCard = ({
                             <TooltipTrigger asChild>
                                 <div className="flex items-center gap-x-1 text-[12px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
                                     <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
-                                        {note.name} • {formatDate(note.createdAt)}
+                                        {note.title} • {formatDate(note.createdAt)}
                                     </p>
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent align="center">
                                 <p className="whitespace-nowrap">
-                                    {note.name} • {formatDate(note.createdAt)}
+                                    {note.title} • {formatDate(note.createdAt)}
                                 </p>
                             </TooltipContent>
                         </Tooltip>

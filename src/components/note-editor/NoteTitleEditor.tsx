@@ -1,26 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 
-const NoteNameEditor = ({ name, setName }: { name: string; setName: (name: string) => void }) => {
-    const [tempName, setTempName] = useState(name);
+const NoteTitleEditor = ({ title, setTitle }: { title: string; setTitle: (title: string) => void }) => {
+    const [tempName, setTempName] = useState(title);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFocus = () => {
-        if (name === "New Note") {
+        if (title === "New Note") {
             setTempName("");
         }
     };
 
     const handleBlur = () => {
         if (!tempName.trim()) {
-            setTempName(name);
+            setTempName(title);
         } else {
-            setName(tempName);
+            setTitle(tempName);
         }
     };
 
     useEffect(() => {
-        setTempName(name);
-    }, [name]);
+        setTempName(title);
+    }, [title]);
 
     return (
         <input
@@ -35,4 +35,4 @@ const NoteNameEditor = ({ name, setName }: { name: string; setName: (name: strin
     );
 };
 
-export default NoteNameEditor;
+export default NoteTitleEditor;

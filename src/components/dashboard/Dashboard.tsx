@@ -94,7 +94,7 @@ const Dashboard = () => {
                                 className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md overflow-hidden"
                                 aria-describedby={undefined}
                             >
-                                <DialogTitle className="hidden">{currentNote?.name}</DialogTitle>
+                                <DialogTitle className="hidden">{currentNote?.title}</DialogTitle>
                                 <div className="w-full h-full overflow-hidden">
                                     <DisplayContainer
                                         currentNote={currentNote}

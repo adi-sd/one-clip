@@ -45,9 +45,9 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
         }
 
         const body = await req.json();
-        const { name, content, listType } = body;
+        const { title, content, listType, createdAt } = body;
 
-        if (!name?.trim()) {
+        if (!title?.trim()) {
             return NextResponse.json({ error: "Name is required" }, { status: 400 });
         }
 
@@ -63,9 +63,10 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
         const updatedNote = await prisma.note.update({
             where: { id: id },
             data: {
-                name,
+                title: title,
                 content: content ?? existingNote.content,
                 listType: listType ?? existingNote.listType,
+                createdAt,
                 updatedAt: new Date(),
             },
         });

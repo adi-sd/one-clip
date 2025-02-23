@@ -10,7 +10,7 @@ datasource db {
 model Note {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   userId    String  // ✅ Store userId directly from client
-  name      String
+  title     String
   content   String
   listType  String
   createdAt DateTime @default(now())
