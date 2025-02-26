@@ -133,7 +133,7 @@ const NoteCard = ({
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300"
+                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300 overflow-hidden"
                     ref={cardRef}
                     onClick={handleCardClick} // ✅ Left Click → Copy Plain Text
                     onContextMenu={handleContextMenu} // ✅ Right Click → Open Menu
@@ -178,10 +178,10 @@ const NoteCard = ({
                         </div>
                     </div>
                     {/* Note Content */}
-                    <div className="w-full h-[50%] flex-shrink-0">
+                    <div className="w-full h-[50%] flex-shrink-0 overflow-hidden">
                         <div
                             ref={cardRef}
-                            className=" text-[14px] text-ellipsis break-words line-clamp-1 sm:line-clamp-2 md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4 ProseMirror"
+                            className=" text-[14px] text-ellipsis break-words line-clamp-1 md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4 ProseMirror"
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>

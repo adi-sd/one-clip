@@ -20,24 +20,30 @@ export default function ToolbarButtonCombo({
     return (
         <DropdownMenu>
             <Tooltip>
+                {/* ✅ Ensure Tooltip doesn't interfere with dropdown */}
                 <TooltipTrigger asChild>
-                    {/* ✅ Wrap ToolbarButton inside DropdownMenuTrigger properly */}
-                    <DropdownMenuTrigger className="outline-0" asChild>
-                        <button>
+                    <DropdownMenuTrigger asChild>
+                        <div>
                             <ToolbarButton icon={trigger} isActive={options.some((opt) => opt.isActive)} />
-                        </button>
+                        </div>
                     </DropdownMenuTrigger>
                 </TooltipTrigger>
                 <TooltipContent align="center">
                     <p>{tooltip}</p>
                 </TooltipContent>
             </Tooltip>
+
             <DropdownMenuContent className="w-auto min-w-0 rounded-full p-1" align="center">
                 {options.map((option, index) => (
-                    <DropdownMenuItem className="w-auto min-w-0 rounded-full p-0 mb-1 last:mb-0" key={index} asChild>
-                        <button onClick={option.onClick}>
-                            <ToolbarButton icon={option.icon} isActive={option.isActive} />
-                        </button>
+                    <DropdownMenuItem
+                        key={index}
+                        className="w-auto min-w-0 rounded-full p-0 mb-1 last:mb-0"
+                        onSelect={(e) => {
+                            e.preventDefault(); // ✅ Prevent dropdown from closing immediately
+                            option.onClick();
+                        }}
+                    >
+                        <ToolbarButton icon={option.icon} isActive={option.isActive} />
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>

@@ -119,7 +119,7 @@ body {
 }
 
 .ProseMirror li {
-    margin-bottom: 0.25rem; /* ✅ Spacing between list items */
+    /* margin-bottom: 0.25rem; /* ✅ Spacing between list items */
 }
 
 @layer base {

@@ -29,7 +29,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${interFont.variable} ${interFont.variable} antialiased h-screen w-screen font-mono`}>
+            <body
+                className={`${interFont.variable} ${interFont.variable} antialiased h-screen w-screen font-mono overflow-hidden`}
+            >
                 <AuthProvider>
                     <AuthModalProvider>
                         <ToasterProvider />

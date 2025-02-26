@@ -1,7 +1,8 @@
 import { Editor } from "@tiptap/react";
-import { FaBold, FaItalic, FaStrikethrough, FaUnderline, FaLink, FaLinkSlash } from "react-icons/fa6";
+import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa6";
 import { MdOutlineContentCopy, MdOutlineFileCopy } from "react-icons/md";
 import { PiListBold, PiListBulletsBold, PiListNumbersBold, PiGlobeBold } from "react-icons/pi";
+import { TbLink, TbLinkOff, TbLinkPlus } from "react-icons/tb";
 import { LuListTodo } from "react-icons/lu";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
 import ToolbarButton from "@/components/note-editor/ToolbarButton";
@@ -45,25 +46,29 @@ const Toolbar = ({
                 onClick={() => editor.chain().focus().toggleUnderline().run()}
             />
 
-            {/* Dropdown Menu for List Options */}
+            {/* ✅ Hyperlink Options in Dropdown */}
             <ToolbarButtonCombo
                 tooltip="Hyperlink"
-                trigger={<PiGlobeBold size={14} />}
+                trigger={<PiGlobeBold size={16} />}
                 options={[
                     {
-                        icon: <FaLink size={14} />,
+                        icon: editor.isActive("link") ? (
+                            <TbLinkPlus className="font-bold" size={16} />
+                        ) : (
+                            <TbLink className="font-bold" size={16} />
+                        ),
                         isActive: editor.isActive("link"),
                         onClick: () => openLinkDialog(),
                     },
                     {
-                        icon: <FaLinkSlash size={14} />,
-                        isActive: false,
+                        icon: <TbLinkOff className="font-bold" size={16} />,
+                        isActive: false, // Only enabled when a link is active
                         onClick: () => editor.chain().focus().unsetLink().run(),
                     },
                 ]}
             />
 
-            {/* Dropdown Menu for List Options */}
+            {/* ✅ List Options */}
             <ToolbarButtonCombo
                 tooltip="List"
                 trigger={<PiListBold size={14} />}

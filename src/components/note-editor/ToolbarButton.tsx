@@ -2,10 +2,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ToolbarButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    icon: ReactNode; // Icon component (e.g., FaBold, FaItalic)
-    tooltip?: string; // Tooltip text
+    icon: ReactNode;
+    tooltip?: string;
     isActive: boolean;
-    onClick?: () => void; // Pass click handler from parent
+    onClick?: () => void;
 }
 
 const ToolbarButton = ({ icon, tooltip, isActive, onClick }: ToolbarButtonProps) => {
