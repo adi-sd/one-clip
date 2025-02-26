@@ -48,27 +48,28 @@ const LinkDialog = ({
 
     return (
         <Dialog key="link-dialog" open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="w-full max-w-sm" aria-describedby={undefined}>
+            <DialogContent className="w-full max-w-sm overflow-hidden flex flex-col" aria-describedby={undefined}>
                 <DialogHeader>
                     <DialogTitle>{isEditing ? "Edit Link" : "Add Link"}</DialogTitle>
                 </DialogHeader>
-                <div className="flex flex-col gap-4">
-                    <Input
-                        type="text"
-                        value={linkText}
-                        onChange={(e) => setLinkText(e.target.value)}
-                        placeholder="Selected text"
-                        disabled
-                        className="opacity-75"
-                    />
 
-                    <Input
-                        type="text"
-                        value={linkUrl}
-                        onChange={(e) => setLinkUrl(e.target.value)}
-                        placeholder="Enter a URL"
-                        autoFocus
-                    />
+                <div className="flex flex-col gap-4 overflow-hidden">
+                    <div className="flex items-center gap-x-1 text-[16px] font-bold mr-2 text-nowrap overflow-hidden min-w-0">
+                        <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                            <span className="text-gray-400">• For, </span>
+                            {linkText}
+                        </p>
+                    </div>
+
+                    <div className="px-1">
+                        <Input
+                            type="text"
+                            value={linkUrl}
+                            onChange={(e) => setLinkUrl(e.target.value)}
+                            placeholder="Enter a URL"
+                            autoFocus
+                        />
+                    </div>
 
                     <div className="flex justify-end gap-2">
                         {isEditing && (
