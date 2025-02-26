@@ -4,12 +4,14 @@ import NoteCard from "@/components/notes-container/NoteCard";
 const NotesContainer = ({
     notes,
     selectNote,
+    onEdit,
     onDelete,
     showEditButton,
     showOptionButton,
 }: {
     notes: Note[];
     selectNote: (id: string) => void;
+    onEdit: (updatedNote: Note) => void;
     onDelete: (id: string) => void;
     showEditButton: boolean;
     showOptionButton: boolean;
@@ -24,6 +26,7 @@ const NotesContainer = ({
                         key={note.id}
                         note={note}
                         selectNote={() => selectNote(note.id)}
+                        onEdit={(updatedNote: Note) => onEdit(updatedNote)}
                         onDelete={() => onDelete(note.id)}
                         showEditButton={showEditButton}
                         showOptionButton={showOptionButton}

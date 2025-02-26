@@ -69,6 +69,7 @@ const Dashboard = () => {
                             <NotesContainer
                                 notes={filteredNotes}
                                 selectNote={handleSelectNote}
+                                onEdit={handleUpdateNote}
                                 onDelete={handleDeleteNote}
                                 showEditButton={isLargeScreen}
                                 showOptionButton={isLargeScreen}

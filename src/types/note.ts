@@ -6,6 +6,7 @@ export interface Note {
     title: string;
     content: string;
     listType: ListType;
+    disableOneClickCopy: boolean;
     createdAt: string;
     updatedAt: string;
 }

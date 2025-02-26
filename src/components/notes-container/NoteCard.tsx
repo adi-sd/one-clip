@@ -1,8 +1,8 @@
+import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { FaPenClip, FaTrash } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 import { Note } from "@/types/note";
-import sanitizeHtml from "sanitize-html";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -10,56 +10,37 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { useState, useRef, useEffect } from "react";
-import { copyPlainText, copyRichText } from "@/lib/editorUtils";
+import { copyPlainText, copyRichText, sanitizeNoteContent } from "@/lib/editorUtils";
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 const NoteCard = ({
-    note: initialNote, // ✅ Renaming to prevent conflicts with state
+    note: initialNote,
     selectNote,
+    onEdit,
     onDelete,
     showEditButton,
     showOptionButton,
 }: {
     note: Note;
     selectNote: (id: string) => void;
+    onEdit: (updatedNote: Note) => void;
     onDelete: (id: string) => void;
     showEditButton: boolean;
     showOptionButton: boolean;
 }) => {
-    const [note, setNote] = useState<Note>(initialNote); // ✅ Store note in state
+    const [note, setNote] = useState<Note>(initialNote);
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
     const cardRef = useRef<HTMLDivElement | null>(null);
     const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        setNote(initialNote); // ✅ Sync state if the parent updates the note
+        setNote(initialNote);
     }, [initialNote]);
 
     // ✅ Sanitize HTML for Safe Rendering
-    const sanitizedContent = sanitizeHtml(note.content, {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-            "img",
-            "span",
-            "ul",
-            "li",
-            "label",
-            "input",
-            "div",
-            "p",
-        ]),
-        allowedAttributes: {
-            img: ["src", "alt", "title", "width", "height"],
-            span: ["style"],
-            input: ["type", "checked"], // ✅ Allows checkboxes
-            li: ["data-type", "data-checked"], // ✅ Allows task items
-            ul: ["data-type"], // ✅ Allows task list
-            label: [], // ✅ Allows labels for checkboxes
-            div: [],
-            p: [],
-        },
-        allowedSchemes: ["http", "https"],
-    });
+    const sanitizedContent = sanitizeNoteContent(note.content);
 
     // Card Click Handler
     const handleCardClick = (event: React.MouseEvent) => {
@@ -129,6 +110,14 @@ const NoteCard = ({
         }
     };
 
+    // ✅ Toggle One-Click Copy using ShadCN Switch
+    const toggleOneClickCopy = () => {
+        const updatedNote = { ...note, disableOneClickCopy: !note.disableOneClickCopy };
+        setNote(updatedNote);
+        onEdit(updatedNote); // ✅ Update Note using `onEdit`
+        toast.success(`One-Click Copy ${updatedNote.disableOneClickCopy ? "Disabled" : "Enabled"} for this Note!`);
+    };
+
     return (
         <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
             <DropdownMenuTrigger asChild>
@@ -146,7 +135,6 @@ const NoteCard = ({
                             </p>
                         </div>
                         <div className="h-full flex items-center justify-center gap-x-2 m-0">
-                            {/* Show edit button only when DisplayContainer is hidden */}
                             {showEditButton ? null : (
                                 <button
                                     onClick={(e) => {
@@ -177,6 +165,7 @@ const NoteCard = ({
                             </button>
                         </div>
                     </div>
+
                     {/* Note Content */}
                     <div className="w-full h-[50%] flex-shrink-0 overflow-hidden">
                         <div
@@ -185,6 +174,7 @@ const NoteCard = ({
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>
+
                     {/* Note Footer */}
                     <div className="w-full h-fit flex-shrink-0">
                         <Tooltip>
@@ -226,6 +216,12 @@ const NoteCard = ({
                     }}
                 >
                     Edit Note
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <div className="flex items-center justify-between w-full gap-x-2">
+                        <span className="text-sm">One-Click Copy</span>
+                        <Switch checked={note.disableOneClickCopy} onCheckedChange={toggleOneClickCopy} />
+                    </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     className="text-red-500"

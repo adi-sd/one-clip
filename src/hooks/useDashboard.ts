@@ -108,8 +108,9 @@ export const useDashboard = () => {
     const handleUpdateNote = async (updatedNote: Note) => {
         try {
             const isNewNote = unsavedNote?.id === updatedNote.id;
-            const trimmedTitle = updatedNote.title.trim(); // ✅ Trim title to avoid unnecessary updates
-            const trimmedContent = updatedNote.content.trim(); // ✅ Trim content
+            const trimmedTitle = updatedNote.title.trim();
+            const trimmedContent = updatedNote.content.trim();
+            const isDisabled = updatedNote.disableOneClickCopy ?? false; // ✅ Handle new field
 
             if (isNewNote && trimmedTitle === "") {
                 toast.info("Cannot create a note with an empty name!");
@@ -118,14 +119,15 @@ export const useDashboard = () => {
 
             const existingNote = notes.find((note) => note.id === updatedNote.id);
 
-            // ✅ Fix: Compare trimmed values instead of raw values
+            // ✅ Prevent redundant updates (compares all fields now)
             if (
                 existingNote &&
                 trimmedTitle === existingNote.title.trim() &&
-                trimmedContent === existingNote.content.trim()
+                trimmedContent === existingNote.content.trim() &&
+                isDisabled === existingNote.disableOneClickCopy
             ) {
                 console.log("No changes detected");
-                return; // ✅ Prevent redundant updates
+                return;
             }
 
             const response = await fetch(isNewNote ? "/api/notes" : `/api/notes/${updatedNote.id}`, {
@@ -135,6 +137,7 @@ export const useDashboard = () => {
                     title: trimmedTitle,
                     content: trimmedContent,
                     listType: updatedNote.listType ?? "default",
+                    disableOneClickCopy: isDisabled, // ✅ Now included
                     createdAt: updatedNote.createdAt,
                 }),
             });
@@ -152,7 +155,11 @@ export const useDashboard = () => {
             setCurrentNote(savedNote);
             setUnsavedNote(null);
 
-            toast.success(isNewNote ? "New Note Created!" : "Note Updated!");
+            toast.success(
+                isNewNote
+                    ? "New Note Created!"
+                    : `Note Updated! ${isDisabled ? "One-Click Copy Disabled" : "One-Click Copy Enabled"}`
+            );
         } catch (error) {
             console.error("Error saving note:", error);
             toast.error("Failed to save note.");

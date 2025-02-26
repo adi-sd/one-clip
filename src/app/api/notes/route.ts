@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma"; // ✅ Use a shared Prisma client
+import { prisma } from "@/lib/prisma";
 
 // ✅ Utility function for error handling
 const handleError = (error: unknown, context: string) => {
@@ -37,16 +37,16 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { title, content, listType = "default", createdAt, updatedAt } = body;
+        const { title, content, listType = "default" } = body;
 
         const note = await prisma.note.create({
             data: {
                 userId: session.user.id,
-                title: title ?? "New Note",
-                content: content ?? "",
+                title: title?.trim() || "New Note",
+                content: content || "",
                 listType,
-                createdAt,
-                updatedAt,
+                createdAt: new Date(), // ✅ Ensures proper timestamping
+                updatedAt: new Date(),
             },
         });
 

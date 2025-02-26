@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma"; // ✅ Use a shared Prisma client
+import { prisma } from "@/lib/prisma"; // ✅ Shared Prisma client
+import { ObjectId } from "mongodb"; // ✅ Ensure valid MongoDB ObjectId
 
-type Params = Promise<{
+type Params = {
     id: string;
-}>;
+};
 
 // ✅ Utility function for error handling
 const handleError = (error: unknown, context: string) => {
@@ -21,9 +22,13 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = await params;
-        const note = await prisma.note.findUnique({
-            where: { id: id, userId: session.user.id },
+        const { id } = params;
+        if (!ObjectId.isValid(id)) {
+            return NextResponse.json({ error: "Invalid note ID" }, { status: 400 });
+        }
+
+        const note = await prisma.note.findFirst({
+            where: { id, userId: session.user.id }, // ✅ Ensure user-specific lookup
         });
 
         if (!note) {
@@ -44,16 +49,20 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const body = await req.json();
-        const { title, content, listType, createdAt } = body;
-
-        if (!title?.trim()) {
-            return NextResponse.json({ error: "Name is required" }, { status: 400 });
+        const { id } = params;
+        if (!ObjectId.isValid(id)) {
+            return NextResponse.json({ error: "Invalid note ID" }, { status: 400 });
         }
 
-        const { id } = await params;
-        const existingNote = await prisma.note.findUnique({
-            where: { id: id, userId: session.user.id },
+        const body = await req.json();
+        const { title, content, listType } = body;
+
+        if (!title?.trim()) {
+            return NextResponse.json({ error: "Title is required" }, { status: 400 });
+        }
+
+        const existingNote = await prisma.note.findFirst({
+            where: { id, userId: session.user.id },
         });
 
         if (!existingNote) {
@@ -61,13 +70,12 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
         }
 
         const updatedNote = await prisma.note.update({
-            where: { id: id },
+            where: { id },
             data: {
-                title: title,
+                title: title.trim(),
                 content: content ?? existingNote.content,
                 listType: listType ?? existingNote.listType,
-                createdAt,
-                updatedAt: new Date(),
+                updatedAt: new Date(), // ✅ Only update `updatedAt`
             },
         });
 
@@ -85,16 +93,20 @@ export async function DELETE(req: NextRequest, { params }: { params: Params }) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = await params;
-        const existingNote = await prisma.note.findUnique({
-            where: { id: id, userId: session.user.id },
+        const { id } = params;
+        if (!ObjectId.isValid(id)) {
+            return NextResponse.json({ error: "Invalid note ID" }, { status: 400 });
+        }
+
+        const existingNote = await prisma.note.findFirst({
+            where: { id, userId: session.user.id },
         });
 
         if (!existingNote) {
             return NextResponse.json({ error: "Note not found" }, { status: 404 });
         }
 
-        await prisma.note.delete({ where: { id: id } });
+        await prisma.note.delete({ where: { id } });
 
         return NextResponse.json({ message: "Note deleted successfully" }, { status: 200 });
     } catch (error) {
