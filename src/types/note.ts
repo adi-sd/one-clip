@@ -12,3 +12,5 @@ export interface Note {
 }
 
 export type ToggleFlag = "oneClickCopy";
+
+export type SortedOrder = "i-updated" | "i-created" | "d-updated" | "d-created";

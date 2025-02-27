@@ -109,15 +109,20 @@ export const useNotesStore = create<NotesState>((set, get) => {
             }
         },
         updateNoteFlag: async (noteId: string, flagName: ToggleFlag) => {
-            const { notes } = get();
+            const { notes, currentNote } = get();
             const noteToUpdate = notes.find((n) => n.id === noteId);
             if (!noteToUpdate) {
                 throw new Error("Cannot update note flag: note not found in store.");
             }
             try {
+                // Toggle the flag value.
                 const toggledValue = !(noteToUpdate[flagName] as boolean);
-                const updatedNote = { ...noteToUpdate, [flagName]: toggledValue };
-                await saveUpdatedNote(updatedNote);
+                // Call the service function with the nested endpoint.
+                const savedNote = await noteService.updateNoteFlag(noteId, flagName, toggledValue);
+                set({
+                    notes: notes.map((n) => (n.id === savedNote.id ? savedNote : n)),
+                    currentNote: currentNote && currentNote.id === savedNote.id ? savedNote : currentNote,
+                });
                 toast.success(`${flagName} ${toggledValue ? "Enabled" : "Disabled"}!`);
             } catch (error) {
                 console.error("Error updating note flag:", error);
