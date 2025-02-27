@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { FaPenClip, FaTrash } from "react-icons/fa6";
@@ -9,93 +12,71 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { useState, useRef, useEffect } from "react";
 import { copyPlainText, copyRichText, sanitizeNoteContent } from "@/lib/editorUtils";
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useNotesStore } from "@/store/noteStore";
+import { useScreenResize } from "@/hooks/useScreenResize";
 
+// Updated NoteCard: using store actions directly
 const NoteCard = ({
     note: initialNote,
-    selectNote,
-    onUpdateCopyFlag,
-    onDelete,
-    showEditButton,
-    showOptionButton,
     setIsDialogOpen,
 }: {
     note: Note;
-    selectNote: (id: string) => void;
-    onUpdateCopyFlag: (newValue: boolean) => void;
-    onDelete: (id: string) => void;
-    showEditButton: boolean;
-    showOptionButton: boolean;
-    setIsDialogOpen: (val: boolean) => void;
+    setIsDialogOpen: (value: boolean) => void;
 }) => {
+    const { setCurrentNote, updateNoteFlag, deleteNote } = useNotesStore();
+    const { isLargeScreen } = useScreenResize();
+
     const [note, setNote] = useState<Note>(initialNote);
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
     const cardRef = useRef<HTMLDivElement | null>(null);
     const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
+    // Sync local note state if initialNote changes.
     useEffect(() => {
         setNote(initialNote);
     }, [initialNote]);
 
-    // ✅ Sanitize HTML for Safe Rendering
     const sanitizedContent = sanitizeNoteContent(note.content);
 
-    // Card Click Handler
+    // On left click, set current note and copy plain text.
     const handleCardClick = (event: React.MouseEvent) => {
-        event.stopPropagation(); // ✅ Prevent triggering context menu
-        if (showEditButton) {
-            selectNote(note.id);
-        }
+        event.stopPropagation();
+        setCurrentNote(note);
         copyPlainText(new DOMParser().parseFromString(note.content, "text/html").body.textContent || "");
-        console.log("Copied to clipboard!");
     };
 
-    // ✅ Open Context Menu (Fix for incorrect positioning)
+    // Calculate context menu position and open it.
     const handleContextMenu = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
         event.preventDefault();
         event.stopPropagation();
-
-        if (!cardRef.current) return; // Ensure the card reference exists
-
+        if (!cardRef.current) return;
         const cardRect = cardRef.current.getBoundingClientRect();
-        const menuWidth = 150; // Approximate menu width
-        const menuHeight = 120; // Approximate menu height
-
-        let x = cardRect.right - menuWidth; // Position at bottom-right
-        let y = cardRect.bottom; // Below the card
-
-        // Prevent overflow from the viewport
+        const menuWidth = 150; // approximate width
+        const menuHeight = 120; // approximate height
+        let x = cardRect.right - menuWidth;
+        let y = cardRect.bottom;
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-
-        if (x + menuWidth > screenWidth) x = screenWidth - menuWidth - 10; // Prevent right overflow
-        if (y + menuHeight > screenHeight) y = screenHeight - menuHeight - 10; // Prevent bottom overflow
-
+        if (x + menuWidth > screenWidth) x = screenWidth - menuWidth - 10;
+        if (y + menuHeight > screenHeight) y = screenHeight - menuHeight - 10;
         setContextMenu({ x, y });
         contextMenuRef.current?.focus();
-        setTimeout(closeContextMenu, 2000);
+        setTimeout(() => setContextMenu(null), 2500);
     };
 
-    // ✅ Close Context Menu
-    const closeContextMenu = () => {
-        setContextMenu(null);
-        window.focus();
-    };
-
-    // ✅ Handle button click (Does NOT trigger card click)
+    // Handle button actions.
     const handleButtonClick = (
         event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>,
         action: "edit" | "delete" | "options" | "copy-normal" | "copy-formatted" | "copy-flag"
     ) => {
         event.stopPropagation();
-        console.log(`${action} button clicked`);
         switch (action) {
             case "edit":
                 setIsDialogOpen(true);
-                selectNote(note.id);
+                setCurrentNote(note);
                 break;
             case "copy-normal":
                 copyPlainText(note.content);
@@ -104,128 +85,92 @@ const NoteCard = ({
                 copyRichText(note.content);
                 break;
             case "delete":
-                onDelete(note.id);
+                deleteNote(note.id);
                 break;
             case "options":
-                handleContextMenu(event); // ✅ Call existing function for positioning
+                handleContextMenu(event);
                 break;
             case "copy-flag":
-                onUpdateCopyFlag(!note.disableOneClickCopy);
+                updateNoteFlag(note.id, "disableOneClickCopy", !note.disableOneClickCopy);
                 break;
         }
     };
 
     return (
-        <DropdownMenu open={!!contextMenu} onOpenChange={closeContextMenu}>
+        <DropdownMenu open={!!contextMenu} onOpenChange={() => setContextMenu(null)}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300 overflow-hidden"
                     ref={cardRef}
-                    onClick={handleCardClick} // ✅ Left Click → Copy Plain Text
-                    onContextMenu={handleContextMenu} // ✅ Right Click → Open Menu
+                    className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300 overflow-hidden"
+                    onClick={handleCardClick}
+                    onContextMenu={handleContextMenu}
                 >
-                    {/* Header and Buttons */}
-                    <div className="w-full h-fit flex flex-row items-center justify-between">
-                        <div className="flex items-center gap-x-1 text-[10px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
-                            <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
-                                {note.title}
-                            </p>
-                        </div>
-                        <div className="h-full flex items-center justify-center gap-x-2 m-0">
-                            {showEditButton ? null : (
-                                <button
-                                    onClick={(e) => {
-                                        handleButtonClick(e, "edit");
-                                    }}
-                                    className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
-                                >
-                                    <FaPenClip size={12} />
-                                </button>
-                            )}
-                            {showOptionButton ? null : (
-                                <button
-                                    onClick={(e) => {
-                                        handleButtonClick(e, "options");
-                                    }}
-                                    className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
-                                >
-                                    <TiThMenu size={12} />
-                                </button>
+                    {/* Header */}
+                    <div className="w-full flex items-center justify-between">
+                        <div className="text-[10px] text-gray-400 font-bold truncate">{note.title}</div>
+                        <div className="flex items-center gap-x-2">
+                            {!isLargeScreen && (
+                                <>
+                                    <button
+                                        onClick={(e) => handleButtonClick(e, "edit")}
+                                        className="p-1 hover:bg-gray-300 rounded-sm text-gray-400 hover:text-gray-500"
+                                    >
+                                        <FaPenClip size={12} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => handleButtonClick(e, "options")}
+                                        className="p-1 hover:bg-gray-300 rounded-sm text-gray-400 hover:text-gray-500"
+                                    >
+                                        <TiThMenu size={12} />
+                                    </button>
+                                </>
                             )}
                             <button
-                                onClick={(e) => {
-                                    handleButtonClick(e, "delete");
-                                }}
-                                className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
+                                onClick={(e) => handleButtonClick(e, "delete")}
+                                className="p-1 hover:bg-gray-300 rounded-sm text-gray-400 hover:text-gray-500"
                             >
                                 <FaTrash size={12} />
                             </button>
                         </div>
                     </div>
 
-                    {/* Note Content */}
-                    <div className="w-full h-[50%] flex-shrink-0 overflow-hidden">
+                    {/* Content */}
+                    <div className="w-full h-[50%] overflow-hidden">
                         <div
-                            ref={cardRef}
-                            className=" text-[14px] text-ellipsis break-words line-clamp-1 md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4 ProseMirror"
+                            className="text-[14px] break-words line-clamp-2"
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>
 
-                    {/* Note Footer */}
-                    <div className="w-full h-fit flex-shrink-0">
+                    {/* Footer with tooltip for dates */}
+                    <div className="w-full flex justify-end">
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <div className="flex items-center justify-end gap-x-1 text-[10px] text-gray-400 font-bold text-nowrap overflow-hidden min-w-0">
-                                    <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
-                                        {formatDateShort(note.updatedAt)}
-                                    </p>
+                                <div className="text-[10px] text-gray-400 font-bold truncate">
+                                    {formatDateShort(note.updatedAt)}
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent side="bottom" align="start">
-                                <p className="whitespace-nowrap">• Created At: {formatDate(note.createdAt)}</p>
-                                <p className="whitespace-nowrap">• Last Updated At: {formatDate(note.updatedAt)}</p>
+                                <p>Created: {formatDate(note.createdAt)}</p>
+                                <p>Updated: {formatDate(note.updatedAt)}</p>
                             </TooltipContent>
                         </Tooltip>
                     </div>
                 </Card>
             </DropdownMenuTrigger>
-
-            {/* ✅ Right-Click Context Menu (Now Positions Correctly) */}
             <DropdownMenuContent align="end" sideOffset={5} ref={contextMenuRef}>
-                <DropdownMenuItem
-                    onClick={(e) => {
-                        handleButtonClick(e, "copy-normal");
-                    }}
-                >
-                    Copy
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={(e) => {
-                        handleButtonClick(e, "copy-formatted");
-                    }}
-                >
+                <DropdownMenuItem onClick={(e) => handleButtonClick(e, "copy-normal")}>Copy</DropdownMenuItem>
+                <DropdownMenuItem onClick={(e) => handleButtonClick(e, "copy-formatted")}>
                     Copy Formatted
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={(e) => {
-                        handleButtonClick(e, "edit");
-                    }}
-                >
-                    Edit Note
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={(e) => handleButtonClick(e, "edit")}>Edit Note</DropdownMenuItem>
                 <DropdownMenuItem>
-                    <div className="flex items-center justify-between w-full gap-x-2">
+                    <div className="flex items-center justify-between w-full">
                         <span className="text-sm">One-Click Copy</span>
                         <Switch checked={note.disableOneClickCopy} onClick={(e) => handleButtonClick(e, "copy-flag")} />
                     </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                    className="text-red-500"
-                    onClick={(e) => {
-                        handleButtonClick(e, "delete");
-                    }}
-                >
+                <DropdownMenuItem className="text-red-500" onClick={(e) => handleButtonClick(e, "delete")}>
                     Delete Note
                 </DropdownMenuItem>
             </DropdownMenuContent>

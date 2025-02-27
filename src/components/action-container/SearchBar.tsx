@@ -1,31 +1,44 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { FaSearch, FaTimes } from "react-icons/fa";
+"use client";
 
-export default function SearchBar({
-    onSearch,
-    isLargeScreen,
-}: {
-    onSearch: (query: string) => void;
-    isLargeScreen: boolean;
-}) {
-    const [searchQuery, setSearchQuery] = useState("");
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useScreenResize } from "@/hooks/useScreenResize";
+import React from "react";
+import { FaSearch, FaTimes } from "react-icons/fa";
+import { useNotesStore } from "@/store/noteStore";
+import { Note } from "@/types/note";
+
+interface SearchBarProps {
+    setFilteredNotes: React.Dispatch<React.SetStateAction<Note[]>>;
+}
+
+export default function SearchBar({ setFilteredNotes }: SearchBarProps) {
+    const { notes } = useNotesStore();
+    const { isLargeScreen } = useScreenResize();
+    const [searchQuery, setSearchQuery] = React.useState("");
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
         setSearchQuery(query);
-        onSearch(query);
+        if (!query.trim()) {
+            setFilteredNotes(notes);
+        } else {
+            const filtered = notes.filter(
+                (note: Note) =>
+                    note.content.toLowerCase().includes(query.toLowerCase()) ||
+                    note.title.toLowerCase().includes(query.toLowerCase())
+            );
+            setFilteredNotes(filtered);
+        }
     };
 
-    // ✅ Clears search box & resets notes
     const handleClearSearch = () => {
         setSearchQuery("");
-        onSearch("");
+        setFilteredNotes(notes);
     };
 
     return (
-        <div className="h-full w-full flex rounded-full focus:ring-2 focus-visible:ring-2 focus-within:ring-2 ring-gray-400 ">
+        <div className="h-full w-full flex rounded-full focus:ring-2 focus-visible:ring-2 focus-within:ring-2 ring-gray-400">
             <Input
                 type="text"
                 name="search"

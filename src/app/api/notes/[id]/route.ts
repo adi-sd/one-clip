@@ -4,9 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma"; // ✅ Shared Prisma client
 import { ObjectId } from "mongodb"; // ✅ Ensure valid MongoDB ObjectId
 
-type Params = {
+type Params = Promise<{
     id: string;
-};
+}>;
 
 // ✅ Utility function for error handling
 const handleError = (error: unknown, context: string) => {
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
         if (!ObjectId.isValid(id)) {
             return NextResponse.json({ error: "Invalid note ID" }, { status: 400 });
         }
@@ -49,7 +49,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
         if (!ObjectId.isValid(id)) {
             return NextResponse.json({ error: "Invalid note ID" }, { status: 400 });
         }
@@ -93,7 +93,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Params }) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
         if (!ObjectId.isValid(id)) {
             return NextResponse.json({ error: "Invalid note ID" }, { status: 400 });
         }
