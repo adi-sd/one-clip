@@ -15,11 +15,10 @@ import { Note } from "@/types/note";
 
 const Dashboard = () => {
     const { data: session, status } = useSession();
-    const { user, notes, currentNote, isLoading, fetchNotes, setUser } = useNotesStore();
+    const { user, notes, currentNote, isLoading, fetchNotes, setUser, isDialogOpen, setIsDialogOpen } = useNotesStore();
 
     const { isLargeScreen, isDialogAllowed } = useScreenResize();
     const [filteredNotes, setFilteredNotes] = useState<Note[]>(notes);
-    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
     // Set the user in the store and fetch notes if available.
     useEffect(() => {
@@ -70,14 +69,14 @@ const Dashboard = () => {
                             <span>No matches for the search!</span>
                         </DashboardMessage>
                     ) : (
-                        <NotesContainer filteredNotes={filteredNotes} setIsDialogOpen={setIsDialogOpen} />
+                        <NotesContainer filteredNotes={filteredNotes} />
                     )}
                 </div>
 
                 {/* Right side: Display Container for large screens */}
                 {!isDialogAllowed && currentNote && (
                     <div className="w-2/6 h-full pb-1">
-                        <DisplayContainer setIsDialogOpen={setIsDialogOpen} />
+                        <DisplayContainer />
                     </div>
                 )}
 
@@ -90,7 +89,7 @@ const Dashboard = () => {
                         >
                             <DialogTitle className="hidden">{currentNote?.title}</DialogTitle>
                             <div className="w-full h-full overflow-hidden">
-                                <DisplayContainer setIsDialogOpen={setIsDialogOpen} />
+                                <DisplayContainer />
                             </div>
                         </DialogContent>
                     </Dialog>

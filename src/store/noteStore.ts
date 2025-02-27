@@ -16,7 +16,9 @@ interface NotesState {
     notes: Note[];
     currentNote: Note | null;
     isLoading: boolean;
+    isDialogOpen: boolean;
     setNotes: (notes: Note[]) => void;
+    setIsDialogOpen: (open: boolean) => void;
     setCurrentNote: (note: Note | null) => void;
     fetchNotes: () => Promise<void>;
     updateNote: (updatedNote: Note) => Promise<void>;
@@ -30,8 +32,10 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     notes: [],
     currentNote: null,
     isLoading: false,
+    isDialogOpen: false,
     setNotes: (notes) => set({ notes }),
     setCurrentNote: (note) => set({ currentNote: note }),
+    setIsDialogOpen: (open: boolean) => set({ isDialogOpen: open }),
     fetchNotes: async () => {
         const { user } = get();
         if (!user || !user.id) {
@@ -111,8 +115,21 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     },
     deleteNote: async (noteId: string) => {
         const { currentNote, notes } = get();
-        if (!currentNote || currentNote.id !== noteId) {
-            throw new Error("Cannot delete note: current note is not set or does not match.");
+        if (!currentNote) {
+            throw new Error("No current note set.");
+        }
+        // If the current note has no id, it's unsaved—delete it locally.
+        if (!currentNote.id) {
+            set({
+                notes: notes.filter((note) => note !== currentNote),
+                currentNote: null,
+            });
+            toast.error("Note deleted!");
+            return;
+        }
+        // For saved notes, ensure the current note's id matches the provided noteId.
+        if (currentNote.id !== noteId) {
+            throw new Error("Cannot delete note: current note does not match the provided note id.");
         }
         try {
             await noteService.deleteNote(noteId);

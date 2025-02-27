@@ -19,14 +19,8 @@ import { useNotesStore } from "@/store/noteStore";
 import { useScreenResize } from "@/hooks/useScreenResize";
 
 // Updated NoteCard: using store actions directly
-const NoteCard = ({
-    note: initialNote,
-    setIsDialogOpen,
-}: {
-    note: Note;
-    setIsDialogOpen: (value: boolean) => void;
-}) => {
-    const { setCurrentNote, updateNoteFlag, deleteNote } = useNotesStore();
+const NoteCard = ({ note: initialNote }: { note: Note }) => {
+    const { setCurrentNote, updateNoteFlag, deleteNote, setIsDialogOpen } = useNotesStore();
     const { isLargeScreen } = useScreenResize();
 
     const [note, setNote] = useState<Note>(initialNote);

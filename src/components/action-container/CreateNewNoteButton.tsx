@@ -4,7 +4,7 @@ import { ListType, Note } from "@/types/note";
 import { FaPlus } from "react-icons/fa";
 
 export default function CreateNewNoteButton() {
-    const { user } = useNotesStore();
+    const { user, setIsDialogOpen } = useNotesStore();
     const { isLargeScreen } = useScreenResize();
 
     // Handler: create a new empty note.
@@ -26,6 +26,9 @@ export default function CreateNewNoteButton() {
             // notes: [newNote, ...state.notes],
             currentNote: newNote as Note,
         }));
+        if (!isLargeScreen) {
+            setIsDialogOpen(true);
+        }
     };
 
     return (

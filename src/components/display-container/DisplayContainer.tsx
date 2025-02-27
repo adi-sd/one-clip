@@ -10,10 +10,12 @@ import NoteContentEditor from "@/components/note-editor/NoteContentEditor";
 import { toast } from "sonner";
 import { FaX } from "react-icons/fa6";
 import { useNotesStore } from "@/store/noteStore";
+import { useScreenResize } from "@/hooks/useScreenResize";
 
-const DisplayContainer = ({ setIsDialogOpen }: { setIsDialogOpen?: (val: boolean) => void }) => {
+const DisplayContainer = () => {
     // Retrieve current note and actions directly from the store.
-    const { currentNote, updateNote, deleteNote } = useNotesStore();
+    const { currentNote, updateNote, deleteNote, setIsDialogOpen } = useNotesStore();
+    const { isDialogAllowed } = useScreenResize();
 
     const displayContainerRef = useRef<HTMLDivElement | null>(null);
     const [content, setContent] = useState(currentNote ? currentNote.content : "");
@@ -102,7 +104,7 @@ const DisplayContainer = ({ setIsDialogOpen }: { setIsDialogOpen?: (val: boolean
                     >
                         <FaTrash size={15} />
                     </button>
-                    {setIsDialogOpen && (
+                    {isDialogAllowed && setIsDialogOpen && (
                         <button
                             onClick={() => setIsDialogOpen(false)}
                             className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
