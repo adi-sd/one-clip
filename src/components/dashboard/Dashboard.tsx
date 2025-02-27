@@ -7,23 +7,25 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ActionContainer from "@/components/action-container/ActionContainer";
 import { useDashboard } from "@/hooks/useDashboard";
 import DashboardMessage from "@/components/dashboard/DashboardMessage";
+import { useScreenResize } from "@/hooks/useScreenResize";
+import { useState } from "react";
 
 const Dashboard = () => {
     const {
         notes,
         filteredNotes,
         currentNote,
-        isLargeScreen,
-        isDialogOpen,
         isLoading,
         showSignInMessage,
-        setIsDialogOpen,
         handleSelectNote,
         handleCreateNewEmptyNote,
         handleUpdateNote,
         handleDeleteNote,
         handleSearch,
     } = useDashboard();
+
+    const { isDialogAllowed, isLargeScreen } = useScreenResize();
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
     if (isLoading) {
         return (
@@ -78,7 +80,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* Display Container - Only visible on lg/xl */}
-                    {isLargeScreen && currentNote && (
+                    {!isDialogAllowed && currentNote && (
                         <div className="w-2/6 h-full pb-1">
                             <DisplayContainer
                                 currentNote={currentNote}
@@ -89,7 +91,7 @@ const Dashboard = () => {
                     )}
 
                     {/* Mobile Edit Dialog */}
-                    {!isLargeScreen && currentNote && (
+                    {isDialogAllowed && currentNote && (
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogContent
                                 className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md overflow-hidden"

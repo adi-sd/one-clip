@@ -12,8 +12,6 @@ export const useDashboard = () => {
     const [notes, setNotes] = useState<Note[]>([]);
     const [filteredNotes, setFilteredNotes] = useState<Note[]>([]); // ✅ Filtered notes state
     const [currentNote, setCurrentNote] = useState<Note | null>(null);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [unsavedNote, setUnsavedNote] = useState<Note | null>(null);
     const [isLoading, setIsLoading] = useState(true); // ✅ Loading state
     const [showSignInMessage, setShowSignInMessage] = useState(false); // ✅ Controls sign-in prompt
@@ -39,16 +37,6 @@ export const useDashboard = () => {
     };
 
     useEffect(() => {
-        const handleResize = () => {
-            const isLarge = window.innerWidth >= 1024; // lg breakpoint
-            setIsLargeScreen(isLarge);
-        };
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    useEffect(() => {
         if (status === "unauthenticated") {
             handleOpenAuthModal(); // ✅ Open Auth Modal when not signed in
             setIsLoading(false);
@@ -56,9 +44,6 @@ export const useDashboard = () => {
         } else if (status === "authenticated" && session) {
             setShowSignInMessage(false); // ✅ Hide sign-in message
             fetchNotes();
-        }
-        if (isLargeScreen) {
-            setIsDialogOpen(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, session, router]);
@@ -82,9 +67,6 @@ export const useDashboard = () => {
 
     const handleSelectNote = (id: string) => {
         setCurrentNote(notes.find((note) => note.id === id) || null);
-        if (!isLargeScreen) {
-            setIsDialogOpen(true);
-        }
     };
 
     const handleCreateNewEmptyNote = async () => {
@@ -99,10 +81,6 @@ export const useDashboard = () => {
 
         setUnsavedNote(newNote as Note);
         setCurrentNote(newNote as Note);
-
-        if (!isLargeScreen) {
-            setIsDialogOpen(true);
-        }
     };
 
     const handleUpdateNote = async (updatedNote: Note) => {
@@ -202,12 +180,9 @@ export const useDashboard = () => {
         notes,
         filteredNotes,
         currentNote,
-        isLargeScreen,
-        isDialogOpen,
         isLoading,
         showSignInMessage,
         setCurrentNote,
-        setIsDialogOpen,
         handleSelectNote,
         handleCreateNewEmptyNote,
         handleUpdateNote,
