@@ -40,19 +40,21 @@ export default function SearchBar({ setFilteredNotes }: SearchBarProps) {
     return (
         <div className="h-full w-full flex rounded-full focus:ring-2 focus-visible:ring-2 focus-within:ring-2 ring-gray-400">
             <Input
+                disabled={notes.length === 0}
                 type="text"
                 name="search"
                 id="search"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Search notes..."
-                className="h-full w-full rounded-full rounded-r-none focus:ring-0 focus-visible:ring-0 focus-within:ring-0 font-semibold placeholder:text-sm flex justify-center items-center"
+                className="h-full w-full rounded-full rounded-r-none focus:ring-0 focus-visible:ring-0 focus-within:ring-0 font-semibold placeholder:text-sm flex justify-center items-center pointer-events-auto"
                 style={isLargeScreen ? { fontSize: "0.875rem" } : { fontSize: "" }}
                 autoComplete="off"
             />
             <Button
+                disabled={notes.length === 0}
                 variant={"outline"}
-                className="h-full border-l-0 rounded-full rounded-l-none flex items-center justify-center"
+                className="h-full border-l-0 rounded-full rounded-l-none flex items-center justify-center pointer-events-auto"
                 onClick={searchQuery ? handleClearSearch : undefined}
             >
                 {searchQuery ? <FaTimes className="text-gray-500" /> : <FaSearch className="text-gray-500" />}

@@ -52,14 +52,6 @@ const Dashboard = () => {
         );
     }
 
-    if (notes.length === 0) {
-        return (
-            <DashboardMessage>
-                <span>No notes available for the account!</span>
-            </DashboardMessage>
-        );
-    }
-
     return (
         <div className="w-full h-full flex flex-col lg:flex-row gap-2 md:gap-6 overflow-hidden">
             <div className="w-full h-full gap-x-4 flex items-center justify-center overflow-hidden">
@@ -69,7 +61,11 @@ const Dashboard = () => {
                 >
                     {/* Pass filteredNotes setter to ActionContainer so it can update the state */}
                     <ActionContainer setFilteredNotes={setFilteredNotes} />
-                    {filteredNotes.length === 0 ? (
+                    {notes.length === 0 ? (
+                        <DashboardMessage>
+                            <span>No notes available for the account!</span>
+                        </DashboardMessage>
+                    ) : filteredNotes.length === 0 ? (
                         <DashboardMessage>
                             <span>No matches for the search!</span>
                         </DashboardMessage>
