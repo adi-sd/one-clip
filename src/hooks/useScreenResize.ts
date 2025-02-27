@@ -7,7 +7,7 @@ export const useScreenResize = () => {
     // For Screen Sizing Utility
     useEffect(() => {
         const handleResize = () => {
-            const isLarge = window.innerWidth >= 1024; // lg breakpoint
+            const isLarge = window.innerWidth > 900; // lg breakpoint
             setIsLargeScreen(isLarge);
         };
         handleResize();

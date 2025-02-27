@@ -13,22 +13,23 @@ import { useState, useRef, useEffect } from "react";
 import { copyPlainText, copyRichText, sanitizeNoteContent } from "@/lib/editorUtils";
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { toast } from "sonner";
 
 const NoteCard = ({
     note: initialNote,
     selectNote,
-    onEdit,
+    onUpdateCopyFlag,
     onDelete,
     showEditButton,
     showOptionButton,
+    setIsDialogOpen,
 }: {
     note: Note;
     selectNote: (id: string) => void;
-    onEdit: (updatedNote: Note) => void;
+    onUpdateCopyFlag: (newValue: boolean) => void;
     onDelete: (id: string) => void;
     showEditButton: boolean;
     showOptionButton: boolean;
+    setIsDialogOpen: (val: boolean) => void;
 }) => {
     const [note, setNote] = useState<Note>(initialNote);
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -87,12 +88,13 @@ const NoteCard = ({
     // ✅ Handle button click (Does NOT trigger card click)
     const handleButtonClick = (
         event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>,
-        action: "edit" | "delete" | "options" | "copy-normal" | "copy-formatted"
+        action: "edit" | "delete" | "options" | "copy-normal" | "copy-formatted" | "copy-flag"
     ) => {
         event.stopPropagation();
         console.log(`${action} button clicked`);
         switch (action) {
             case "edit":
+                setIsDialogOpen(true);
                 selectNote(note.id);
                 break;
             case "copy-normal":
@@ -107,15 +109,10 @@ const NoteCard = ({
             case "options":
                 handleContextMenu(event); // ✅ Call existing function for positioning
                 break;
+            case "copy-flag":
+                onUpdateCopyFlag(!note.disableOneClickCopy);
+                break;
         }
-    };
-
-    // ✅ Toggle One-Click Copy using ShadCN Switch
-    const toggleOneClickCopy = () => {
-        const updatedNote = { ...note, disableOneClickCopy: !note.disableOneClickCopy };
-        setNote(updatedNote);
-        onEdit(updatedNote); // ✅ Update Note using `onEdit`
-        toast.success(`One-Click Copy ${updatedNote.disableOneClickCopy ? "Disabled" : "Enabled"} for this Note!`);
     };
 
     return (
@@ -220,7 +217,7 @@ const NoteCard = ({
                 <DropdownMenuItem>
                     <div className="flex items-center justify-between w-full gap-x-2">
                         <span className="text-sm">One-Click Copy</span>
-                        <Switch checked={note.disableOneClickCopy} onCheckedChange={toggleOneClickCopy} />
+                        <Switch checked={note.disableOneClickCopy} onClick={(e) => handleButtonClick(e, "copy-flag")} />
                     </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem
