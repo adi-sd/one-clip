@@ -17,13 +17,13 @@ const LinkDialog = ({
 }) => {
     const [linkUrl, setLinkUrl] = useState("");
     const [linkText, setLinkText] = useState(selectedText || "");
-    const [isEditing, setIsEditing] = useState(false); // ✅ Tracks if a link exists
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         if (!editor || !isOpen) return;
 
         const existingLink = editor.getAttributes("link").href || "";
-        setIsEditing(existingLink !== ""); // ✅ Detects if a link exists
+        setIsEditing(existingLink !== "");
 
         setLinkUrl(existingLink);
         setLinkText(selectedText || "");

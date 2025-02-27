@@ -6,7 +6,9 @@ export interface Note {
     title: string;
     content: string;
     listType: ListType;
-    disableOneClickCopy: boolean;
+    oneClickCopy: boolean;
     createdAt: string;
     updatedAt: string;
 }
+
+export type ToggleFlag = "oneClickCopy";

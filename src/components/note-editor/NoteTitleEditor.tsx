@@ -3,7 +3,7 @@ import { useRef } from "react";
 const NoteTitleEditor = ({ title, setTitle }: { title: string; setTitle: (title: string) => void }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    // ✅ Handle focus behavior
+    // Handle focus behavior
     const handleFocus = () => {
         if (title === "New Note") {
             setTitle(""); // Clear input if it's "New Note"
@@ -18,7 +18,7 @@ const NoteTitleEditor = ({ title, setTitle }: { title: string; setTitle: (title:
         }
     };
 
-    // ✅ Handle blur (when clicking outside)
+    // Handle blur (when clicking outside)
     const handleBlur = () => {
         const trimmedTitle = title.trim();
         if (trimmedTitle === "") {
@@ -34,8 +34,8 @@ const NoteTitleEditor = ({ title, setTitle }: { title: string; setTitle: (title:
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            onFocus={handleFocus} // ✅ Clears only when "New Note"
-            onBlur={handleBlur} // ✅ Handles all edge cases
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             className="h-full w-full text-xl font-bold bg-transparent border-none focus:ring-0 focus:outline-none focus:bg-transparent"
         />
     );

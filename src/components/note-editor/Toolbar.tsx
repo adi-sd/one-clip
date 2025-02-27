@@ -46,7 +46,7 @@ const Toolbar = ({
                 onClick={() => editor.chain().focus().toggleUnderline().run()}
             />
 
-            {/* ✅ Hyperlink Options in Dropdown */}
+            {/* Hyperlink Options in Dropdown */}
             <ToolbarButtonCombo
                 tooltip="Hyperlink"
                 trigger={<PiGlobeBold size={16} />}
@@ -68,7 +68,7 @@ const Toolbar = ({
                 ]}
             />
 
-            {/* ✅ List Options */}
+            {/* List Options */}
             <ToolbarButtonCombo
                 tooltip="List"
                 trigger={<PiListBold size={14} />}

@@ -39,7 +39,9 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
     const handleCardClick = (event: React.MouseEvent) => {
         event.stopPropagation();
         setCurrentNote(note);
-        copyPlainText(new DOMParser().parseFromString(note.content, "text/html").body.textContent || "");
+        if (note.oneClickCopy) {
+            copyPlainText(new DOMParser().parseFromString(note.content, "text/html").body.textContent || "");
+        }
     };
 
     // Calculate context menu position and open it.
@@ -61,10 +63,15 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
         setTimeout(() => setContextMenu(null), 2500);
     };
 
+    // Dedicated handler for toggling the copy flag.
+    const handleToggleCopyFlag = () => {
+        updateNoteFlag(note.id, "oneClickCopy");
+    };
+
     // Handle button actions.
     const handleButtonClick = (
         event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>,
-        action: "edit" | "delete" | "options" | "copy-normal" | "copy-formatted" | "copy-flag"
+        action: "edit" | "delete" | "options" | "copy-normal" | "copy-formatted"
     ) => {
         event.stopPropagation();
         switch (action) {
@@ -84,9 +91,6 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
             case "options":
                 handleContextMenu(event);
                 break;
-            case "copy-flag":
-                updateNoteFlag(note.id, "disableOneClickCopy", !note.disableOneClickCopy);
-                break;
         }
     };
 
@@ -94,8 +98,8 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
         <DropdownMenu open={!!contextMenu} onOpenChange={() => setContextMenu(null)}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    ref={cardRef}
                     className="bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300 overflow-hidden"
+                    ref={cardRef}
                     onClick={handleCardClick}
                     onContextMenu={handleContextMenu}
                 >
@@ -107,13 +111,13 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
                                 <>
                                     <button
                                         onClick={(e) => handleButtonClick(e, "edit")}
-                                        className="p-1 hover:bg-gray-300 rounded-sm text-gray-400 hover:text-gray-500"
+                                        className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
                                     >
                                         <FaPenClip size={12} />
                                     </button>
                                     <button
                                         onClick={(e) => handleButtonClick(e, "options")}
-                                        className="p-1 hover:bg-gray-300 rounded-sm text-gray-400 hover:text-gray-500"
+                                        className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
                                     >
                                         <TiThMenu size={12} />
                                     </button>
@@ -121,32 +125,35 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
                             )}
                             <button
                                 onClick={(e) => handleButtonClick(e, "delete")}
-                                className="p-1 hover:bg-gray-300 rounded-sm text-gray-400 hover:text-gray-500"
+                                className="text-gray-400 hover:text-gray-500 p-1 hover:bg-gray-300 rounded-sm"
                             >
                                 <FaTrash size={12} />
                             </button>
                         </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="w-full h-[50%] overflow-hidden">
+                    {/* Note Content */}
+                    <div className="w-full h-[50%] flex-shrink-0 overflow-hidden">
                         <div
-                            className="text-[14px] break-words line-clamp-2"
+                            ref={cardRef}
+                            className=" text-[14px] text-ellipsis break-words line-clamp-1 md:line-clamp-2 lg:line-clamp-3 xl:line-clamp-4 ProseMirror"
                             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                         />
                     </div>
 
-                    {/* Footer with tooltip for dates */}
-                    <div className="w-full flex justify-end">
+                    {/* Note Footer */}
+                    <div className="w-full h-fit flex-shrink-0">
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <div className="text-[10px] text-gray-400 font-bold truncate">
-                                    {formatDateShort(note.updatedAt)}
+                                <div className="flex items-center justify-end gap-x-1 text-[10px] text-gray-400 font-bold text-nowrap overflow-hidden min-w-0">
+                                    <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
+                                        {formatDateShort(note.updatedAt)}
+                                    </p>
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent side="bottom" align="start">
-                                <p>Created: {formatDate(note.createdAt)}</p>
-                                <p>Updated: {formatDate(note.updatedAt)}</p>
+                                <p className="whitespace-nowrap">• Created At: {formatDate(note.createdAt)}</p>
+                                <p className="whitespace-nowrap">• Last Updated At: {formatDate(note.updatedAt)}</p>
                             </TooltipContent>
                         </Tooltip>
                     </div>
@@ -159,9 +166,9 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={(e) => handleButtonClick(e, "edit")}>Edit Note</DropdownMenuItem>
                 <DropdownMenuItem>
-                    <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center justify-between w-full gap-x-2">
                         <span className="text-sm">One-Click Copy</span>
-                        <Switch checked={note.disableOneClickCopy} onClick={(e) => handleButtonClick(e, "copy-flag")} />
+                        <Switch checked={note.oneClickCopy} onCheckedChange={handleToggleCopyFlag} />
                     </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-red-500" onClick={(e) => handleButtonClick(e, "delete")}>

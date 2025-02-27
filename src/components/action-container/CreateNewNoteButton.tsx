@@ -19,7 +19,7 @@ export default function CreateNewNoteButton() {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             userId: user.id, // Include the user id
-            disableOneClickCopy: false, // Default value
+            oneClickCopy: true, // Default value
         };
         // Update the store: add new note at the beginning and set it as the current note.
         useNotesStore.setState(() => ({

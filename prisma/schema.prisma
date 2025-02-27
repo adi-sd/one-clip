@@ -9,13 +9,13 @@ datasource db {
 
 model Note {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String  @map("userId") @db.String // ✅ Ensure indexed for fast lookup
+  userId    String  @map("userId") @db.String
   title     String
   content   String
   listType  String
-  disableOneClickCopy Boolean @default(false)
+  oneClickCopy Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId]) // ✅ Index userId for efficient per-user queries
+  @@index([userId])
 }

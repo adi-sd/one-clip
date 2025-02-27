@@ -8,7 +8,7 @@ import Toolbar from "@/components/note-editor/Toolbar";
 import { useEffect, useRef, useState } from "react";
 import LinkDialog from "@/components/note-editor/LinkDialog";
 import { createPortal } from "react-dom";
-import { toast } from "sonner"; // ✅ Import toast for error handling
+import { toast } from "sonner";
 
 export default function NoteContentEditor({
     content,
@@ -18,10 +18,10 @@ export default function NoteContentEditor({
     setContent: (content: string) => void;
 }) {
     const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
-    const [selectedText, setSelectedText] = useState<string>(""); // ✅ Store selected text
+    const [selectedText, setSelectedText] = useState<string>("");
     const noteEditorRef = useRef<HTMLDivElement | null>(null);
 
-    // ✅ Initialize TipTap editor
+    // Initialize TipTap editor
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -47,16 +47,27 @@ export default function NoteContentEditor({
         immediatelyRender: false,
     });
 
-    // ✅ Function to open dialog and capture selected text
+    // Editor focus handling
+    const handleFocusEditor = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (editor) {
+            const clickTarget = event.target as HTMLElement;
+            // Prevent focusing if clicking inside the editor content
+            if (!clickTarget.closest(".tiptap-editor")) {
+                editor.commands.focus("end"); // Focus only when clicking outside
+            }
+        }
+    };
+
+    // Function to open dialog and capture selected text
     const openLinkDialog = () => {
         if (!editor) return;
 
         const selection = editor.state.selection;
         const text = editor.view.state.doc.textBetween(selection.from, selection.to, " ").trim();
 
-        // ✅ Prevent opening dialog if no text is selected
+        // Prevent opening dialog if no text is selected
         if (!text) {
-            toast.error("Please select text before adding a link."); // ✅ Show toast error
+            toast.error("Please select text before adding a link.");
             return;
         }
 
@@ -64,7 +75,7 @@ export default function NoteContentEditor({
         setIsLinkDialogOpen(true);
     };
 
-    // ✅ Update editor content when `content` prop changes (fixes the issue)
+    // Update editor content when `content` prop changes (fixes the issue)
     useEffect(() => {
         if (editor && editor.getHTML() !== content) {
             editor.commands.setContent(content, false);
@@ -76,25 +87,17 @@ export default function NoteContentEditor({
             {/* Note Content Editor */}
             <div className="w-full h-full flex flex-col gap-y-2 rounded-lg border border-gray-300 p-1 bg-gray-50 overflow-hidden">
                 {/* Toolbar for formatting */}
-                <Toolbar
-                    currentNoteContent={content}
-                    editor={editor}
-                    openLinkDialog={openLinkDialog} // ✅ Pass function to toolbar
-                />
+                <Toolbar currentNoteContent={content} editor={editor} openLinkDialog={openLinkDialog} />
                 {/* Rich Text Editor */}
                 <div
                     className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex bg-white overflow-y-auto scrollbar-minimal"
-                    onClick={() => {
-                        if (editor) {
-                            editor.chain().focus().setTextSelection(editor.state.doc.content.size).run();
-                        }
-                    }}
+                    onClick={handleFocusEditor}
                 >
                     <EditorContent editor={editor} className="h-fit flex-1 text-sm tiptap-editor" />
                 </div>
             </div>
 
-            {/* ✅ Open Dialog inside noteEditorRef with selected text */}
+            {/* Open Dialog inside noteEditorRef with selected text */}
             {noteEditorRef.current &&
                 isLinkDialogOpen &&
                 createPortal(
@@ -102,7 +105,7 @@ export default function NoteContentEditor({
                         isOpen={isLinkDialogOpen}
                         setIsOpen={setIsLinkDialogOpen}
                         editor={editor}
-                        selectedText={selectedText} // ✅ Pass selected text to dialog
+                        selectedText={selectedText}
                     />,
                     noteEditorRef.current
                 )}

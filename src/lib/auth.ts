@@ -9,19 +9,18 @@ export const authOptions: AuthOptions = {
         }),
     ],
     session: {
-        strategy: "jwt", // ✅ Use JWT instead of database sessions
+        strategy: "jwt",
     },
     callbacks: {
         async session({ session, token }) {
             if (session.user) {
-                session.user.id = token.sub!; // ✅ Store user ID in the session
-                // console.log(session.user.id);
+                session.user.id = token.sub!;
             }
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
-                token.sub = user.id; // ✅ Store user ID in JWT
+                token.sub = user.id;
             }
             return token;
         },

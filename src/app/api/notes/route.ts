@@ -3,13 +3,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-// ✅ Utility function for error handling
+// Utility function for error handling
 const handleError = (error: unknown, context: string) => {
     console.error(`❌ Error in ${context}:`, error);
     return NextResponse.json({ error: `Failed to ${context}`, message: (error as Error).message }, { status: 500 });
 };
 
-// ✅ Get all notes (GET /api/notes)
+// Get all notes (GET /api/notes)
 export async function GET() {
     try {
         const session = await getServerSession(authOptions);
@@ -28,7 +28,7 @@ export async function GET() {
     }
 }
 
-// ✅ Create a new note (POST /api/notes)
+// Create a new note (POST /api/notes)
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
                 title: title?.trim() || "New Note",
                 content: content || "",
                 listType,
-                createdAt: new Date(), // ✅ Ensures proper timestamping
+                createdAt: new Date(),
                 updatedAt: new Date(),
             },
         });

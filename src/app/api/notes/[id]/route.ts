@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma"; // ✅ Shared Prisma client
-import { ObjectId } from "mongodb"; // ✅ Ensure valid MongoDB ObjectId
+import { prisma } from "@/lib/prisma";
+import { ObjectId } from "mongodb";
 
 type Params = Promise<{
     id: string;
 }>;
 
-// ✅ Utility function for error handling
+// Utility function for error handling
 const handleError = (error: unknown, context: string) => {
     console.error(`❌ Error in ${context}:`, error);
     return NextResponse.json({ error: `Failed to ${context}`, message: (error as Error).message }, { status: 500 });
 };
 
-// ✅ Get a single note (GET /api/notes/:id)
+// Get a single note (GET /api/notes/:id)
 export async function GET(req: NextRequest, { params }: { params: Params }) {
     try {
         const session = await getServerSession(authOptions);
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
         }
 
         const note = await prisma.note.findFirst({
-            where: { id, userId: session.user.id }, // ✅ Ensure user-specific lookup
+            where: { id, userId: session.user.id },
         });
 
         if (!note) {
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
     }
 }
 
-// ✅ Update a note (PUT /api/notes/:id)
+// Update a note (PUT /api/notes/:id)
 export async function PUT(req: NextRequest, { params }: { params: Params }) {
     try {
         const session = await getServerSession(authOptions);
@@ -75,7 +75,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
                 title: title.trim(),
                 content: content ?? existingNote.content,
                 listType: listType ?? existingNote.listType,
-                updatedAt: new Date(), // ✅ Only update `updatedAt`
+                updatedAt: new Date(),
             },
         });
 
@@ -85,7 +85,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
     }
 }
 
-// ✅ Delete a note (DELETE /api/notes/:id)
+// Delete a note (DELETE /api/notes/:id)
 export async function DELETE(req: NextRequest, { params }: { params: Params }) {
     try {
         const session = await getServerSession(authOptions);

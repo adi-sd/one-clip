@@ -20,7 +20,6 @@ export default function ToolbarButtonCombo({
     return (
         <DropdownMenu>
             <Tooltip>
-                {/* ✅ Ensure Tooltip doesn't interfere with dropdown */}
                 <TooltipTrigger asChild>
                     <DropdownMenuTrigger asChild>
                         <div>
@@ -39,7 +38,7 @@ export default function ToolbarButtonCombo({
                         key={index}
                         className="w-auto min-w-0 rounded-full p-0 mb-1 last:mb-0"
                         onSelect={(e) => {
-                            e.preventDefault(); // ✅ Prevent dropdown from closing immediately
+                            e.preventDefault();
                             option.onClick();
                         }}
                     >

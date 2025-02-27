@@ -17,10 +17,10 @@ export const sanitizeNoteContent = (noteContent: string) => {
         allowedAttributes: {
             img: ["src", "alt", "title", "width", "height"],
             span: ["style"],
-            input: ["type", "checked"], // ✅ Allows checkboxes
-            li: ["data-type", "data-checked"], // ✅ Allows task items
-            ul: ["data-type"], // ✅ Allows task list
-            label: [], // ✅ Allows labels for checkboxes
+            input: ["type", "checked"],
+            li: ["data-type", "data-checked"],
+            ul: ["data-type"],
+            label: [],
             div: [],
             p: [],
         },
@@ -28,7 +28,7 @@ export const sanitizeNoteContent = (noteContent: string) => {
     });
 };
 
-// ✅ Copy Plain Text (Strips HTML)
+// Copy Plain Text (Strips HTML)
 export const copyPlainText = async (text: string) => {
     try {
         window.focus(); // Attempt to bring the window into focus
@@ -39,7 +39,7 @@ export const copyPlainText = async (text: string) => {
     }
 };
 
-// ✅ Copy Rich Text (Preserves HTML formatting)
+// Copy Rich Text (Preserves HTML formatting)
 export const copyRichText = async (formattedText: string) => {
     try {
         window.focus(); // Attempt to bring the window into focus
