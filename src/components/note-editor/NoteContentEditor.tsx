@@ -82,7 +82,14 @@ export default function NoteContentEditor({
                     openLinkDialog={openLinkDialog} // ✅ Pass function to toolbar
                 />
                 {/* Rich Text Editor */}
-                <div className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex bg-white overflow-y-auto scrollbar-minimal">
+                <div
+                    className="w-full h-full rounded-lg py-2 pl-2 shadow-inner flex bg-white overflow-y-auto scrollbar-minimal"
+                    onClick={() => {
+                        if (editor) {
+                            editor.chain().focus().setTextSelection(editor.state.doc.content.size).run();
+                        }
+                    }}
+                >
                     <EditorContent editor={editor} className="h-fit flex-1 text-sm tiptap-editor" />
                 </div>
             </div>
