@@ -4,7 +4,7 @@ import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
-import Toolbar from "@/components/note-editor/Toolbar";
+import Toolbar from "@/components/toolbar/Toolbar";
 import { useEffect, useRef, useState } from "react";
 import LinkDialog from "@/components/note-editor/LinkDialog";
 import { createPortal } from "react-dom";

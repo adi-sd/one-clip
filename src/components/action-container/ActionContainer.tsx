@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import SearchBar from "@/components/action-container/SearchBar";
 import CreateNewNoteButton from "@/components/action-container/CreateNewNoteButton";
 import { Note } from "@/types/note";
+import SortNotesButton from "./SortNotesButton";
 // import NoteTypeFilter from "@/components/action-container/NoteTypeFilter";
 
 interface ActionContainerProps {
@@ -17,6 +18,9 @@ export default function ActionContainer({ setFilteredNotes }: ActionContainerPro
 
             {/* Filter By Note Type - Desktop*/}
             {/* <NoteTypeFilter /> */}
+
+            {/* Sort By NOte*/}
+            <SortNotesButton setFilteredNotes={setFilteredNotes} defaultSortKey="created-at-new-old" />
 
             {/* Create Note Button */}
             <CreateNewNoteButton />

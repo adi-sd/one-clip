@@ -6,17 +6,29 @@ interface ToolbarButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     tooltip?: string;
     isActive: boolean;
     onClick?: () => void;
+    text?: string;
+    squareDrop?: boolean;
+    disabled?: boolean;
 }
 
-const ToolbarButton = ({ icon, tooltip, isActive, onClick }: ToolbarButtonProps) => {
+const ToolbarButton = ({
+    icon,
+    tooltip,
+    isActive,
+    onClick,
+    text,
+    squareDrop,
+    disabled = false,
+}: ToolbarButtonProps) => {
     return (
         <>
             {tooltip ? (
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <button
+                            disabled={disabled}
                             {...(onClick ? { onClick } : {})}
-                            className={`p-2 rounded-full ${isActive ? "bg-gray-300" : "hover:bg-gray-300"}`}
+                            className={`pointer-events-auto disabled:cursor-not-allowed p-2 rounded-full ${isActive ? "bg-gray-300" : "hover:bg-gray-300"}`}
                         >
                             {icon}
                         </button>
@@ -27,10 +39,14 @@ const ToolbarButton = ({ icon, tooltip, isActive, onClick }: ToolbarButtonProps)
                 </Tooltip>
             ) : (
                 <button
+                    disabled={disabled}
                     {...(onClick ? { onClick } : {})}
-                    className={`p-2 rounded-full ${isActive ? "bg-gray-300" : "hover:bg-gray-300"}`}
+                    className={`pointer-events-auto disabled:cursor-not-allowed h-full w-full p-2 ${isActive ? "bg-gray-300" : "hover:bg-gray-300"} ${squareDrop ? "rounded-md" : "rounded-full"}`}
                 >
-                    {icon}
+                    <div className="h-full w-full flex items-center justify-start gap-x-3">
+                        {icon}
+                        {text && <span>{text}</span>}
+                    </div>
                 </button>
             )}
         </>

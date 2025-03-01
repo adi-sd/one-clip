@@ -5,8 +5,8 @@ import { PiListBold, PiListBulletsBold, PiListNumbersBold, PiGlobeBold } from "r
 import { TbLink, TbLinkOff, TbLinkPlus } from "react-icons/tb";
 import { LuListTodo } from "react-icons/lu";
 import { copyPlainText, copyRichText } from "@/lib/editorUtils";
-import ToolbarButton from "@/components/note-editor/ToolbarButton";
-import ToolbarButtonCombo from "./ToolbarButtonCombo";
+import ToolbarButton from "@/components/toolbar/ToolbarButton";
+import ToolbarButtonCombo from "@/components/toolbar/ToolbarButtonCombo";
 
 const Toolbar = ({
     currentNoteContent,

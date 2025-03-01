@@ -6,24 +6,40 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import ToolbarButton from "@/components/note-editor/ToolbarButton";
+import ToolbarButton from "@/components/toolbar/ToolbarButton";
+
+type DropdownOptionType = {
+    icon: ReactNode;
+    isActive: boolean;
+    onClick: () => void;
+    text?: string;
+    disabled?: boolean;
+};
 
 export default function ToolbarButtonCombo({
     tooltip,
     trigger,
     options,
+    squareDrop = false,
+    disabled = false,
 }: {
     tooltip: string;
     trigger: ReactNode;
-    options: { icon: ReactNode; isActive: boolean; onClick: () => void }[];
+    options: DropdownOptionType[];
+    squareDrop?: boolean;
+    disabled?: boolean;
 }) {
     return (
         <DropdownMenu>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger disabled={disabled} asChild>
                         <div>
-                            <ToolbarButton icon={trigger} isActive={options.some((opt) => opt.isActive)} />
+                            <ToolbarButton
+                                icon={trigger}
+                                isActive={options.some((opt) => opt.isActive)}
+                                disabled={disabled}
+                            />
                         </div>
                     </DropdownMenuTrigger>
                 </TooltipTrigger>
@@ -32,7 +48,10 @@ export default function ToolbarButtonCombo({
                 </TooltipContent>
             </Tooltip>
 
-            <DropdownMenuContent className="w-auto min-w-0 rounded-full p-1" align="center">
+            <DropdownMenuContent
+                className={`w-auto min-w-0 p-1 ${squareDrop ? "rounded-md" : "rounded-full"}`}
+                align="center"
+            >
                 {options.map((option, index) => (
                     <DropdownMenuItem
                         key={index}
@@ -42,7 +61,12 @@ export default function ToolbarButtonCombo({
                             option.onClick();
                         }}
                     >
-                        <ToolbarButton icon={option.icon} isActive={option.isActive} />
+                        <ToolbarButton
+                            icon={option.icon}
+                            isActive={option.isActive}
+                            text={option.text}
+                            disabled={option.disabled}
+                        />
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>
