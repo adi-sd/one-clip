@@ -5,19 +5,16 @@ import Logo from "@/components/navbar/Logo";
 import UserProfileButton from "@/components/navbar/UserProfileButton";
 import SignInButton from "@/components/navbar/SignInButton";
 import { useEffect, useState } from "react";
+import { useScreenResize } from "@/hooks/useScreenResize";
 
 const Navbar = () => {
     const { data: session } = useSession();
     const [logoSize, setLogoSize] = useState<number>(32);
+    const { isLargeScreen } = useScreenResize();
 
     useEffect(() => {
-        const handleResize = () => {
-            setLogoSize(window.innerWidth >= 1024 ? 32 : 24);
-        };
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+        setLogoSize(isLargeScreen ? 32 : 24);
+    }, [isLargeScreen]);
 
     return (
         <nav className="h-[4rem] md:h-[5rem] w-full bg-white shadow-sm md:shadow-md py-4 px-4 flex items-center justify-between border-0 border-b-[1px] border-gray-300 sticky">

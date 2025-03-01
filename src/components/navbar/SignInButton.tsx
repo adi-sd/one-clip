@@ -7,7 +7,7 @@ const SignInButton = ({ size = 32 }: { size: number }) => {
     return (
         <button
             onClick={() => signIn("google")}
-            className="flex items-center gap-2 bg-green-500 pl-3 pr-4 py-3 shadow-sm rounded-full hover:bg-green-600
+            className="flex items-center gap-2 bg-green-500 pl-3 pr-4 py-2 md:py-3 shadow-sm rounded-full hover:bg-green-600
             "
         >
             <FaGoogle size={size * 0.8} className="text-white" />
