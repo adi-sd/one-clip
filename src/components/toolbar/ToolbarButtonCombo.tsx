@@ -33,8 +33,8 @@ export default function ToolbarButtonCombo({
         <DropdownMenu>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <DropdownMenuTrigger disabled={disabled} asChild>
-                        <div>
+                    <DropdownMenuTrigger className="rounded-full group" disabled={disabled} asChild>
+                        <div className="rounded-full">
                             <ToolbarButton
                                 icon={trigger}
                                 isActive={options.some((opt) => opt.isActive)}
