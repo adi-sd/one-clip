@@ -1,5 +1,5 @@
 import { useScreenResize } from "@/hooks/useScreenResize";
-import { FaPenClip, FaTrash, FaCircleCheck } from "react-icons/fa6";
+import { FaPenClip, FaTrash, FaCheck } from "react-icons/fa6";
 import { TiThMenu } from "react-icons/ti";
 import { NoteCardActionType } from "@/components/notes-container/NoteCard";
 
@@ -33,10 +33,10 @@ export default function NoteCardButtons({ isNoteSelected, handleButtonClick }: N
                 </>
             )}
             <button
-                className={`  p-0 m-0 hover:bg-gray-300 rounded-full  ${isNoteSelected ? "text-green-500" : "text-gray-400"}`}
+                className={`text-gray-400 p-1 rounded-sm  ${isNoteSelected ? "text-white bg-green-500" : "hover:text-white hover:bg-green-500"}`}
                 onClick={(e) => handleButtonClick(e, "select")}
             >
-                <FaCircleCheck size={14} />
+                <FaCheck size={14} />
             </button>
             <button
                 onClick={(e) => handleButtonClick(e, "delete")}

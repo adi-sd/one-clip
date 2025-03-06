@@ -3,11 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Note } from "@/types/note";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { copyPlainText, copyRichText, sanitizeNoteContent } from "@/lib/editorUtils";
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -19,11 +15,12 @@ export type NoteCardActionType = "edit" | "delete" | "options" | "copy-normal" |
 
 // Updated NoteCard: using store actions directly
 const NoteCard = ({ note: initialNote }: { note: Note }) => {
-    const { setCurrentNote, deleteNote, setIsDialogOpen } = useNotesStore();
+    const { setCurrentNote, deleteNote, setIsDialogOpen, isSelectedNote, addSelectedNote, removeSelectedNote } =
+        useNotesStore();
 
     const [note, setNote] = useState<Note>(initialNote);
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
-    const [isSelected, setIsSelected] = useState<boolean>(false);
+    const [isSelected, setIsSelected] = useState<boolean>(() => isSelectedNote(note.id));
 
     const cardRef = useRef<HTMLDivElement | null>(null);
     const contextMenuRef = useRef<HTMLDivElement | null>(null);
@@ -87,7 +84,13 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
                 handleContextMenu(event);
                 break;
             case "select":
-                setIsSelected(!isSelected);
+                if (isSelected) {
+                    removeSelectedNote(note.id);
+                    setIsSelected(false);
+                } else {
+                    addSelectedNote(note.id);
+                    setIsSelected(true);
+                }
                 break;
         }
     };

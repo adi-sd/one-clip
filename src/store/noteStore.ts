@@ -24,6 +24,11 @@ interface NotesState {
     updateNote: (updatedNote: Note) => Promise<void>;
     updateNoteFlag: (noteId: string, flagName: ToggleFlag) => Promise<void>;
     deleteNote: (noteId: string) => Promise<void>;
+    // Select note
+    selectedNotes: Set<string>; // changed from string[]
+    addSelectedNote: (noteId: string) => void;
+    removeSelectedNote: (noteId: string) => void;
+    isSelectedNote: (noteId: string) => boolean;
 }
 
 export const useNotesStore = create<NotesState>((set, get) => {
@@ -159,6 +164,29 @@ export const useNotesStore = create<NotesState>((set, get) => {
                 toast.error("Failed to delete note.");
                 throw error;
             }
+        },
+        // select note
+        selectedNotes: new Set<string>(),
+        // Add a note id to the selectedNotes if it isn't already selected.
+        addSelectedNote: (noteId: string) => {
+            const selectedNotes = get().selectedNotes;
+            if (!selectedNotes.has(noteId)) {
+                selectedNotes.add(noteId);
+                // Trigger a state update by setting a new Set.
+                set({ selectedNotes: new Set(selectedNotes) });
+            }
+        },
+        // Remove the note id from the selectedNotes
+        removeSelectedNote: (noteId: string) => {
+            const selectedNotes = get().selectedNotes;
+            if (selectedNotes.has(noteId)) {
+                selectedNotes.delete(noteId);
+                set({ selectedNotes: new Set(selectedNotes) });
+            }
+        },
+        // Check whether a note id exists in the selectedNotes
+        isSelectedNote: (noteId: string) => {
+            return get().selectedNotes.has(noteId);
         },
     };
 });
