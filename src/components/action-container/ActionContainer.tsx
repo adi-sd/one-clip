@@ -6,6 +6,7 @@ import { Note } from "@/types/note";
 import SortNotesButton from "./SortNotesButton";
 import { useNotesStore } from "@/store/noteStore";
 import { SortByKeys, SortByType, SortByTypesArray } from "@/types/sort";
+import SelectNotesButton from "@/components/action-container/SelectNotesButton";
 // import NoteTypeFilter from "@/components/action-container/NoteTypeFilter";
 
 interface ActionContainerProps {
@@ -48,6 +49,9 @@ export default function ActionContainer({ setFilteredNotes }: ActionContainerPro
 
             {/* Sort By NOte*/}
             <SortNotesButton defaultSortKey="created-at-new-old" onSortChange={setCurrentSortKey} />
+
+            {/* Select Note Button */}
+            <SelectNotesButton />
 
             {/* Create Note Button */}
             <CreateNewNoteButton />

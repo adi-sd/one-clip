@@ -20,7 +20,7 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
 
     const [note, setNote] = useState<Note>(initialNote);
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
-    const [isSelected, setIsSelected] = useState<boolean>(() => isSelectedNote(note.id));
+    const isSelected = isSelectedNote(note.id);
 
     const cardRef = useRef<HTMLDivElement | null>(null);
     const contextMenuRef = useRef<HTMLDivElement | null>(null);
@@ -86,10 +86,8 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
             case "select":
                 if (isSelected) {
                     removeSelectedNote(note.id);
-                    setIsSelected(false);
                 } else {
                     addSelectedNote(note.id);
-                    setIsSelected(true);
                 }
                 break;
         }

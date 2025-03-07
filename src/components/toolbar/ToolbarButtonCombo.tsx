@@ -7,14 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import ToolbarButton from "@/components/toolbar/ToolbarButton";
-
-type DropdownOptionType = {
-    icon: ReactNode;
-    isActive: boolean;
-    onClick: () => void;
-    text?: string;
-    disabled?: boolean;
-};
+import { ToolbarButtonComboOptionType } from "@/types/toolbar";
 
 export default function ToolbarButtonCombo({
     tooltip,
@@ -25,7 +18,7 @@ export default function ToolbarButtonCombo({
 }: {
     tooltip: string;
     trigger: ReactNode;
-    options: DropdownOptionType[];
+    options: ToolbarButtonComboOptionType[];
     squareDrop?: boolean;
     disabled?: boolean;
 }) {
@@ -66,6 +59,7 @@ export default function ToolbarButtonCombo({
                             isActive={option.isActive}
                             text={option.text}
                             disabled={option.disabled}
+                            squareDrop={squareDrop}
                         />
                     </DropdownMenuItem>
                 ))}
