@@ -29,6 +29,7 @@ interface NotesState {
     addSelectedNote: (noteId: string) => void;
     removeSelectedNote: (noteId: string) => void;
     isSelectedNote: (noteId: string) => boolean;
+    deleteSelected: () => Promise<void>;
 }
 
 export const useNotesStore = create<NotesState>((set, get) => {
@@ -187,6 +188,31 @@ export const useNotesStore = create<NotesState>((set, get) => {
         // Check whether a note id exists in the selectedNotes
         isSelectedNote: (noteId: string) => {
             return get().selectedNotes.has(noteId);
+        },
+        // Delete Selected Notes
+        deleteSelected: async () => {
+            const { selectedNotes, notes, currentNote } = get();
+            if (selectedNotes.size === 0) {
+                toast.error("No selected notes to delete.");
+                return;
+            }
+            try {
+                // Delete all selected notes concurrently.
+                await Promise.all(Array.from(selectedNotes).map((noteId) => noteService.deleteNote(noteId)));
+                // Update the notes array by filtering out deleted notes.
+                const newNotes = notes.filter((note) => !selectedNotes.has(note.id));
+                // If the current note was among the selected ones, clear it.
+                set({
+                    notes: newNotes,
+                    currentNote: currentNote && selectedNotes.has(currentNote.id) ? null : currentNote,
+                    selectedNotes: new Set(),
+                });
+                toast.success("Selected notes deleted!");
+            } catch (error) {
+                console.error("Error deleting selected notes:", error);
+                toast.error("Failed to delete selected notes.");
+                throw error;
+            }
         },
     };
 });

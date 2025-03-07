@@ -53,6 +53,17 @@ const DisplayContainer = () => {
         console.log("Note auto-saved!");
     }, [currentNote, title, content, updateNote, setIsDialogOpen]);
 
+    // Cancel unsaved Changes
+    const handleCancel = () => {
+        if (currentNote) {
+            setTitle(currentNote.title);
+            setContent(currentNote.content);
+        }
+        if (setIsDialogOpen) {
+            setIsDialogOpen(false);
+        }
+    };
+
     // Auto-save on focus loss.
     useEffect(() => {
         const container = displayContainerRef.current;
@@ -79,6 +90,19 @@ const DisplayContainer = () => {
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (isEditorFocused && (event.metaKey || event.ctrlKey) && event.key === "s") {
+                event.preventDefault();
+                handleSave();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, [handleSave, isEditorFocused]);
+
+    // Cancel Unsaved note on Ctrl+X or Cmd+X.
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (isEditorFocused && (event.metaKey || event.ctrlKey) && event.key === "x") {
                 event.preventDefault();
                 handleSave();
             }
@@ -131,21 +155,39 @@ const DisplayContainer = () => {
 
             <NoteContentEditor content={content} setContent={setContent} />
 
-            {/* Save Button */}
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Button
-                        variant={"default"}
-                        className="w-fit bg-green-500 rounded-full py-3 px-4 ml-auto"
-                        onClick={handleSave}
-                    >
-                        <span className="font-bold">Save</span>
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent align="center">
-                    <p>Ctrl+S or Cmd+S</p>
-                </TooltipContent>
-            </Tooltip>
+            <div className="flex gap-x-2 ml-auto">
+                {/* Save Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant={"default"}
+                            className="w-fit bg-black text-white rounded-full py-3 px-4"
+                            onClick={handleCancel}
+                        >
+                            <span className="font-bold">Cancel</span>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent align="center">
+                        <p>Ctrl+X or Cmd+X</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                {/* Save Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant={"default"}
+                            className="w-fit bg-green-500 rounded-full py-3 px-4"
+                            onClick={handleSave}
+                        >
+                            <span className="font-bold">Save</span>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent align="center">
+                        <p>Ctrl+S or Cmd+S</p>
+                    </TooltipContent>
+                </Tooltip>
+            </div>
         </div>
     );
 };

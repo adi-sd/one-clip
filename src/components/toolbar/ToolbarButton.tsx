@@ -30,7 +30,7 @@ const ToolbarButton = ({
                         <button
                             disabled={disabled}
                             {...(onClick ? { onClick } : {})}
-                            className={`pointer-events-auto disabled:cursor-not-allowed p-2 rounded-full
+                            className={`pointer-events-auto disabled:cursor-not-allowed p-2 rounded-full disabled:text-gray-400
                             ${isTriggerType ? "bg-gray-100" : ""}
                             ${isActive ? "bg-gray-300" : "hover:bg-gray-300"} group-hover:bg-gray-300`}
                         >
@@ -45,7 +45,7 @@ const ToolbarButton = ({
                 <button
                     disabled={disabled}
                     {...(onClick ? { onClick } : {})}
-                    className={`pointer-events-auto p-2 disabled:cursor-not-allowed h-full w-full group-hover:bg-gray-300 
+                    className={`pointer-events-auto p-2 disabled:cursor-not-allowed h-full w-full group-hover:bg-gray-300 disabled:text-gray-400
                     ${isTriggerType ? "bg-gray-100" : ""} 
                     ${isActive ? "bg-gray-300" : "hover:bg-gray-300"} 
                     ${squareDrop ? "rounded-md" : "rounded-full"}`}

@@ -49,13 +49,13 @@ const Toolbar = ({
             {/* Hyperlink Options in Dropdown */}
             <ToolbarButtonCombo
                 tooltip="Hyperlink"
-                trigger={<PiGlobeBold size={16} />}
+                trigger={<PiGlobeBold size={14} />}
                 options={[
                     {
                         icon: editor.isActive("link") ? (
-                            <TbLinkPlus className="font-bold" size={16} />
+                            <TbLinkPlus className="font-bold" size={14} />
                         ) : (
-                            <TbLink className="font-bold" size={16} />
+                            <TbLink className="font-bold" size={14} />
                         ),
                         isActive: editor.isActive("link"),
                         onClick: () => openLinkDialog(),
