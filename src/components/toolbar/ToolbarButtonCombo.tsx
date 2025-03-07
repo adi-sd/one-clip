@@ -52,8 +52,7 @@ export default function ToolbarButtonCombo({
                     <DropdownMenuItem
                         key={index}
                         className="w-auto min-w-0 rounded-full p-0 mb-1 last:mb-0"
-                        onSelect={(e) => {
-                            e.preventDefault();
+                        onSelect={() => {
                             option.onClick();
                         }}
                     >

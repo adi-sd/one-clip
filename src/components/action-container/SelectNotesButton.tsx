@@ -25,7 +25,7 @@ export default function SelectNotesButton() {
                 // "Clear Selection": remove all selected note ids
                 Array.from(selectedNotes).forEach((noteId) => removeSelectedNote(noteId));
             },
-            isActive: selectedNotes.size > 0,
+            isActive: false,
             text: "Clear Selection",
             disabled: selectedNotes.size === 0,
         },
