@@ -54,7 +54,7 @@ const DisplayContainer = () => {
     }, [currentNote, title, content, updateNote, setIsDialogOpen]);
 
     // Cancel unsaved Changes
-    const handleCancel = () => {
+    const handleCancel = useCallback(() => {
         if (currentNote) {
             setTitle(currentNote.title);
             setContent(currentNote.content);
@@ -62,7 +62,7 @@ const DisplayContainer = () => {
         if (setIsDialogOpen) {
             setIsDialogOpen(false);
         }
-    };
+    }, [currentNote, setIsDialogOpen]);
 
     // Auto-save on focus loss.
     useEffect(() => {
@@ -104,13 +104,13 @@ const DisplayContainer = () => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (isEditorFocused && (event.metaKey || event.ctrlKey) && event.key === "x") {
                 event.preventDefault();
-                handleSave();
+                handleCancel();
             }
         };
 
         document.addEventListener("keydown", handleKeyDown);
         return () => document.removeEventListener("keydown", handleKeyDown);
-    }, [handleSave, isEditorFocused]);
+    }, [handleCancel, isEditorFocused]);
 
     return (
         <div
