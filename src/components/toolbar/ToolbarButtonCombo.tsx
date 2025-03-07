@@ -45,7 +45,7 @@ export default function ToolbarButtonCombo({
             </Tooltip>
 
             <DropdownMenuContent
-                className={`w-auto min-w-0 p-1 ${squareDrop ? "rounded-md" : "rounded-full"}`}
+                className={`flex flex-col gap-y-1 w-auto min-w-0 p-1 ${squareDrop ? "rounded-md" : "rounded-full"}`}
                 align="center"
             >
                 {options.map((option, index) => (
