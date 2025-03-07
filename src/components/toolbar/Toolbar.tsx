@@ -66,6 +66,7 @@ const Toolbar = ({
                         onClick: () => editor.chain().focus().unsetLink().run(),
                     },
                 ]}
+                triggerBg={false}
             />
 
             {/* List Options */}
@@ -84,6 +85,7 @@ const Toolbar = ({
                         onClick: () => editor.chain().focus().toggleOrderedList().run(),
                     },
                 ]}
+                triggerBg={false}
             />
 
             <ToolbarButton

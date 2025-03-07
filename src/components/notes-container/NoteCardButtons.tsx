@@ -33,10 +33,10 @@ export default function NoteCardButtons({ isNoteSelected, handleButtonClick }: N
                 </>
             )}
             <button
-                className={`text-gray-400 p-1 rounded-sm  ${isNoteSelected ? "text-white bg-green-500" : "hover:text-white hover:bg-green-500"}`}
+                className={`text-gray-400 p-1  rounded-sm  ${isNoteSelected ? "bg-gray-300 text-gray-500" : "hover:bg-gray-300 hover:text-gray-500"}`}
                 onClick={(e) => handleButtonClick(e, "select")}
             >
-                <FaCheck size={14} />
+                <FaCheck size={12} />
             </button>
             <button
                 onClick={(e) => handleButtonClick(e, "delete")}

@@ -13,12 +13,14 @@ export default function ToolbarButtonCombo({
     tooltip,
     trigger,
     options,
+    triggerBg = true,
     squareDrop = false,
     disabled = false,
 }: {
     tooltip: string;
     trigger: ReactNode;
     options: ToolbarButtonComboOptionType[];
+    triggerBg?: boolean;
     squareDrop?: boolean;
     disabled?: boolean;
 }) {
@@ -32,6 +34,7 @@ export default function ToolbarButtonCombo({
                                 icon={trigger}
                                 isActive={options.some((opt) => opt.isActive)}
                                 disabled={disabled}
+                                isTriggerType={triggerBg}
                             />
                         </div>
                     </DropdownMenuTrigger>
@@ -60,6 +63,7 @@ export default function ToolbarButtonCombo({
                             text={option.text}
                             disabled={option.disabled}
                             squareDrop={squareDrop}
+                            isTriggerType={false}
                         />
                     </DropdownMenuItem>
                 ))}
