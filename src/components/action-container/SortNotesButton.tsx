@@ -40,7 +40,7 @@ export default function SortNotesButton({ defaultSortKey }: SortNotesButtonProps
                 trigger={<SortNotesTrigger />}
                 options={options}
                 squareDrop
-                disabled={notes.length === 0}
+                disabled={notes.size === 0}
             />
         </div>
     );
