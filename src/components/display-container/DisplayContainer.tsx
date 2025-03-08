@@ -75,7 +75,10 @@ const DisplayContainer = () => {
         const handleFocusIn = () => setIsEditorFocused(true);
         const handleFocusOut = (event: FocusEvent) => {
             // If the link tool is active, skip auto-save.
-            if (isLinkDialogOpen) return;
+            if (isLinkDialogOpen) {
+                setIsEditorFocused(true);
+                return;
+            }
 
             // Get the new focus target.
             const relatedTarget = event.relatedTarget as HTMLElement | null;

@@ -97,7 +97,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
             set({ isLoading: true });
             try {
                 const data = await noteService.fetchNotes(user.id);
-                // Use setNotes to update the Map and recalc filteredNotes.
+                // Use setNotes to update the Map and recalculate filteredNotes.
                 get().setNotes(data);
                 if (data.length > 0) {
                     set({ currentNote: data[0] });
