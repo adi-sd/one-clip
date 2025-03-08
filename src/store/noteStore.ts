@@ -13,7 +13,8 @@ interface User {
 interface NotesState {
     user: User | null;
     setUser: (user: User | null) => void;
-    notes: Note[];
+    // Master notes stored as a Map for O(1) lookups.
+    notes: Map<string, Note>;
     currentNote: Note | null;
     isLoading: boolean;
     isDialogOpen: boolean;
@@ -25,14 +26,14 @@ interface NotesState {
     updateNote: (updatedNote: Note) => Promise<void>;
     updateNoteFlag: (noteId: string, flagName: ToggleFlag) => Promise<void>;
     deleteNote: (noteId: string) => Promise<void>;
-    // Filtered Note
+    // Filtered notes and search query
     searchQuery: string;
     setSearchQuery: (query: string) => void;
     filteredNotes: Note[];
     setFilteredNotes: (query: string) => void;
     sortFilteredNotes: (sortKey: SortByKeys) => void;
-    // Select Note
-    selectedNotes: Set<string>; // changed from string[]
+    // Selected notes functionality
+    selectedNotes: Set<string>;
     addSelectedNote: (noteId: string) => void;
     removeSelectedNote: (noteId: string) => void;
     isSelectedNote: (noteId: string) => boolean;
@@ -40,25 +41,28 @@ interface NotesState {
 }
 
 export const useNotesStore = create<NotesState>((set, get) => {
-    // Internal helper: Save an updated note in the store.
+    // Helper: Save an updated note in the store.
     const saveUpdatedNote = async (noteToUpdate: Note): Promise<Note> => {
         const { notes, currentNote } = get();
         const savedNote = await noteService.updateNote(noteToUpdate);
+        const newNotes = new Map(notes);
+        newNotes.set(savedNote.id, savedNote);
         set({
-            notes: notes.map((n) => (n.id === savedNote.id ? savedNote : n)),
+            notes: newNotes,
             currentNote: currentNote && currentNote.id === savedNote.id ? savedNote : currentNote,
         });
         return savedNote;
     };
 
-    // Recalculate filteredNotes based on the current notes and search query.
+    // Recalculate filteredNotes based on the current notes Map and search query.
     const recalculateFilteredNotes = () => {
         const { notes, searchQuery } = get();
+        const allNotes = Array.from(notes.values());
         let newFiltered: Note[];
         if (!searchQuery || !searchQuery.trim()) {
-            newFiltered = notes;
+            newFiltered = allNotes;
         } else {
-            newFiltered = notes.filter(
+            newFiltered = allNotes.filter(
                 (note) =>
                     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     note.content.toLowerCase().includes(searchQuery.toLowerCase())
@@ -66,19 +70,20 @@ export const useNotesStore = create<NotesState>((set, get) => {
         }
         set({
             filteredNotes: newFiltered,
-            // currentNote: newFiltered.length > 0 ? newFiltered[0] : null,
+            currentNote: newFiltered.length > 0 ? newFiltered[0] : null,
         });
     };
 
     return {
         user: null,
         setUser: (user) => set({ user }),
-        notes: [],
+        notes: new Map<string, Note>(),
         currentNote: null,
         isLoading: false,
         isDialogOpen: false,
-        setNotes: (notes) => {
-            set({ notes });
+        setNotes: (notesArr: Note[]) => {
+            const notesMap = new Map(notesArr.map((note) => [note.id, note]));
+            set({ notes: notesMap });
             recalculateFilteredNotes();
         },
         setCurrentNote: (note) => set({ currentNote: note }),
@@ -92,7 +97,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
             set({ isLoading: true });
             try {
                 const data = await noteService.fetchNotes(user.id);
-                // Use the setNotes method so that filteredNotes are recalculated.
+                // Use setNotes to update the Map and recalc filteredNotes.
                 get().setNotes(data);
                 if (data.length > 0) {
                     set({ currentNote: data[0] });
@@ -108,8 +113,10 @@ export const useNotesStore = create<NotesState>((set, get) => {
             const { user, notes } = get();
             try {
                 const newNote = await noteService.createNote(note, user ? user.id : "");
+                const newNotes = new Map(notes);
+                newNotes.set(newNote.id, newNote);
                 set({
-                    notes: [newNote, ...notes],
+                    notes: newNotes,
                     currentNote: newNote,
                 });
                 recalculateFilteredNotes();
@@ -123,19 +130,13 @@ export const useNotesStore = create<NotesState>((set, get) => {
         },
         updateNote: async (updatedNote: Note) => {
             const { notes } = get();
-
-            // New note: if updatedNote.id is falsy.
             if (!updatedNote.id) {
                 await get().createNewNote(updatedNote);
                 return;
             }
-
-            // Ensure the note exists in the store.
-            const noteExists = notes.some((note) => note.id === updatedNote.id);
-            if (!noteExists) {
+            if (!notes.has(updatedNote.id)) {
                 throw new Error("Cannot update note: note not found in store.");
             }
-
             try {
                 await saveUpdatedNote(updatedNote);
                 recalculateFilteredNotes();
@@ -148,17 +149,17 @@ export const useNotesStore = create<NotesState>((set, get) => {
         },
         updateNoteFlag: async (noteId: string, flagName: ToggleFlag) => {
             const { notes, currentNote } = get();
-            const noteToUpdate = notes.find((n) => n.id === noteId);
+            const noteToUpdate = notes.get(noteId);
             if (!noteToUpdate) {
                 throw new Error("Cannot update note flag: note not found in store.");
             }
             try {
-                // Toggle the flag value.
                 const toggledValue = !(noteToUpdate[flagName] as boolean);
-                // Call the service function with the nested endpoint.
                 const savedNote = await noteService.updateNoteFlag(noteId, flagName, toggledValue);
+                const newNotes = new Map(notes);
+                newNotes.set(savedNote.id, savedNote);
                 set({
-                    notes: notes.map((n) => (n.id === savedNote.id ? savedNote : n)),
+                    notes: newNotes,
                     currentNote: currentNote && currentNote.id === savedNote.id ? savedNote : currentNote,
                 });
                 recalculateFilteredNotes();
@@ -174,13 +175,15 @@ export const useNotesStore = create<NotesState>((set, get) => {
             if (!currentNote) {
                 throw new Error("No current note set.");
             }
-            // If the current note has no id, it's unsaved—delete it locally.
             if (!currentNote.id) {
+                const newNotes = new Map(notes);
+                newNotes.delete(currentNote.id);
                 set({
-                    notes: notes.filter((note) => note !== currentNote),
+                    notes: newNotes,
                     currentNote: null,
                 });
                 toast.error("Note deleted!");
+                recalculateFilteredNotes();
                 return;
             }
             if (currentNote.id !== noteId) {
@@ -188,8 +191,10 @@ export const useNotesStore = create<NotesState>((set, get) => {
             }
             try {
                 await noteService.deleteNote(noteId);
+                const newNotes = new Map(notes);
+                newNotes.delete(noteId);
                 set({
-                    notes: notes.filter((note) => note.id !== noteId),
+                    notes: newNotes,
                     currentNote: null,
                 });
                 recalculateFilteredNotes();
@@ -200,7 +205,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
                 throw error;
             }
         },
-        // Filtered Notes
+        // Filtered Notes and Search
         searchQuery: "",
         setSearchQuery: (query: string) => {
             set({ searchQuery: query });
@@ -208,7 +213,6 @@ export const useNotesStore = create<NotesState>((set, get) => {
         },
         filteredNotes: [],
         setFilteredNotes: (query: string) => {
-            // Update the searchQuery and recalculate filteredNotes.
             set({ searchQuery: query });
             recalculateFilteredNotes();
         },
@@ -220,20 +224,17 @@ export const useNotesStore = create<NotesState>((set, get) => {
                 return;
             }
             const sorted = [...filteredNotes].sort(sortOption.compareFunction);
-            set({ filteredNotes: sorted });
+            set({ filteredNotes: sorted, currentNote: sorted.length > 0 ? sorted[0] : null });
         },
         // Selected Notes
         selectedNotes: new Set<string>(),
-        // Add a note id to the selectedNotes if it isn't already selected.
         addSelectedNote: (noteId: string) => {
             const selectedNotes = get().selectedNotes;
             if (!selectedNotes.has(noteId)) {
                 selectedNotes.add(noteId);
-                // Trigger a state update by setting a new Set.
                 set({ selectedNotes: new Set(selectedNotes) });
             }
         },
-        // Remove the note id from the selectedNotes
         removeSelectedNote: (noteId: string) => {
             const selectedNotes = get().selectedNotes;
             if (selectedNotes.has(noteId)) {
@@ -241,11 +242,9 @@ export const useNotesStore = create<NotesState>((set, get) => {
                 set({ selectedNotes: new Set(selectedNotes) });
             }
         },
-        // Check whether a note id exists in the selectedNotes
         isSelectedNote: (noteId: string) => {
             return get().selectedNotes.has(noteId);
         },
-        // Delete Selected Notes
         deleteSelected: async () => {
             const { selectedNotes, notes, currentNote } = get();
             if (selectedNotes.size === 0) {
@@ -253,11 +252,11 @@ export const useNotesStore = create<NotesState>((set, get) => {
                 return;
             }
             try {
-                // Delete all selected notes concurrently.
                 await Promise.all(Array.from(selectedNotes).map((noteId) => noteService.deleteNote(noteId)));
-                // Update the notes array by filtering out deleted notes.
-                const newNotes = notes.filter((note) => !selectedNotes.has(note.id));
-                // If the current note was among the selected ones, clear it.
+                const newNotes = new Map(notes);
+                for (const noteId of selectedNotes) {
+                    newNotes.delete(noteId);
+                }
                 set({
                     notes: newNotes,
                     currentNote: currentNote && selectedNotes.has(currentNote.id) ? null : currentNote,

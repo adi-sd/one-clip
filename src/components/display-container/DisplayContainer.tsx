@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { FaX } from "react-icons/fa6";
 import { useNotesStore } from "@/store/noteStore";
 import { useScreenResize } from "@/hooks/useScreenResize";
+import DisplayContainerOverlay from "./DisplayContainerOverlay";
 
 const DisplayContainer = () => {
     // Retrieve current note and actions directly from the store.
@@ -27,6 +28,9 @@ const DisplayContainer = () => {
         if (currentNote) {
             setContent(currentNote.content);
             setTitle(currentNote.title);
+        } else {
+            setContent("");
+            setTitle("");
         }
     }, [currentNote]);
 
@@ -41,7 +45,6 @@ const DisplayContainer = () => {
             toast.info("No actual changes detected. Skipping update.");
             return;
         }
-        // Call store action to update the note.
         updateNote({
             ...currentNote,
             title: strippedTitle,
@@ -53,7 +56,7 @@ const DisplayContainer = () => {
         console.log("Note auto-saved!");
     }, [currentNote, title, content, updateNote, setIsDialogOpen]);
 
-    // Cancel unsaved Changes
+    // Cancel unsaved changes.
     const handleCancel = useCallback(() => {
         if (currentNote) {
             setTitle(currentNote.title);
@@ -99,7 +102,7 @@ const DisplayContainer = () => {
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [handleSave, isEditorFocused]);
 
-    // Cancel Unsaved note on Ctrl+X or Cmd+X.
+    // Cancel unsaved note on Ctrl+X or Cmd+X.
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (isEditorFocused && (event.metaKey || event.ctrlKey) && event.key === "x") {
@@ -114,11 +117,11 @@ const DisplayContainer = () => {
 
     return (
         <div
-            className="p-4 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-4 overflow-hidden border-0 md:border md:border-gray-300"
+            className="relative p-4 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-4 overflow-hidden border-0 md:border md:border-gray-300"
             ref={displayContainerRef}
             tabIndex={0}
         >
-            {/* Title & Delete Button */}
+            {/* Main Content */}
             <div className="flex items-start justify-between">
                 <NoteTitleEditor title={title} setTitle={setTitle} />
                 <div className="flex gap-x-2">
@@ -139,7 +142,7 @@ const DisplayContainer = () => {
                 </div>
             </div>
 
-            {/* Note Metadata */}
+            {/* Metadata */}
             <div className="flex-shrink-0 flex flex-col gap-y-2 text-[12px] text-gray-400 font-bold mr-2 text-nowrap overflow-hidden min-w-0">
                 {currentNote?.createdAt && (
                     <p className="overflow-hidden text-ellipsis whitespace-nowrap min-w-0 truncate">
@@ -156,7 +159,6 @@ const DisplayContainer = () => {
             <NoteContentEditor content={content} setContent={setContent} />
 
             <div className="flex gap-x-2 ml-auto">
-                {/* Save Button */}
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
@@ -171,8 +173,6 @@ const DisplayContainer = () => {
                         <p>Ctrl+X or Cmd+X</p>
                     </TooltipContent>
                 </Tooltip>
-
-                {/* Save Button */}
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
@@ -188,6 +188,9 @@ const DisplayContainer = () => {
                     </TooltipContent>
                 </Tooltip>
             </div>
+
+            {/* Overlay glass effect if no current note */}
+            {!currentNote && <DisplayContainerOverlay />}
         </div>
     );
 };

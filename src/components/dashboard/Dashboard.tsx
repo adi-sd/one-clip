@@ -56,7 +56,7 @@ const Dashboard = () => {
                 >
                     {/* Pass filteredNotes setter to ActionContainer so it can update the state */}
                     <ActionContainer />
-                    {notes.length === 0 ? (
+                    {notes.size === 0 ? (
                         <DashboardMessage>
                             <span>No notes available for the account!</span>
                         </DashboardMessage>
@@ -70,14 +70,14 @@ const Dashboard = () => {
                 </div>
 
                 {/* Right side: Display Container for large screens */}
-                {!isDialogAllowed && currentNote && (
+                {!isDialogAllowed && (
                     <div className="w-2/6 h-full pb-1">
                         <DisplayContainer />
                     </div>
                 )}
 
                 {/* Mobile Edit Dialog */}
-                {isDialogAllowed && currentNote && (
+                {isDialogAllowed && (
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogContent
                             className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md overflow-hidden"
