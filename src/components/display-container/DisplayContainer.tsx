@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { FaX } from "react-icons/fa6";
 import { useNotesStore } from "@/store/noteStore";
 import { useScreenResize } from "@/hooks/useScreenResize";
-import DisplayContainerOverlay from "./DisplayContainerOverlay";
+import DisplayContainerOverlay from "@/components/display-container/DisplayContainerOverlay";
 
 const DisplayContainer = () => {
     // Retrieve current note and actions directly from the store.
@@ -22,6 +22,7 @@ const DisplayContainer = () => {
     const [content, setContent] = useState(currentNote ? currentNote.content : "");
     const [title, setTitle] = useState(currentNote ? currentNote.title : "");
     const [isEditorFocused, setIsEditorFocused] = useState(false);
+    const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
 
     // Update local state when the current note changes.
     useEffect(() => {
@@ -71,22 +72,32 @@ const DisplayContainer = () => {
     useEffect(() => {
         const container = displayContainerRef.current;
         if (!container) return;
-
         const handleFocusIn = () => setIsEditorFocused(true);
         const handleFocusOut = (event: FocusEvent) => {
-            if (displayContainerRef.current && !displayContainerRef.current.contains(event.relatedTarget as Node)) {
+            // If the link tool is active, skip auto-save.
+            if (isLinkDialogOpen) return;
+
+            // Get the new focus target.
+            const relatedTarget = event.relatedTarget as HTMLElement | null;
+
+            // If relatedTarget exists and is inside an element with the "toolbar" class, skip auto-save.
+            if (relatedTarget && relatedTarget.closest(".toolbar")) {
+                return;
+            }
+
+            // If focus is really leaving the display container, trigger auto-save.
+            if (displayContainerRef.current && !displayContainerRef.current.contains(relatedTarget)) {
                 handleSave();
                 setIsEditorFocused(false);
             }
         };
-
         container.addEventListener("focusin", handleFocusIn);
         container.addEventListener("focusout", handleFocusOut);
-
         return () => {
             container.removeEventListener("focusin", handleFocusIn);
             container.removeEventListener("focusout", handleFocusOut);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [handleSave]);
 
     // Save note on Ctrl+S or Cmd+S.
@@ -156,7 +167,12 @@ const DisplayContainer = () => {
                 )}
             </div>
 
-            <NoteContentEditor content={content} setContent={setContent} />
+            <NoteContentEditor
+                content={content}
+                setContent={setContent}
+                isLinkDialogOpen={isLinkDialogOpen}
+                setIsLinkDialogOpen={setIsLinkDialogOpen}
+            />
 
             <div className="flex gap-x-2 ml-auto">
                 <Tooltip>

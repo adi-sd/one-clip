@@ -13,11 +13,14 @@ import { toast } from "sonner";
 export default function NoteContentEditor({
     content,
     setContent,
+    isLinkDialogOpen,
+    setIsLinkDialogOpen,
 }: {
     content: string;
     setContent: (content: string) => void;
+    isLinkDialogOpen: boolean;
+    setIsLinkDialogOpen: (value: boolean) => void;
 }) {
-    const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
     const [selectedText, setSelectedText] = useState<string>("");
     const noteEditorRef = useRef<HTMLDivElement | null>(null);
 

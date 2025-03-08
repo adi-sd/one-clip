@@ -20,7 +20,7 @@ const Toolbar = ({
     if (!editor) return null;
 
     return (
-        <div className="w-fit flex items-center justify-center gap-x-2 shadow-inner rounded-full p-1 bg-white">
+        <div className="toolbar w-fit flex items-center justify-center gap-x-2 shadow-inner rounded-full p-1 bg-white">
             <ToolbarButton
                 icon={<FaBold size={12} />}
                 tooltip="Bold"

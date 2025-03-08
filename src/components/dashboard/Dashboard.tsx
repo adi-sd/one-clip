@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ClipLoader } from "react-spinners";
 import { useSession } from "next-auth/react";
 
@@ -16,10 +16,8 @@ const Dashboard = () => {
     const { data: session, status } = useSession();
     const { user, notes, currentNote, filteredNotes, isLoading, fetchNotes, setUser, isDialogOpen, setIsDialogOpen } =
         useNotesStore();
-
     const { isLargeScreen, isDialogAllowed } = useScreenResize();
-
-    // useEffect(() => {}, [notes]);
+    const notesContainerRef = useRef<HTMLDivElement>(null);
 
     // Set the user in the store and fetch notes if available.
     useEffect(() => {
@@ -30,6 +28,13 @@ const Dashboard = () => {
             setUser(null);
         }
     }, [session, status, setUser, fetchNotes]);
+
+    const handleDialogOpenChange = (open: boolean) => {
+        setIsDialogOpen(open);
+        if (!open && isDialogAllowed && notesContainerRef.current) {
+            notesContainerRef.current.focus();
+        }
+    };
 
     if (!user) {
         return (
@@ -52,6 +57,7 @@ const Dashboard = () => {
             <div className="w-full h-full gap-x-4 flex items-center justify-center overflow-hidden">
                 {/* Left side: Notes List */}
                 <div
+                    ref={notesContainerRef}
                     className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-2 md:gap-y-4`}
                 >
                     {/* Pass filteredNotes setter to ActionContainer so it can update the state */}
@@ -78,7 +84,7 @@ const Dashboard = () => {
 
                 {/* Mobile Edit Dialog */}
                 {isDialogAllowed && (
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
                         <DialogContent
                             className="h-[90%] w-[90%] p-0 bg-white [&>button]:hidden rounded-md overflow-hidden"
                             aria-describedby={undefined}
