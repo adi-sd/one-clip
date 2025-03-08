@@ -5,21 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useScreenResize } from "@/hooks/useScreenResize";
 import { FaSearch, FaTimes } from "react-icons/fa";
+import { useNotesStore } from "@/store/noteStore";
 
-interface SearchBarProps {
-    searchQuery: string;
-    onChange: (query: string) => void;
-}
-
-export default function SearchBar({ searchQuery, onChange }: SearchBarProps) {
+export default function SearchBar() {
+    const { searchQuery, setSearchQuery } = useNotesStore();
     const { isLargeScreen } = useScreenResize();
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target.value);
+        setSearchQuery(e.target.value);
     };
 
     const handleClearSearch = () => {
-        onChange("");
+        setSearchQuery("");
     };
 
     return (

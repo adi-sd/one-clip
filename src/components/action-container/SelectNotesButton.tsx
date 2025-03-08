@@ -9,11 +9,11 @@ import { FaTrash } from "react-icons/fa";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function SelectNotesButton() {
-    const { notes, selectedNotes, addSelectedNote, removeSelectedNote, deleteSelected } = useNotesStore();
+    const { filteredNotes, selectedNotes, addSelectedNote, removeSelectedNote, deleteSelected } = useNotesStore();
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     const confirmationMessage =
-        notes.length === selectedNotes.size
+        filteredNotes.length === selectedNotes.size
             ? "Are you sure you want to delete all notes?"
             : "Are you sure you want to delete the selected notes?";
 
@@ -22,11 +22,11 @@ export default function SelectNotesButton() {
             icon: <IoCheckmarkDoneSharp size={14} />,
             onClick: () => {
                 // "Select All": iterate through all notes and add their ids
-                notes.forEach((note) => addSelectedNote(note.id));
+                filteredNotes.forEach((filteredNotes) => addSelectedNote(filteredNotes.id));
             },
-            isActive: notes.length === selectedNotes.size,
+            isActive: filteredNotes.length === selectedNotes.size,
             text: "Select All Notes",
-            disabled: notes.length === 0,
+            disabled: filteredNotes.length === 0,
         },
         {
             icon: <MdClear size={14} />,
@@ -45,7 +45,7 @@ export default function SelectNotesButton() {
                 setConfirmOpen(true);
             },
             isActive: false,
-            text: notes.length === selectedNotes.size ? "Delete All" : "Delete Selected",
+            text: filteredNotes.length === selectedNotes.size ? "Delete All" : "Delete Selected",
             disabled: selectedNotes.size === 0,
         },
     ];
@@ -63,7 +63,7 @@ export default function SelectNotesButton() {
                     trigger={<SelectNotesTrigger />}
                     options={SelectNotesOptions}
                     squareDrop
-                    disabled={notes.length === 0}
+                    disabled={filteredNotes.length === 0}
                 />
             </div>
 

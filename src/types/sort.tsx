@@ -1,6 +1,6 @@
+import { ReactNode } from "react";
 import { Note } from "@/types/note";
 import { FaSortAlphaDown, FaSortAlphaUp, FaSortNumericUp, FaSortNumericDown } from "react-icons/fa";
-import { ReactNode } from "react";
 
 export type SortByKeys =
     | "name-a-to-z"

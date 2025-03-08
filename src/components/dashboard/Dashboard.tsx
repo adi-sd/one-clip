@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 import { useSession } from "next-auth/react";
 
@@ -11,14 +11,15 @@ import ActionContainer from "@/components/action-container/ActionContainer";
 import DashboardMessage from "@/components/dashboard/DashboardMessage";
 import { useScreenResize } from "@/hooks/useScreenResize";
 import { useNotesStore } from "@/store/noteStore";
-import { Note } from "@/types/note";
 
 const Dashboard = () => {
     const { data: session, status } = useSession();
-    const { user, notes, currentNote, isLoading, fetchNotes, setUser, isDialogOpen, setIsDialogOpen } = useNotesStore();
+    const { user, notes, currentNote, filteredNotes, isLoading, fetchNotes, setUser, isDialogOpen, setIsDialogOpen } =
+        useNotesStore();
 
     const { isLargeScreen, isDialogAllowed } = useScreenResize();
-    const [filteredNotes, setFilteredNotes] = useState<Note[]>(notes);
+
+    // useEffect(() => {}, [notes]);
 
     // Set the user in the store and fetch notes if available.
     useEffect(() => {
@@ -29,11 +30,6 @@ const Dashboard = () => {
             setUser(null);
         }
     }, [session, status, setUser, fetchNotes]);
-
-    // When the full notes array changes, update the filteredNotes if no search is active.
-    useEffect(() => {
-        setFilteredNotes(notes);
-    }, [notes]);
 
     if (!user) {
         return (
@@ -59,7 +55,7 @@ const Dashboard = () => {
                     className={`w-full ${isLargeScreen ? "lg:w-4/6" : "w-full"} h-full flex flex-col gap-y-2 md:gap-y-4`}
                 >
                     {/* Pass filteredNotes setter to ActionContainer so it can update the state */}
-                    <ActionContainer setFilteredNotes={setFilteredNotes} />
+                    <ActionContainer />
                     {notes.length === 0 ? (
                         <DashboardMessage>
                             <span>No notes available for the account!</span>

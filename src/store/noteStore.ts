@@ -1,6 +1,7 @@
 // store/noteStore.ts
 import { create } from "zustand";
 import { Note, ToggleFlag } from "@/types/note";
+import { SortByKeys, SortByTypesArray } from "@/types/sort";
 import * as noteService from "@/services/noteService";
 import { toast } from "sonner";
 
@@ -24,7 +25,13 @@ interface NotesState {
     updateNote: (updatedNote: Note) => Promise<void>;
     updateNoteFlag: (noteId: string, flagName: ToggleFlag) => Promise<void>;
     deleteNote: (noteId: string) => Promise<void>;
-    // Select note
+    // Filtered Note
+    searchQuery: string;
+    setSearchQuery: (query: string) => void;
+    filteredNotes: Note[];
+    setFilteredNotes: (query: string) => void;
+    sortFilteredNotes: (sortKey: SortByKeys) => void;
+    // Select Note
     selectedNotes: Set<string>; // changed from string[]
     addSelectedNote: (noteId: string) => void;
     removeSelectedNote: (noteId: string) => void;
@@ -44,6 +51,25 @@ export const useNotesStore = create<NotesState>((set, get) => {
         return savedNote;
     };
 
+    // Recalculate filteredNotes based on the current notes and search query.
+    const recalculateFilteredNotes = () => {
+        const { notes, searchQuery } = get();
+        let newFiltered: Note[];
+        if (!searchQuery || !searchQuery.trim()) {
+            newFiltered = notes;
+        } else {
+            newFiltered = notes.filter(
+                (note) =>
+                    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+        set({
+            filteredNotes: newFiltered,
+            // currentNote: newFiltered.length > 0 ? newFiltered[0] : null,
+        });
+    };
+
     return {
         user: null,
         setUser: (user) => set({ user }),
@@ -51,7 +77,10 @@ export const useNotesStore = create<NotesState>((set, get) => {
         currentNote: null,
         isLoading: false,
         isDialogOpen: false,
-        setNotes: (notes) => set({ notes }),
+        setNotes: (notes) => {
+            set({ notes });
+            recalculateFilteredNotes();
+        },
         setCurrentNote: (note) => set({ currentNote: note }),
         setIsDialogOpen: (open: boolean) => set({ isDialogOpen: open }),
         fetchNotes: async () => {
@@ -63,7 +92,8 @@ export const useNotesStore = create<NotesState>((set, get) => {
             set({ isLoading: true });
             try {
                 const data = await noteService.fetchNotes(user.id);
-                set({ notes: data });
+                // Use the setNotes method so that filteredNotes are recalculated.
+                get().setNotes(data);
                 if (data.length > 0) {
                     set({ currentNote: data[0] });
                 }
@@ -82,6 +112,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
                     notes: [newNote, ...notes],
                     currentNote: newNote,
                 });
+                recalculateFilteredNotes();
                 toast.success("New Note Created!");
                 return newNote;
             } catch (error) {
@@ -107,6 +138,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
 
             try {
                 await saveUpdatedNote(updatedNote);
+                recalculateFilteredNotes();
                 toast.success("Note Updated!");
             } catch (error) {
                 console.error("Error updating note:", error);
@@ -129,6 +161,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
                     notes: notes.map((n) => (n.id === savedNote.id ? savedNote : n)),
                     currentNote: currentNote && currentNote.id === savedNote.id ? savedNote : currentNote,
                 });
+                recalculateFilteredNotes();
                 toast.success(`${flagName} ${toggledValue ? "Enabled" : "Disabled"}!`);
             } catch (error) {
                 console.error("Error updating note flag:", error);
@@ -159,6 +192,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
                     notes: notes.filter((note) => note.id !== noteId),
                     currentNote: null,
                 });
+                recalculateFilteredNotes();
                 toast.error("Note deleted!");
             } catch (error) {
                 console.error("Error deleting note:", error);
@@ -166,7 +200,29 @@ export const useNotesStore = create<NotesState>((set, get) => {
                 throw error;
             }
         },
-        // select note
+        // Filtered Notes
+        searchQuery: "",
+        setSearchQuery: (query: string) => {
+            set({ searchQuery: query });
+            recalculateFilteredNotes();
+        },
+        filteredNotes: [],
+        setFilteredNotes: (query: string) => {
+            // Update the searchQuery and recalculate filteredNotes.
+            set({ searchQuery: query });
+            recalculateFilteredNotes();
+        },
+        sortFilteredNotes: (sortKey: SortByKeys) => {
+            const { filteredNotes } = get();
+            const sortOption = SortByTypesArray.find((opt) => opt.key === sortKey);
+            if (!sortOption) {
+                toast.error("Invalid sort key.");
+                return;
+            }
+            const sorted = [...filteredNotes].sort(sortOption.compareFunction);
+            set({ filteredNotes: sorted });
+        },
+        // Selected Notes
         selectedNotes: new Set<string>(),
         // Add a note id to the selectedNotes if it isn't already selected.
         addSelectedNote: (noteId: string) => {
@@ -207,6 +263,7 @@ export const useNotesStore = create<NotesState>((set, get) => {
                     currentNote: currentNote && selectedNotes.has(currentNote.id) ? null : currentNote,
                     selectedNotes: new Set(),
                 });
+                recalculateFilteredNotes();
                 toast.success("Selected notes deleted!");
             } catch (error) {
                 console.error("Error deleting selected notes:", error);

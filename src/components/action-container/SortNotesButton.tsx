@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNotesStore } from "@/store/noteStore";
 import { SortByTypesArray, SortByType, SortByKeys } from "@/types/sort";
 import ToolbarButtonCombo from "@/components/toolbar/ToolbarButtonCombo";
@@ -8,23 +8,23 @@ import SortNotesTrigger from "@/components/action-container/SortNotesTrigger";
 
 interface SortNotesButtonProps {
     defaultSortKey: SortByKeys;
-    onSortChange: (sortKey: SortByKeys) => void;
 }
 
-export default function SortNotesButton({ defaultSortKey, onSortChange }: SortNotesButtonProps) {
-    const { notes } = useNotesStore();
+export default function SortNotesButton({ defaultSortKey }: SortNotesButtonProps) {
+    const { notes, sortFilteredNotes } = useNotesStore();
     const [currentSortKey, setCurrentSortKey] = useState<SortByKeys>(defaultSortKey);
 
-    const handleSortChange = (sortKey: SortByKeys) => {
-        setCurrentSortKey(sortKey);
-        onSortChange(sortKey);
-    };
+    const handleSortChange = useCallback(
+        (sortKey: SortByKeys) => {
+            setCurrentSortKey(sortKey);
+            sortFilteredNotes(sortKey);
+        },
+        [sortFilteredNotes]
+    );
 
-    // On mount, apply the default sort order.
     useEffect(() => {
         handleSortChange(defaultSortKey);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [defaultSortKey, notes]);
+    }, [defaultSortKey, handleSortChange, notes]);
 
     const options = SortByTypesArray.map((sortOption: SortByType) => ({
         icon: sortOption.icon,
