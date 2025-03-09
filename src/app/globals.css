@@ -62,6 +62,11 @@ body {
     }
 }
 
+html,
+body {
+    touch-action: manipulation;
+}
+
 @layer base {
     * {
         @apply border-border;

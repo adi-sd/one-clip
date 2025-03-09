@@ -97,7 +97,7 @@ const NoteCard = ({ note: initialNote }: { note: Note }) => {
         <DropdownMenu open={!!contextMenu} onOpenChange={() => setContextMenu(null)}>
             <DropdownMenuTrigger asChild>
                 <Card
-                    className={`group bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300 overflow-hidden ${isSelected ? "border-2 border-green-500" : ""}`}
+                    className={`bg-white md:hover:scale-[102%] shadow-sm md:shadow-md p-3 rounded-lg cursor-pointer transform transition-transform duration-100 ease-in-out h-[100px] w-full sm:h-[120px] md:h-[140px] lg:h-[160px] xl:h-[180px] flex flex-col items-center justify-between gap-y-1 sm:gap-y-2 border-gray-300 overflow-hidden ${isSelected ? "border-2 border-green-500" : ""}`}
                     ref={cardRef}
                     onClick={handleCardClick}
                     onContextMenu={handleContextMenu}
