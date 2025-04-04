@@ -1,6 +1,6 @@
 # ![One-Clip Logo](public/one-clip-logo.jpg)
 
-### A simple and fast text-saving app for quick copy-pasting
+### ✂️ **Your Minimalist Clipboard Powerhouse**
 
 ![GitHub Stars](https://img.shields.io/github/stars/adi-sd/one-clip?style=social) ![GitHub License](https://img.shields.io/github/license/adi-sd/one-clip)
 
@@ -8,7 +8,7 @@
 
 ## 🚀 **Overview**
 
-One-Clip is a **modern, lightweight web application** that helps you save and quickly copy-paste text snippets with a single click. It is designed for efficiency and accessibility, ensuring your saved text is always available whenever needed.
+**One-Clip** is a blazing-fast, modern web app designed to streamline how you save, organize, and reuse text snippets. Perfect for developers, writers, and multitaskers, it combines **rich-text formatting**, seamless Google authentication, and intuitive tools to manage your clipboard history effortlessly. Never lose a note again—access your snippets anywhere, on any device.
 
 ## 🎯 **Key Features**
 
