@@ -12,11 +12,15 @@ One-Clip is a **modern, lightweight web application** that helps you save and qu
 
 ## 🎯 **Key Features**
 
+-   ✅ **Rich Text Format**: Rich text format with Hyperlinks.
 -   ✅ **One-click Copy**: Click on any saved text to copy it instantly.
 -   ✅ **Google Authentication**: Secure sign-in with your Google account.
 -   ✅ **Auto-Save**: All text entries are saved automatically.
 -   ✅ **Search Bar**: Quickly find saved snippets.
--   ✅ **Recycle Bin**: Restore or permanently delete text entries.
+-   ✅ **Select All**: Select and delete the notes quick.
+-   ✅ **Sort Notes By**: Sort notes by various categories.
+-   ( All of the above 3 are designed to work together as well! )
+-   ✅ **Note Context Menu**: For important settings.
 -   ✅ **Export/Import**: Backup or transfer your saved snippets as a JSON file.
 -   ✅ **MongoDB Atlas**: Secure, scalable NoSQL database.
 -   ✅ **Prisma ORM**: Efficient, type-safe data management.
@@ -27,6 +31,7 @@ One-Clip is a **modern, lightweight web application** that helps you save and qu
 ## 🛠 **Tech Stack**
 
 -   **Frontend**: Next.js (App Router), React.js, TypeScript, Tailwind CSS
+-   **Backend**: Next.js APIs, 
 -   **Authentication**: NextAuth.js (Google Sign-In)
 -   **Database**: MongoDB Atlas with Prisma ORM
 -   **UI Components**: ShadCN-UI
@@ -91,13 +96,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📸 **Screenshots**
 
-### **Login Modal**
+### Mobile
 
-![Login Modal](./public/screenshots/login-modal.png)
-
-### **Dashboard**
-
-![Dashboard](./public/screenshots/dashboard.png)
+### Desktop
 
 ---
 
