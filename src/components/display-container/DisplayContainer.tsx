@@ -131,7 +131,7 @@ const DisplayContainer = () => {
 
     return (
         <div
-            className="relative p-4 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-4 overflow-hidden border-0 md:border md:border-gray-300"
+            className="p-4 bg-white shadow-md rounded-lg h-full flex flex-col gap-y-4 overflow-hidden border-0 md:border md:border-gray-300"
             ref={displayContainerRef}
             tabIndex={0}
         >
