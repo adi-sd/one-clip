@@ -1,6 +1,6 @@
 # ![One-Clip Logo](public/one-clip-logo.jpg)
 
-### A simple and fast text-saving app for quick copy-pasting.
+### A simple and fast text-saving app for quick copy-pasting
 
 ![GitHub Stars](https://img.shields.io/github/stars/adi-sd/one-clip?style=social) ![GitHub License](https://img.shields.io/github/license/adi-sd/one-clip)
 
@@ -31,7 +31,7 @@ One-Clip is a **modern, lightweight web application** that helps you save and qu
 ## 🛠 **Tech Stack**
 
 -   **Frontend**: Next.js (App Router), React.js, TypeScript, Tailwind CSS
--   **Backend**: Next.js APIs, 
+-   **Backend**: Next.js APIs,
 -   **Authentication**: NextAuth.js (Google Sign-In)
 -   **Database**: MongoDB Atlas with Prisma ORM
 -   **UI Components**: ShadCN-UI
@@ -94,11 +94,75 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📸 **Screenshots**
+## 📸 Screenshots
 
 ### Mobile
 
+<!-- markdownlint-disable MD033 -->
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center">
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/mobile/dashboard.png" width="200" alt="Dashboard">
+    <div style="text-align: center; font-size: 0.9em">Dashboard</div>
+  </div>
+  <!-- <div style="width: 200px; margin: 10px">
+    <img src="./public/mobile/user-context.png" width="200" alt="User Context">
+    <div style="text-align: center; font-size: 0.9em">User Context</div>
+  </div> -->
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/mobile/rich-text-format.png" width="200" alt="Rich Text Editor">
+    <div style="text-align: center; font-size: 0.9em">Rich Text Editor</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/mobile/search.png" width="200" alt="Search">
+    <div style="text-align: center; font-size: 0.9em">Search</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/mobile/sort.png" width="200" alt="Sort">
+    <div style="text-align: center; font-size: 0.9em">Sort</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/mobile/select.png" width="200" alt="Select">
+    <div style="text-align: center; font-size: 0.9em">Select</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/mobile/delete-all-confirm.png" width="200" alt="Delete Confirm">
+    <div style="text-align: center; font-size: 0.9em">Delete Confirmation</div>
+  </div>
+</div>
+
 ### Desktop
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center">
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/desktop/dashboard.png" width="200" alt="Dashboard">
+    <div style="text-align: center; font-size: 0.9em">Dashboard</div>
+  </div>
+  <!-- <div style="width: 200px; margin: 10px">
+    <img src="./public/desktop/user-context.png" width="200" alt="User Context">
+    <div style="text-align: center; font-size: 0.9em">User Context</div>
+  </div> -->
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/desktop/rich-text-formatter.png" width="200" alt="Rich Text Editor">
+    <div style="text-align: center; font-size: 0.9em">Rich Text Editor</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/desktop/search.png" width="200" alt="Search">
+    <div style="text-align: center; font-size: 0.9em">Search</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/desktop/sort.png" width="200" alt="Sort">
+    <div style="text-align: center; font-size: 0.9em">Sort</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/desktop/select-all.png" width="200" alt="Select">
+    <div style="text-align: center; font-size: 0.9em">Select</div>
+  </div>
+  <div style="width: 200px; margin: 10px">
+    <img src="./public/desktop/delete-all-confirm.png" width="200" alt="Delete Confirmation">
+    <div style="text-align: center; font-size: 0.9em">Delete Confirmation</div>
+  </div>
+</div>
+<!-- markdownlint-enable MD033 -->
 
 ---
 
